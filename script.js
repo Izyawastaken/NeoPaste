@@ -1,13 +1,28 @@
 // script.js
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('pasteForm');
+  const contentArea = document.getElementById('content');
+
+  // Optional: auto-import if Pokepaste link is pasted directly into textarea
+  contentArea.addEventListener('paste', async (e) => {
+    const paste = (e.clipboardData || window.clipboardData).getData('text');
+    if (paste.includes('pokepast.es')) {
+      e.preventDefault();
+      const raw = await tryImportFromPokepaste(paste);
+      if (raw) {
+        contentArea.value = raw.trim();
+      } else {
+        alert("Failed to import from Pokepaste. Check the link!");
+      }
+    }
+  });
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
     const title = document.getElementById('title').value.trim();
     const author = document.getElementById('author').value.trim();
-    const raw = document.getElementById('content').value;
+    const raw = contentArea.value;
 
     const content = raw
       .replace(/[“”]/g, '"')
@@ -117,13 +132,13 @@ window.addEventListener('DOMContentLoaded', () => {
           const parts = line.slice(4).split("/");
           for (const part of parts) {
             const [val, stat] = part.trim().split(" ");
-            mon.evs[stat] = parseInt(val);
+            mon.evs[stat.toLowerCase()] = parseInt(val);
           }
         } else if (line.startsWith("IVs:")) {
           const parts = line.slice(4).split("/");
           for (const part of parts) {
             const [val, stat] = part.trim().split(" ");
-            mon.ivs[stat] = parseInt(val);
+            mon.ivs[stat.toLowerCase()] = parseInt(val);
           }
         } else if (line.endsWith("Nature")) {
           mon.nature = line.replace("Nature", "").trim();
@@ -136,5 +151,22 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     return team;
+  }
+
+  async function tryImportFromPokepaste(url) {
+    const match = url.match(/pokepast\.es\/([a-z0-9]+)/i);
+    if (!match) return null;
+
+    const pasteId = match[1];
+    const txtUrl = `https://pokepast.es/${pasteId}.txt`;
+
+    try {
+      const res = await fetch(txtUrl);
+      if (!res.ok) throw new Error("Bad response");
+      return await res.text();
+    } catch (err) {
+      console.error("Pokepaste import failed:", err);
+      return null;
+    }
   }
 });
