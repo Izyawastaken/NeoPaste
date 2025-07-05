@@ -164,24 +164,36 @@ function parsePaste(text) {
     };
 
     const firstLine = lines[0];
-    const nameMatch = firstLine.match(/^(.+?)(?: \((M|F)\))?(?: \(([^()]+)\))? @ (.+)$/);
-    if (nameMatch) {
-      const rawName = nameMatch[1].trim();
-      const gender = nameMatch[2] || null;
-      const speciesMaybe = nameMatch[3] || rawName;
-      const item = nameMatch[4].trim();
 
-      mon.nickname = speciesMaybe !== rawName ? rawName : "";
-      mon.name = speciesMaybe;
-      mon.gender = gender;
-      mon.item = item;
+    // Try to match: Nickname (Species) (Gender) @ Item
+    let match = firstLine.match(/^(.+?) \(([^)]+)\)(?: \((M|F)\))? @ (.+)$/);
+    if (match) {
+      mon.nickname = match[1].trim();
+      mon.name = match[2].trim(); // real species name
+      mon.gender = match[3] || null;
+      mon.item = match[4].trim();
     } else {
-      const fallback = firstLine.match(/^(.+?)(?: \((M|F)\))?$/);
-      if (fallback) {
-        mon.name = fallback[1].trim();
-        mon.gender = fallback[2] || null;
+      // Try: Species (Gender) @ Item
+      match = firstLine.match(/^(.+?) \((M|F)\) @ (.+)$/);
+      if (match) {
+        mon.name = match[1].trim();
+        mon.gender = match[2];
+        mon.item = match[3].trim();
       } else {
-        continue;
+        // Try: Species @ Item
+        match = firstLine.match(/^(.+?) @ (.+)$/);
+        if (match) {
+          mon.name = match[1].trim();
+          mon.item = match[2].trim();
+        } else {
+          // Try: Species only
+          match = firstLine.match(/^(.+?)$/);
+          if (match) {
+            mon.name = match[1].trim();
+          } else {
+            continue; // skip invalid format
+          }
+        }
       }
     }
 
@@ -214,6 +226,7 @@ function parsePaste(text) {
 
   return team;
 }
+
 
 // ✅ Copy-to-Clipboard Logic
 document.getElementById('copyBtn').addEventListener('click', async () => {
