@@ -49,6 +49,8 @@ async function loadPaste() {
   }
 
   const { title, author, content } = data;
+  document.getElementById('pasteDisplay').textContent = content;
+
 
   document.getElementById('paste-title').textContent = title || "Untitled Paste";
   document.getElementById('paste-author').textContent = author ? `By ${author}` : "";
