@@ -19,7 +19,6 @@ const natureMods = {
   lonely: { up: "atk", down: "def" }
 };
 
-// ✅ Define BEFORE usage
 function toShowdownId(name) {
   return name
     .toLowerCase()
@@ -50,7 +49,7 @@ async function loadPaste() {
 
   const { title, author, content } = data;
   document.getElementById('pasteDisplay').textContent = content;
-
+  window.rawPasteText = content; // ✅ for clipboard button
 
   document.getElementById('paste-title').textContent = title || "Untitled Paste";
   document.getElementById('paste-author').textContent = author ? `By ${author}` : "";
@@ -210,17 +209,17 @@ function parsePaste(text) {
 
   return team;
 }
-document.getElementById('copyBtn').addEventListener('click', async () => {
-  const pasteText = document.getElementById('pasteDisplay')?.textContent || '';
 
+// ✅ Copy-to-Clipboard Logic
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  const text = window.rawPasteText || '';
   try {
-    await navigator.clipboard.writeText(pasteText.trim());
-    alert("Copied to clipboard!");
+    await navigator.clipboard.writeText(text.trim());
+    alert("✅ Copied to clipboard!");
   } catch (err) {
-    console.error("Copy failed", err);
+    console.error("❌ Copy failed", err);
     alert("Failed to copy!");
   }
 });
-
 
 loadPaste();
