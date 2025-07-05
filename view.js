@@ -49,7 +49,7 @@ async function loadPaste() {
 
   const { title, author, content } = data;
   document.getElementById('pasteDisplay').textContent = content;
-  window.rawPasteText = content; // ✅ for clipboard button
+  window.rawPasteText = content;
 
   document.getElementById('paste-title').textContent = title || "Untitled Paste";
   document.getElementById('paste-author').textContent = author ? `By ${author}` : "";
@@ -62,11 +62,10 @@ async function loadPaste() {
     card.className = 'pokemon-card';
 
     const spriteUrl = `https://play.pokemonshowdown.com/sprites/dex${pokemon.shiny ? "-shiny" : ""}/${toShowdownId(pokemon.name)}.png`;
-
     const statBlockHTML = await renderStatBlock(pokemon);
 
     card.innerHTML = `
-      <h2>${pokemon.name} <small>@ ${pokemon.item || "None"}</small></h2>
+      <h2>${pokemon.nickname ? `${pokemon.nickname} (${pokemon.name})` : pokemon.name} <small>@ ${pokemon.item || "None"}</small></h2>
       <img src="${spriteUrl}" alt="${pokemon.name}" />
       <p><strong>Ability:</strong> ${pokemon.ability || "—"}</p>
       <p><strong>Tera Type:</strong> ${pokemon.teraType || "—"}</p>
@@ -160,16 +159,22 @@ function parsePaste(text) {
     if (lines.length === 0) continue;
 
     const mon = {
-      name: "", gender: null, item: "", ability: "", shiny: false,
+      name: "", nickname: "", gender: null, item: "", ability: "", shiny: false,
       teraType: "", evs: {}, ivs: {}, nature: "", moves: []
     };
 
     const firstLine = lines[0];
-    const nameMatch = firstLine.match(/^(.+?)(?: \((M|F)\))? @ (.+)$/);
+    const nameMatch = firstLine.match(/^(.+?)(?: \((M|F)\))?(?: \(([^()]+)\))? @ (.+)$/);
     if (nameMatch) {
-      mon.name = nameMatch[1].trim();
-      mon.gender = nameMatch[2] || null;
-      mon.item = nameMatch[3].trim();
+      const rawName = nameMatch[1].trim();
+      const gender = nameMatch[2] || null;
+      const speciesMaybe = nameMatch[3] || rawName;
+      const item = nameMatch[4].trim();
+
+      mon.nickname = speciesMaybe !== rawName ? rawName : "";
+      mon.name = speciesMaybe;
+      mon.gender = gender;
+      mon.item = item;
     } else {
       const fallback = firstLine.match(/^(.+?)(?: \((M|F)\))?$/);
       if (fallback) {
