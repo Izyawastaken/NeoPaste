@@ -27,6 +27,15 @@ if (!pasteId) {
   throw new Error("Missing paste ID in URL");
 }
 
+// Helper to generate proper Showdown sprite ID
+function toShowdownId(name) {
+  return name
+    .toLowerCase()
+    .normalize("NFD")                   // break accented chars
+    .replace(/[\u0300-\u036f]/g, "")   // remove accents
+    .replace(/[^a-z0-9]/g, "");        // remove non-alphanum
+}
+
 async function loadPaste() {
   const { data, error } = await client
     .from('pastes')
@@ -51,16 +60,7 @@ async function loadPaste() {
     const card = document.createElement('div');
     card.className = 'pokemon-card';
 
-   const spriteUrl = `https://play.pokemonshowdown.com/sprites/gen9${pokemon.shiny ? '/shiny' : ''}/${toShowdownId(pokemon.name)}.png`;
-
-function toShowdownId(name) {
-  return name
-    .toLowerCase()
-    .normalize("NFD")                   // break accented chars
-    .replace(/[\u0300-\u036f]/g, "")   // remove accents
-    .replace(/[^a-z0-9]/g, "");        // remove non-alphanum
-}
-
+    const spriteUrl = `https://play.pokemonshowdown.com/sprites/gen9${pokemon.shiny ? '/shiny' : ''}/${toShowdownId(pokemon.name)}.png`;
     const statBlockHTML = await renderStatBlock(pokemon);
 
     card.innerHTML = `
@@ -103,7 +103,7 @@ async function renderStatBlock(pokemon) {
   const mods = natureMods[nature] || {};
 
   try {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${pokemon.name.toLowerCase()}`);
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${toShowdownId(pokemon.name)}`);
     const data = await res.json();
 
     const lines = data.stats.map(statObj => {
