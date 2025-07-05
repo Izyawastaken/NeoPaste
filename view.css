@@ -43,6 +43,21 @@ h1 {
   margin-bottom: 2rem;
 }
 
+/* Team Container Layout */
+#team-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+#team-container.vertical-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
 /* Pokémon Card */
 .pokemon-card {
   background: var(--glass-light);
@@ -234,25 +249,7 @@ body.dark .fancy-btn:hover {
   }
 }
 
-/* Layout Toggle (Vertical Layout) */
-.vertical-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-}
-
+/* Layout Toggle Button */
 .layout-toggle-btn {
   margin: 1rem auto 1.5rem;
-}
-#team-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  transition: all 0.3s ease;
-}
-.vertical-layout {
-  display: flex !important;
-  flex-direction: column;
-  align-items: center;
 }
