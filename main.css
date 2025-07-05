@@ -1,5 +1,6 @@
 /* main.css */
 
+/* Reset + base */
 * {
   box-sizing: border-box;
   margin: 0;
@@ -17,6 +18,7 @@ body {
   padding: 2rem;
 }
 
+/* Container */
 .container {
   width: 100%;
   max-width: 700px;
@@ -29,6 +31,7 @@ body {
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
 }
 
+/* Header */
 header {
   text-align: center;
   margin-bottom: 2rem;
@@ -45,6 +48,7 @@ h1 {
   margin-top: 0.5rem;
 }
 
+/* Form */
 form {
   display: flex;
   flex-direction: column;
@@ -85,6 +89,7 @@ button:hover {
   background: #e96a00;
 }
 
+/* Footer */
 footer {
   margin-top: 2rem;
   text-align: center;
@@ -100,99 +105,51 @@ footer a {
 footer a:hover {
   text-decoration: underline;
 }
-#paste-link {
-  margin-top: 2rem;
-  padding: 1rem;
-  background-color: var(--bg-card, #1e1e2f);
-  border: 1px solid var(--border-color, #444);
-  border-radius: 10px;
-  text-align: center;
-  color: var(--text-color, #fff);
-  font-weight: 500;
-  word-break: break-word;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s ease;
-}
 
-#paste-link:hover {
-  transform: scale(1.01);
-}
-
-#paste-link a {
-  color: var(--accent, #3f51b5);
-  text-decoration: none;
-  font-size: 1.1rem;
-}
-
-#paste-link a:hover {
-  text-decoration: underline;
-}
-
+/* Paste Output */
 .paste-output {
-  text-align: center;
   margin-top: 2rem;
-  padding: 1rem;
-  background-color: var(--bg-card, #1e1e2f);
-  border: 1px solid var(--border-color, #444);
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-}
-
-.paste-url {
-  display: inline-block;
-  margin-top: 0.5rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--accent, #3f51b5);
-  color: white;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-
-.paste-url:hover {
-  background-color: var(--accent-dark, #303f9f);
-}
-@media (max-width: 600px) {
-  #paste-link, .paste-output {
-    font-size: 0.9rem;
-    padding: 0.75rem;
-  }
-
-  .paste-url {
-    font-size: 0.95rem;
-    padding: 0.4rem 0.8rem;
-  }
-}
-.paste-output {
-  margin-top: 1.5rem;
-  padding: 1rem;
+  padding: 1rem 1.5rem;
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
   text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Link and Button styles */
+.link-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1rem;
 }
 
 .paste-url {
   display: inline-block;
-  margin: 0.5rem 0;
-  color: var(--accent, #4fc3f7);
-  font-weight: bold;
+  padding: 0.5rem 1rem;
+  background: #222;
+  color: white;
+  border: 1px solid #555;
+  border-radius: 6px;
+  font-weight: 500;
   text-decoration: none;
+  transition: background 0.2s ease;
 }
 
 .paste-url:hover {
-  text-decoration: underline;
+  background: #333;
 }
 
 .copy-link-btn {
-  padding: 0.4rem 1rem;
-  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
   background: #222;
   color: white;
   border: 1px solid #555;
   border-radius: 6px;
   cursor: pointer;
+  font-weight: 500;
   transition: background 0.2s;
 }
 
@@ -200,20 +157,24 @@ footer a:hover {
   background: #333;
 }
 
-.paste-url {
-  display: inline-block;
-  padding: 0.4rem 1rem;
-  margin-top: 0.5rem;
-  margin-right: 0.5rem;
-  background: #222;
-  color: white;
-  border: 1px solid #555;
-  border-radius: 6px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: background 0.2s;
+.copy-link-btn.copied {
+  background: #4caf50;
+  border-color: #4caf50;
 }
 
-.paste-url:hover {
-  background: #333;
+/* Responsive tweaks */
+@media (max-width: 600px) {
+  .paste-url,
+  .copy-link-btn {
+    font-size: 0.95rem;
+    padding: 0.4rem 0.8rem;
+  }
+
+  .container {
+    padding: 1.5rem;
+  }
+
+  body {
+    padding: 1rem;
+  }
 }
