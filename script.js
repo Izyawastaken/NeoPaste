@@ -1,18 +1,8 @@
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('pasteForm');
   const contentArea = document.getElementById('content');
-  const layoutToggle = document.getElementById('layoutToggle');
 
-  // Handle layout toggle
-  layoutToggle.addEventListener('click', () => {
-    document.body.classList.toggle('vertical');
-    layoutToggle.classList.toggle('active');
-    layoutToggle.textContent = document.body.classList.contains('vertical')
-      ? '🔄 Horizontal Layout'
-      : '📱 Vertical Layout';
-  });
-
-  // Import from Pokepaste link on paste
+  // Handle Pokepaste import on paste
   contentArea.addEventListener('paste', async (e) => {
     const paste = (e.clipboardData || window.clipboardData).getData('text');
     if (paste.includes('pokepast.es')) {
@@ -26,7 +16,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Form submission handler
+  // Handle form submission
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -69,16 +59,20 @@ window.addEventListener('DOMContentLoaded', () => {
     showLink(id);
   });
 
-  // Link display handler
+  // Show generated link
   function showLink(id) {
     const container = document.getElementById("paste-link");
-    const fullURL = `${location.origin}/NeoPaste/view.html?id=${id}`;
+
+    // ✅ Fixed GitHub Pages link
+    const fullURL = `https://izyawastaken.github.io/NeoPaste/view.html?id=${id}`;
 
     container.innerHTML = `
-      <div class="paste-output">
+      <div class="paste-output fade-in">
         <p><strong>Your Paste Link:</strong></p>
-        <a class="paste-url" href="${fullURL}" target="_blank">${fullURL}</a>
-        <button class="copy-link-btn" data-link="${fullURL}">Copy Link</button>
+        <div class="link-buttons">
+          <a class="paste-url" href="${fullURL}" target="_blank">🔗 View Paste</a>
+          <button class="copy-link-btn" data-link="${fullURL}">📋 Copy Link</button>
+        </div>
       </div>
     `;
 
@@ -91,7 +85,7 @@ window.addEventListener('DOMContentLoaded', () => {
         copyBtn.classList.add("copied");
 
         setTimeout(() => {
-          copyBtn.textContent = "Copy Link";
+          copyBtn.textContent = "📋 Copy Link";
           copyBtn.disabled = false;
           copyBtn.classList.remove("copied");
         }, 1500);
@@ -101,7 +95,7 @@ window.addEventListener('DOMContentLoaded', () => {
     container.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  // Fetch from Pokepaste
+  // Pokepaste import fetch
   async function tryImportFromPokepaste(url) {
     const match = url.match(/pokepast\.es\/([a-z0-9]+)/i);
     if (!match) return null;
@@ -126,7 +120,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Parser
+  // Team parser
   function parsePaste(text) {
     const team = [];
 
