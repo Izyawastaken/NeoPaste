@@ -170,23 +170,30 @@
 
 
       async function tryImportFromPokepaste(url) {
-    const match = url.match(/pokepast\.es\/([a-z0-9]+)/i);
-    if (!match) return null;
+  const match = url.match(/pokepast\.es\/([a-z0-9]+)/i);
+  if (!match) return null;
 
-    const pasteId = match[1];
-    const proxyUrl = `https://neopasteworker.agastyawastaken.workers.dev/?url=https://pokepast.es/${pasteId}.txt`;
+  const pasteId = match[1];
+  const targetUrl = `https://pokepast.es/${pasteId}`;
+  const proxyUrl = `https://neopasteworker.agastyawastaken.workers.dev/?url=${encodeURIComponent(targetUrl)}`;
 
-    try {
-      const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error("Bad response");
+  try {
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error("Bad response");
 
-      const text = await res.text();
-      return text.trim();
-    } catch (err) {
-      console.error("Pokepaste import failed:", err);
-      return null;
+    const text = await res.text();
+
+    // You can optionally guard against HTML fallback errors here:
+    if (text.toLowerCase().includes("<html")) {
+      throw new Error("Returned HTML instead of paste");
     }
+
+    return text.trim();
+  } catch (err) {
+    console.error("Pokepaste import failed:", err);
+    return null;
   }
+}
 
 
   });
