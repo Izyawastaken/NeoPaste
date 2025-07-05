@@ -50,9 +50,9 @@ h1 {
   margin-bottom: 1.5rem;
   backdrop-filter: blur(8px);
   text-align: left;
-  transition: background 0.3s ease;
   position: relative;
   overflow: hidden;
+  transition: background 0.3s ease;
 }
 
 body.dark .pokemon-card {
@@ -109,6 +109,13 @@ body.dark .pokemon-card {
   text-align: right;
 }
 
+.stat-label.hp  { color: #66bb6a; }
+.stat-label.atk { color: #ef5350; }
+.stat-label.def { color: #42a5f5; }
+.stat-label.spa { color: #7e57c2; }
+.stat-label.spd { color: #26c6da; }
+.stat-label.spe { color: #ffa726; }
+
 .stat-bar {
   flex: 1;
   height: 8px;
@@ -117,25 +124,33 @@ body.dark .pokemon-card {
   overflow: hidden;
   position: relative;
 }
-
-.dark .stat-bar {
+body.dark .stat-bar {
   background: #333;
 }
 
 .stat-bar-fill {
   height: 100%;
   width: 0;
-  transition: width 0.6s ease-in-out;
   border-radius: 4px;
-  background: #42a5f5; /* default blue */
+  transition: width 0.6s ease-in-out, background-color 0.4s ease;
+  background: #42a5f5; /* fallback default */
 }
 
+.stat-bar-fill.terrible   { background-color: #999; }
+.stat-bar-fill.very-low   { background-color: #d32f2f; }
+.stat-bar-fill.low        { background-color: #ef5350; }
+.stat-bar-fill.mid        { background-color: #ffa726; }
+.stat-bar-fill.high       { background-color: #ffee58; }
+.stat-bar-fill.very-high  { background-color: #42a5f5; }
+.stat-bar-fill.ultra      { background-color: #00e676; }
+
 .stat-modifier {
-  margin-left: 0.4rem;
+  margin-left: 0.5rem;
   font-weight: bold;
-  font-size: 0.9rem;
-  color: #ff7a00;
+  font-size: 0.95rem;
 }
+.stat-modifier.plus  { color: #00e676; }
+.stat-modifier.minus { color: #ef5350; }
 
 .stat-value {
   width: 36px;
@@ -144,13 +159,7 @@ body.dark .pokemon-card {
   font-size: 0.85rem;
 }
 
-.stat-label.hp   { color: #66bb6a; }
-.stat-label.atk  { color: #ef5350; }
-.stat-label.def  { color: #42a5f5; }
-.stat-label.spa  { color: #7e57c2; }
-.stat-label.spd  { color: #26c6da; }
-.stat-label.spe  { color: #ffa726; }
-
+/* Buttons */
 button {
   background: none;
   border: 1px solid #666;
@@ -169,58 +178,17 @@ button:hover {
   background: rgba(255,255,255,0.1);
 }
 
-
-/* Stat color ranges based on base stat values */
-.stat-bar-fill.terrible  { background-color: #999; }       /* <40 */
-.stat-bar-fill.very-low  { background-color: #d32f2f; }     /* 40–59 */
-.stat-bar-fill.low       { background-color: #ef5350; }     /* 60–79 */
-.stat-bar-fill.mid       { background-color: #ffa726; }     /* 80–99 */
-.stat-bar-fill.high      { background-color: #ffee58; }     /* 100–119 */
-.stat-bar-fill.very-high { background-color: #42a5f5; }     /* 120–139 */
-.stat-bar-fill.ultra     { background-color: #00e676; }     /* 140+ */
-
-.stat-bar-fill {
-  height: 100%;
-  width: 0;
-  transition: width 0.6s ease-in-out, background-color 0.4s ease;
-  border-radius: 4px;
-}
-
-/* Stat modifier color tweaks */
-.stat-modifier.plus  { color: #00e676; }
-.stat-modifier.minus { color: #ef5350; }
-
-/* Optional: visually indicate modifier */
-.stat-line .stat-modifier {
-  font-size: 0.95rem;
-  margin-left: 0.5rem;
-}
-/* Modern styled back link */
-.back-link {
-  display: inline-block;
-  margin-top: 1rem;
-  padding: 0.6rem 1.2rem;
-  font-size: 0.95rem;
-  text-decoration: none;
-  border-radius: 8px;
-  color: var(--text);
-  background-color: var(--accent, #3f51b5); /* fallback accent */
-  transition: background-color 0.2s ease, transform 0.1s ease;
-}
-
-.back-link:hover {
-  background-color: var(--accent-dark, #303f9f);
-  transform: translateY(-2px);
-}
+/* Back Link */
 .back-link {
   display: inline-block;
   margin-top: 1.5rem;
   padding: 0.5rem 1rem;
-  background-color: var(--accent, #3f51b5);
-  color: white;
-  border-radius: 8px;
+  font-size: 0.95rem;
   text-decoration: none;
+  border-radius: 8px;
   font-weight: 500;
+  color: white;
+  background-color: var(--accent, #3f51b5);
   transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
@@ -228,6 +196,8 @@ button:hover {
   background-color: var(--accent-dark, #303f9f);
   transform: translateY(-2px);
 }
+
+/* Animations */
 .fade-in-up {
   opacity: 0;
   transform: translateY(20px);
@@ -241,6 +211,7 @@ button:hover {
   }
 }
 
+/* Vertical Layout */
 .vertical-layout {
   display: flex;
   flex-direction: column;
