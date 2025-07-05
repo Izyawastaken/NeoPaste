@@ -75,15 +75,14 @@ async function loadPaste() {
 }
 
 // Animation + Layout Toggle UI
-document.addEventListener("DOMContentLoaded", () => {
-  const toggleBtn = document.createElement("button");
-  toggleBtn.className = "layout-toggle-btn";
-  toggleBtn.textContent = "🔁 Toggle Layout";
-  toggleBtn.onclick = () => {
-    document.getElementById("team-container")?.classList.toggle("vertical-layout");
-  };
-  document.getElementById("paste-meta")?.append(toggleBtn);
+document.getElementById("layoutToggle")?.addEventListener("click", () => {
+  const container = document.getElementById("team-container");
+  container.classList.toggle("vertical-layout");
+
+  const isVertical = container.classList.contains("vertical-layout");
+  document.getElementById("layoutToggle").textContent = isVertical ? "Grid Layout" : "Vertical Layout";
 });
+
 
 function formatEVs(evs) {
   return Object.entries(evs || {}).filter(([_, v]) => v > 0).map(([k, v]) => `${v} ${k.toUpperCase()}`).join(" / ") || "—";
