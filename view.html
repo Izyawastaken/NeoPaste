@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>View Pokepaste</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- CSS (dark mode ready) -->
+  <link rel="stylesheet" href="view.css" />
+
+  <!-- Dark mode enabled by default -->
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("theme");
+      if (!saved || saved === "dark") {
+        document.body.classList.add("dark");
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1 id="paste-title">Loading...</h1>
+      <p class="subtitle" id="paste-author"></p>
+    </header>
+
+    <div id="team-container"></div>
+
+    <footer>
+      <p><a href="index.html">← Back to Paste Builder</a></p>
+    </footer>
+  </div>
+
+  <!-- Supabase first -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="config.js"></script>
+
+  <!-- Viewer logic -->
+  <script src="view.js" defer></script>
+</body>
+</html>

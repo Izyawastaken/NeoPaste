@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modern Pokepaste</title>
+  <link rel="stylesheet" href="main.css" />
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Modern Pokepaste</h1>
+      <p class="subtitle">Share your Pokémon teams with style.</p>
+    </header>
+
+    <form id="pasteForm">
+      <input type="text" id="title" placeholder="Paste Title" />
+      <input type="text" id="author" placeholder="Author (optional)" />
+      <textarea id="content" placeholder="Paste your team here..." rows="20"></textarea>
+      <button type="submit">Generate Link</button>
+    </form>
+
+    <div id="paste-link"></div>
+
+    <footer>
+      <p>Inspired by <a href="https://pokepast.es" target="_blank">Pokepaste</a> by felixphew</p>
+    </footer>
+  </div>
+
+  <!-- Scripts: Supabase first, config second, your script last -->
+  <!-- Supabase SDK first -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+<!-- Then your config, which depends on supabase being defined -->
+<script src="config.js"></script>
+
+<!-- Then your main app logic -->
+<script src="script.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,197 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
+
+:root {
+  --accent: #ff7a00;
+  --bg-light: #f0f2f5;
+  --bg-dark: #121212;
+  --glass-light: rgba(255, 255, 255, 0.06);
+  --glass-dark: rgba(30, 30, 30, 0.35);
+  --text-light: #333;
+  --text-dark: #eee;
+}
+
+body {
+  font-family: 'Fredoka', sans-serif;
+  background: linear-gradient(135deg, var(--bg-light), #e6eaf1);
+  color: var(--text-light);
+  margin: 0;
+  padding: 2rem;
+  text-align: center;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+body.dark {
+  background: linear-gradient(135deg, #1c1c1c, var(--bg-dark));
+  color: var(--text-dark);
+}
+
+.container {
+  max-width: 960px;
+  margin: auto;
+  padding: 2rem;
+}
+
+h1 {
+  font-size: 2.5rem;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
+}
+
+.subtitle {
+  opacity: 0.8;
+  margin-bottom: 2rem;
+}
+
+.pokemon-card {
+  background: var(--glass-light);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
+  backdrop-filter: blur(8px);
+  text-align: left;
+  transition: background 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+body.dark .pokemon-card {
+  background: var(--glass-dark);
+}
+
+.pokemon-card h2 {
+  font-size: 1.4rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.pokemon-card img {
+  width: 96px;
+  height: 96px;
+  image-rendering: pixelated;
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+}
+
+.pokemon-card p {
+  margin: 0.2rem 0;
+  line-height: 1.4;
+}
+
+.moves {
+  margin-top: 0.5rem;
+  padding-left: 1rem;
+}
+
+.moves li {
+  list-style: '– ';
+  padding-left: 0.5rem;
+}
+
+.stat-block {
+  margin: 1rem 0;
+}
+
+.stat-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  min-width: 55px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.stat-bar {
+  flex: 1;
+  height: 8px;
+  background: #444;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.dark .stat-bar {
+  background: #333;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  width: 0;
+  transition: width 0.6s ease-in-out;
+  border-radius: 4px;
+  background: #42a5f5; /* default blue */
+}
+
+.stat-modifier {
+  margin-left: 0.4rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+  color: #ff7a00;
+}
+
+.stat-value {
+  width: 36px;
+  text-align: right;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+.stat-label.hp   { color: #66bb6a; }
+.stat-label.atk  { color: #ef5350; }
+.stat-label.def  { color: #42a5f5; }
+.stat-label.spa  { color: #7e57c2; }
+.stat-label.spd  { color: #26c6da; }
+.stat-label.spe  { color: #ffa726; }
+
+button {
+  background: none;
+  border: 1px solid #666;
+  color: inherit;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+
+/* Stat color ranges based on base stat values */
+.stat-bar-fill.terrible  { background-color: #999; }       /* <40 */
+.stat-bar-fill.very-low  { background-color: #d32f2f; }     /* 40–59 */
+.stat-bar-fill.low       { background-color: #ef5350; }     /* 60–79 */
+.stat-bar-fill.mid       { background-color: #ffa726; }     /* 80–99 */
+.stat-bar-fill.high      { background-color: #ffee58; }     /* 100–119 */
+.stat-bar-fill.very-high { background-color: #42a5f5; }     /* 120–139 */
+.stat-bar-fill.ultra     { background-color: #00e676; }     /* 140+ */
+
+.stat-bar-fill {
+  height: 100%;
+  width: 0;
+  transition: width 0.6s ease-in-out, background-color 0.4s ease;
+  border-radius: 4px;
+}
+
+/* Stat modifier color tweaks */
+.stat-modifier.plus  { color: #00e676; }
+.stat-modifier.minus { color: #ef5350; }
+
+/* Optional: visually indicate modifier */
+.stat-line .stat-modifier {
+  font-size: 0.95rem;
+  margin-left: 0.5rem;
+}
