@@ -160,7 +160,7 @@ window.addEventListener('DOMContentLoaded', () => {
     return team;
   }
 
-  async function tryImportFromPokepaste(url) {
+    async function tryImportFromPokepaste(url) {
     const match = url.match(/pokepast\.es\/([a-z0-9]+)/i);
     if (!match) return null;
 
@@ -172,13 +172,20 @@ window.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error("Bad response");
 
       const html = await res.text();
+
+      // Use DOMParser to extract <pre> content (which contains the full team)
       const parser = new DOMParser();
       const doc = parser.parseFromString(html, "text/html");
       const pre = doc.querySelector("pre");
-      return pre?.textContent || null;
+
+      if (!pre) return null;
+
+      // Extract text content with preserved line breaks
+      return pre.innerText || pre.textContent || null;
     } catch (err) {
       console.error("Pokepaste import failed:", err);
       return null;
     }
   }
+
 });
