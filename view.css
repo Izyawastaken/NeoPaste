@@ -43,28 +43,13 @@ h1 {
   margin-bottom: 2rem;
 }
 
-/* Team Container */
-#team-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 2rem;
-  transition: all 0.3s ease;
-}
-
-#team-container.grid-layout {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-  align-items: stretch;
-}
-
 /* Pokémon Card */
 .pokemon-card {
   background: var(--glass-light);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   padding: 1rem 1.25rem;
+  margin-bottom: 1.5rem;
   backdrop-filter: blur(8px);
   text-align: left;
   position: relative;
@@ -86,10 +71,9 @@ body.dark .pokemon-card {
   width: 96px;
   height: 96px;
   image-rendering: pixelated;
-  float: right;
-  margin-left: 1rem;
-  margin-top: -0.5rem;
-  position: relative;
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
 }
 
 .pokemon-card p {
@@ -250,7 +234,25 @@ body.dark .fancy-btn:hover {
   }
 }
 
-/* Layout Toggle Button */
+/* Layout Toggle (Vertical Layout) */
+.vertical-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
 .layout-toggle-btn {
   margin: 1rem auto 1.5rem;
+}
+#team-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  transition: all 0.3s ease;
+}
+.vertical-layout {
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
 }
