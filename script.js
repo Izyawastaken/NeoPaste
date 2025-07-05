@@ -85,80 +85,81 @@ window.addEventListener('DOMContentLoaded', () => {
     container.appendChild(linkBox);
   }
 
-  function parsePaste(text) {
-    const team = [];
-    const blocks = text.trim().split(/\r?\n\r?\n/);
+ function parsePaste(text) {
+  const team = [];
+  const blocks = text.trim().split(/\n\s*\n/);
 
-    for (const block of blocks) {
-      const lines = block
-        .split(/\r?\n/)
-        .map(line => line.trim())
-        .filter(Boolean);
+  for (const block of blocks) {
+    const lines = block
+      .split(/\r?\n/)
+      .map(line => line.trim())
+      .filter(Boolean);
 
-      if (lines.length === 0) continue;
+    if (lines.length === 0) continue;
 
-      const mon = {
-        name: "",
-        gender: null,
-        item: "",
-        ability: "",
-        shiny: false,
-        teraType: "",
-        evs: {},
-        ivs: {},
-        nature: "",
-        moves: []
-      };
+    const mon = {
+      name: "",
+      gender: null,
+      item: "",
+      ability: "",
+      shiny: false,
+      teraType: "",
+      evs: {},
+      ivs: {},
+      nature: "",
+      moves: []
+    };
 
-      const firstLine = lines[0];
-      const nameMatch = firstLine.match(/^(.+?)(?: \((M|F)\))? @ (.+)$/);
-      const fallbackMatch = firstLine.match(/^(.+?)(?: \((M|F)\))?$/);
+    const firstLine = lines[0];
+    const nameMatch = firstLine.match(/^(.+?)(?: \((M|F)\))? @ (.+)$/);
+    const fallbackMatch = firstLine.match(/^(.+?)(?: \((M|F)\))?$/);
 
-      if (nameMatch) {
-        mon.name = nameMatch[1].trim();
-        mon.gender = nameMatch[2] || null;
-        mon.item = nameMatch[3].trim();
-      } else if (fallbackMatch) {
-        mon.name = fallbackMatch[1].trim();
-        mon.gender = fallbackMatch[2] || null;
-        mon.item = "";
-      } else {
-        continue;
-      }
-
-      for (let i = 1; i < lines.length; i++) {
-        const line = lines[i];
-
-        if (line.startsWith("Ability:")) {
-          mon.ability = line.split(":")[1].trim();
-        } else if (line.startsWith("Shiny:")) {
-          mon.shiny = line.split(":")[1].trim().toLowerCase() === "yes";
-        } else if (line.startsWith("Tera Type:")) {
-          mon.teraType = line.split(":")[1].trim();
-        } else if (line.startsWith("EVs:")) {
-          const parts = line.slice(4).split("/");
-          for (const part of parts) {
-            const [val, stat] = part.trim().split(" ");
-            if (val && stat) mon.evs[stat.toLowerCase()] = parseInt(val);
-          }
-        } else if (line.startsWith("IVs:")) {
-          const parts = line.slice(4).split("/");
-          for (const part of parts) {
-            const [val, stat] = part.trim().split(" ");
-            if (val && stat) mon.ivs[stat.toLowerCase()] = parseInt(val);
-          }
-        } else if (line.endsWith("Nature")) {
-          mon.nature = line.replace("Nature", "").trim();
-        } else if (line.startsWith("- ")) {
-          mon.moves.push(line.slice(2).trim());
-        }
-      }
-
-      team.push(mon);
+    if (nameMatch) {
+      mon.name = nameMatch[1].trim();
+      mon.gender = nameMatch[2] || null;
+      mon.item = nameMatch[3].trim();
+    } else if (fallbackMatch) {
+      mon.name = fallbackMatch[1].trim();
+      mon.gender = fallbackMatch[2] || null;
+      mon.item = "";
+    } else {
+      continue;
     }
 
-    return team;
+    for (let i = 1; i < lines.length; i++) {
+      const line = lines[i];
+
+      if (line.startsWith("Ability:")) {
+        mon.ability = line.split(":")[1].trim();
+      } else if (line.startsWith("Shiny:")) {
+        mon.shiny = line.split(":")[1].trim().toLowerCase() === "yes";
+      } else if (line.startsWith("Tera Type:")) {
+        mon.teraType = line.split(":")[1].trim();
+      } else if (line.startsWith("EVs:")) {
+        const parts = line.slice(4).split("/");
+        for (const part of parts) {
+          const [val, stat] = part.trim().split(" ");
+          if (val && stat) mon.evs[stat.toLowerCase()] = parseInt(val);
+        }
+      } else if (line.startsWith("IVs:")) {
+        const parts = line.slice(4).split("/");
+        for (const part of parts) {
+          const [val, stat] = part.trim().split(" ");
+          if (val && stat) mon.ivs[stat.toLowerCase()] = parseInt(val);
+        }
+      } else if (line.endsWith("Nature")) {
+        mon.nature = line.replace("Nature", "").trim();
+      } else if (line.startsWith("- ")) {
+        mon.moves.push(line.slice(2).trim());
+      }
+    }
+
+    team.push(mon);
   }
+
+  return team;
+}
+
 
     async function tryImportFromPokepaste(url) {
     const match = url.match(/pokepast\.es\/([a-z0-9]+)/i);
