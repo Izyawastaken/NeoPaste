@@ -151,8 +151,6 @@ window.addEventListener('DOMContentLoaded', () => {
           mon.nature = line.replace("Nature", "").trim();
         } else if (line.startsWith("- ")) {
           mon.moves.push(line.slice(2).trim());
-        } else {
-          // Ignore Level:, Happiness:, etc.
         }
       }
 
@@ -167,12 +165,17 @@ window.addEventListener('DOMContentLoaded', () => {
     if (!match) return null;
 
     const pasteId = match[1];
-    const txtUrl = `https://pokepast.es/${pasteId}.txt`;
+    const proxyUrl = `https://neopasteworker.agastyawastaken.workers.dev/?url=https://pokepast.es/${pasteId}`;
 
     try {
-      const res = await fetch(txtUrl);
+      const res = await fetch(proxyUrl);
       if (!res.ok) throw new Error("Bad response");
-      return await res.text();
+
+      const html = await res.text();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+      const pre = doc.querySelector("pre");
+      return pre?.textContent || null;
     } catch (err) {
       console.error("Pokepaste import failed:", err);
       return null;
