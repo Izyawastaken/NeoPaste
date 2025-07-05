@@ -31,6 +31,7 @@ body.dark {
   padding: 2rem;
 }
 
+/* Typography */
 h1 {
   font-size: 2.5rem;
   color: var(--accent);
@@ -42,6 +43,7 @@ h1 {
   margin-bottom: 2rem;
 }
 
+/* Pokémon Card */
 .pokemon-card {
   background: var(--glass-light);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -89,6 +91,7 @@ body.dark .pokemon-card {
   padding-left: 0.5rem;
 }
 
+/* Stat Display */
 .stat-block {
   margin: 1rem 0;
 }
@@ -133,9 +136,10 @@ body.dark .stat-bar {
   width: 0;
   border-radius: 4px;
   transition: width 0.6s ease-in-out, background-color 0.4s ease;
-  background: #42a5f5; /* fallback default */
+  background: #42a5f5;
 }
 
+/* Stat fill colors */
 .stat-bar-fill.terrible   { background-color: #999; }
 .stat-bar-fill.very-low   { background-color: #d32f2f; }
 .stat-bar-fill.low        { background-color: #ef5350; }
@@ -144,6 +148,7 @@ body.dark .stat-bar {
 .stat-bar-fill.very-high  { background-color: #42a5f5; }
 .stat-bar-fill.ultra      { background-color: #00e676; }
 
+/* Stat Modifiers */
 .stat-modifier {
   margin-left: 0.5rem;
   font-weight: bold;
@@ -159,23 +164,41 @@ body.dark .stat-bar {
   font-size: 0.85rem;
 }
 
-/* Buttons */
-button {
-  background: none;
-  border: 1px solid #666;
-  color: inherit;
-  font-size: 0.85rem;
-  padding: 0.4rem 0.8rem;
-  border-radius: 8px;
-  position: fixed;
-  top: 1rem;
-  right: 1rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
+/* Footer Buttons */
+.footer-buttons {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1.5rem 0;
 }
 
-button:hover {
-  background: rgba(255,255,255,0.1);
+/* Fancy Modern Buttons */
+.fancy-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  background: var(--glass-light);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.15s ease;
+}
+
+body.dark .fancy-btn {
+  background: var(--glass-dark);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.fancy-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+body.dark .fancy-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
 }
 
 /* Back Link */
@@ -211,7 +234,7 @@ button:hover {
   }
 }
 
-/* Vertical Layout */
+/* Layout Toggle (Vertical Layout) */
 .vertical-layout {
   display: flex;
   flex-direction: column;
@@ -220,6 +243,5 @@ button:hover {
 }
 
 .layout-toggle-btn {
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
+  margin: 1rem auto 1.5rem;
 }
