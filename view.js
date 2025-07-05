@@ -16,11 +16,7 @@ const natureMods = {
 };
 
 function toShowdownId(name) {
-  return name
-    .toLowerCase()
-    .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .replace(/[^a-z0-9]/g, "");
+  return name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, "");
 }
 
 const params = new URLSearchParams(window.location.search);
@@ -32,11 +28,7 @@ if (!pasteId) {
 }
 
 async function loadPaste() {
-  const { data, error } = await client
-    .from('pastes')
-    .select()
-    .eq('id', pasteId)
-    .single();
+  const { data, error } = await client.from('pastes').select().eq('id', pasteId).single();
 
   if (error || !data) {
     document.getElementById('paste-title').textContent = "Paste Not Found";
@@ -82,28 +74,22 @@ async function loadPaste() {
   animateStatBars();
 }
 
-// Layout toggle button handler
+// Animation + Layout Toggle UI
 document.getElementById("layoutToggle")?.addEventListener("click", () => {
   const container = document.getElementById("team-container");
   container.classList.toggle("vertical-layout");
 
-  const btn = document.getElementById("layoutToggle");
   const isVertical = container.classList.contains("vertical-layout");
-  btn.textContent = isVertical ? "🔀 Grid Layout" : "🔀 Vertical Layout";
+  document.getElementById("layoutToggle").textContent = isVertical ? "Grid Layout" : "Vertical Layout";
 });
 
+
 function formatEVs(evs) {
-  return Object.entries(evs || {})
-    .filter(([_, v]) => v > 0)
-    .map(([k, v]) => `${v} ${k.toUpperCase()}`)
-    .join(" / ") || "—";
+  return Object.entries(evs || {}).filter(([_, v]) => v > 0).map(([k, v]) => `${v} ${k.toUpperCase()}`).join(" / ") || "—";
 }
 
 function formatIVs(ivs) {
-  return Object.entries(ivs || {})
-    .filter(([_, v]) => v < 31)
-    .map(([k, v]) => `${v} ${k.toUpperCase()}`)
-    .join(" / ") || "Default (31)";
+  return Object.entries(ivs || {}).filter(([_, v]) => v < 31).map(([k, v]) => `${v} ${k.toUpperCase()}`).join(" / ") || "Default (31)";
 }
 
 async function renderStatBlock(pokemon) {
@@ -114,27 +100,29 @@ async function renderStatBlock(pokemon) {
     const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${toShowdownId(pokemon.name)}`);
     const data = await res.json();
 
-    const lines = data.stats.map(statObj => {
-      const rawName = statObj.stat.name;
-      const name = statNameMap[rawName] || rawName.toUpperCase();
-      const value = statObj.base_stat;
-      const key = name.toLowerCase();
-      const isPlus = key === mods.up;
-      const isMinus = key === mods.down;
+    return `
+      <div class="stat-block">
+        ${data.stats.map(statObj => {
+          const rawName = statObj.stat.name;
+          const name = statNameMap[rawName] || rawName.toUpperCase();
+          const value = statObj.base_stat;
+          const key = name.toLowerCase();
+          const isPlus = key === mods.up;
+          const isMinus = key === mods.down;
 
-      return `
-        <div class="stat-line">
-          <span class="stat-label ${key}">${name}</span>
-          <div class="stat-bar">
-            <div class="stat-bar-fill" data-base="${value}"></div>
-          </div>
-          ${isPlus ? '<span class="stat-modifier plus">+</span>' : isMinus ? '<span class="stat-modifier minus">−</span>' : ''}
-          <span class="stat-value">${value}</span>
-        </div>
-      `;
-    });
-
-    return `<div class="stat-block">${lines.join("")}</div>`;
+          return `
+            <div class="stat-line">
+              <span class="stat-label ${key}">${name}</span>
+              <div class="stat-bar">
+                <div class="stat-bar-fill" data-base="${value}"></div>
+              </div>
+              ${isPlus ? '<span class="stat-modifier plus">+</span>' : isMinus ? '<span class="stat-modifier minus">−</span>' : ''}
+              <span class="stat-value">${value}</span>
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
   } catch {
     return `<p>⚠️ Failed to load stats for ${pokemon.name}</p>`;
   }
@@ -189,21 +177,10 @@ function parsePaste(text) {
       if (line.startsWith("Ability:")) mon.ability = line.split(":")[1].trim();
       else if (line.startsWith("Shiny:")) mon.shiny = line.split(":")[1].trim().toLowerCase() === "yes";
       else if (line.startsWith("Tera Type:")) mon.teraType = line.split(":")[1].trim();
-      else if (line.startsWith("EVs:")) {
-        line.slice(4).split("/").forEach(p => {
-          const [v, s] = p.trim().split(" ");
-          mon.evs[s.toLowerCase()] = parseInt(v);
-        });
-      } else if (line.startsWith("IVs:")) {
-        line.slice(4).split("/").forEach(p => {
-          const [v, s] = p.trim().split(" ");
-          mon.ivs[s.toLowerCase()] = parseInt(v);
-        });
-      } else if (line.endsWith("Nature")) {
-        mon.nature = line.replace("Nature", "").trim();
-      } else if (line.startsWith("- ")) {
-        mon.moves.push(line.slice(2).trim());
-      }
+      else if (line.startsWith("EVs:")) line.slice(4).split("/").forEach(p => { const [v, s] = p.trim().split(" "); mon.evs[s.toLowerCase()] = parseInt(v); });
+      else if (line.startsWith("IVs:")) line.slice(4).split("/").forEach(p => { const [v, s] = p.trim().split(" "); mon.ivs[s.toLowerCase()] = parseInt(v); });
+      else if (line.endsWith("Nature")) mon.nature = line.replace("Nature", "").trim();
+      else if (line.startsWith("- ")) mon.moves.push(line.slice(2).trim());
     }
 
     team.push(mon);
@@ -224,5 +201,4 @@ document.getElementById('copyBtn')?.addEventListener('click', async () => {
   }
 });
 
-// Kick off paste loading
 loadPaste();
