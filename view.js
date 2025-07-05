@@ -60,7 +60,9 @@ async function loadPaste() {
     const card = document.createElement('div');
     card.className = 'pokemon-card';
 
-    const spriteUrl = `https://play.pokemonshowdown.com/sprites/gen9${pokemon.shiny ? '/shiny' : ''}/${toShowdownId(pokemon.name)}.png`;
+    const base = "https://play.pokemonshowdown.com/sprites/";
+    const spriteUrl = `${base}dex${pokemon.shiny ? "-shiny" : ""}/${toShowdownId(pokemon.name)}.png`;
+
     const statBlockHTML = await renderStatBlock(pokemon);
 
     card.innerHTML = `
