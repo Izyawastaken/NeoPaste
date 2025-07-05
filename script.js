@@ -169,31 +169,23 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     async function tryImportFromPokepaste(url) {
-    const match = url.match(/pokepast\.es\/([a-z0-9]+)/i);
-    if (!match) return null;
+  const match = url.match(/pokepast\.es\/([a-z0-9]+)/i);
+  if (!match) return null;
 
-    const pasteId = match[1];
-    const proxyUrl = `https://neopasteworker.agastyawastaken.workers.dev/?url=https://pokepast.es/${pasteId}`;
+  const pasteId = match[1];
+  const proxyUrl = `https://neopasteworker.agastyawastaken.workers.dev/?url=https://pokepast.es/${pasteId}.txt`;
 
-    try {
-      const res = await fetch(proxyUrl);
-      if (!res.ok) throw new Error("Bad response");
+  try {
+    const res = await fetch(proxyUrl);
+    if (!res.ok) throw new Error("Bad response");
 
-      const html = await res.text();
-
-      // Use DOMParser to extract <pre> content (which contains the full team)
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, "text/html");
-      const pre = doc.querySelector("pre");
-
-      if (!pre) return null;
-
-      // Extract text content with preserved line breaks
-      return pre.textContent.replace(/\r?\n/g, '\n');
-    } catch (err) {
-      console.error("Pokepaste import failed:", err);
-      return null;
-    }
+    const text = await res.text();
+    return text.trim();
+  } catch (err) {
+    console.error("Pokepaste import failed:", err);
+    return null;
   }
+}
+
 
 });
