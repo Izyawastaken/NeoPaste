@@ -60,30 +60,25 @@
     });
 
     function showLink(id) {
-      let container = document.getElementById("paste-link");
-      if (!container) {
-        container = document.createElement("div");
-        container.id = "paste-link";
-        document.querySelector(".container").appendChild(container);
-      } else {
-        container.innerHTML = "";
-      }
+  const container = document.getElementById("paste-link");
+  container.innerHTML = `
+    <div class="paste-output">
+      <p><strong>Your Paste Link:</strong></p>
+      <a class="paste-url" href="view.html?id=${id}" target="_blank"> View Paste</a>
+      <button class="copy-link-btn" data-link="view.html?id=${id}">Copy Link</button>
+    </div>
+  `;
 
-      const linkBox = document.createElement("div");
-      linkBox.style.marginTop = "1rem";
-      linkBox.style.padding = "1rem";
-      linkBox.style.background = "rgba(255,255,255,0.05)";
-      linkBox.style.border = "1px solid rgba(255,255,255,0.1)";
-      linkBox.style.borderRadius = "12px";
+  const copyBtn = container.querySelector(".copy-link-btn");
+  copyBtn.addEventListener("click", () => {
+    const url = copyBtn.dataset.link;
+    navigator.clipboard.writeText(location.origin + "/" + url).then(() => {
+      copyBtn.textContent = "✅ Copied!";
+      setTimeout(() => (copyBtn.textContent = "Copy Link"), 1500);
+    });
+  });
+}
 
-      const fakeURL = `view.html?id=${id}`;
-      linkBox.innerHTML = `
-        <strong>Your paste link:</strong><br>
-        <a href="${fakeURL}" target="_blank">${fakeURL}</a>
-      `;
-
-      container.appendChild(linkBox);
-    }
 
   function parsePaste(text) {
     const team = [];
