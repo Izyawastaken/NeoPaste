@@ -208,5 +208,17 @@ function parsePaste(text) {
 
   return team;
 }
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  const pasteText = document.getElementById('pasteDisplay')?.textContent || '';
+
+  try {
+    await navigator.clipboard.writeText(pasteText.trim());
+    alert("Copied to clipboard!");
+  } catch (err) {
+    console.error("Copy failed", err);
+    alert("Failed to copy!");
+  }
+});
+
 
 loadPaste();
