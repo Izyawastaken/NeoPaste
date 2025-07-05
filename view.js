@@ -51,7 +51,15 @@ async function loadPaste() {
     const card = document.createElement('div');
     card.className = 'pokemon-card';
 
-    const spriteUrl = `https://play.pokemonshowdown.com/sprites/gen9${pokemon.shiny ? '/shiny' : ''}/${pokemon.name.toLowerCase().replace(/[^a-z0-9]/g, '')}.png`;
+   const spriteUrl = `https://play.pokemonshowdown.com/sprites/gen9${pokemon.shiny ? '/shiny' : ''}/${toShowdownId(pokemon.name)}.png`;
+
+function toShowdownId(name) {
+  return name
+    .toLowerCase()
+    .normalize("NFD")                   // break accented chars
+    .replace(/[\u0300-\u036f]/g, "")   // remove accents
+    .replace(/[^a-z0-9]/g, "");        // remove non-alphanum
+}
 
     const statBlockHTML = await renderStatBlock(pokemon);
 
