@@ -189,7 +189,7 @@ window.addEventListener('DOMContentLoaded', () => {
       if (!pre) return null;
 
       // Extract text content with preserved line breaks
-      return pre.innerText || pre.textContent || null;
+      return pre.textContent.replace(/\r?\n/g, '\n');
     } catch (err) {
       console.error("Pokepaste import failed:", err);
       return null;
