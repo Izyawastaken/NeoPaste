@@ -183,9 +183,9 @@
 
     const text = await res.text();
 
-    // You can optionally guard against HTML fallback errors here:
+    // Simple guard against error page HTML being returned
     if (text.toLowerCase().includes("<html")) {
-      throw new Error("Returned HTML instead of paste");
+      throw new Error("Received HTML instead of paste content");
     }
 
     return text.trim();
@@ -194,6 +194,7 @@
     return null;
   }
 }
+
 
 
   });
