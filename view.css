@@ -212,3 +212,19 @@ button:hover {
   background-color: var(--accent-dark, #303f9f);
   transform: translateY(-2px);
 }
+.back-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--accent, #3f51b5);
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.back-link:hover {
+  background-color: var(--accent-dark, #303f9f);
+  transform: translateY(-2px);
+}
