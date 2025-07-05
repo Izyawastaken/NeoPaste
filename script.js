@@ -92,7 +92,8 @@
     text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 
     // Split by two or more newlines (which may contain whitespace)
-    const blocks = text.trim().split(/\n(?=\S.*?@ )/g);
+    const blocks = text.trim().split(/\n{2,}(?=\S)/g);
+
 
 
     for (const block of blocks) {
