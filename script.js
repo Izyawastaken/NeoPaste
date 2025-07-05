@@ -1,9 +1,18 @@
-// script.js
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('pasteForm');
   const contentArea = document.getElementById('content');
+  const layoutToggle = document.getElementById('layoutToggle');
 
-  // Pokepaste import on paste
+  // Handle layout toggle
+  layoutToggle.addEventListener('click', () => {
+    document.body.classList.toggle('vertical');
+    layoutToggle.classList.toggle('active');
+    layoutToggle.textContent = document.body.classList.contains('vertical')
+      ? '🔄 Horizontal Layout'
+      : '📱 Vertical Layout';
+  });
+
+  // Import from Pokepaste link on paste
   contentArea.addEventListener('paste', async (e) => {
     const paste = (e.clipboardData || window.clipboardData).getData('text');
     if (paste.includes('pokepast.es')) {
@@ -17,7 +26,7 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Handle form submission
+  // Form submission handler
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
@@ -60,10 +69,10 @@ window.addEventListener('DOMContentLoaded', () => {
     showLink(id);
   });
 
-  // Show generated link output
+  // Link display handler
   function showLink(id) {
     const container = document.getElementById("paste-link");
-    const fullURL = `${location.origin}/view.html?id=${id}`;
+    const fullURL = `${location.origin}/NeoPaste/view.html?id=${id}`;
 
     container.innerHTML = `
       <div class="paste-output">
@@ -89,11 +98,10 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    // Smooth scroll to the output
     container.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
-  // Pokepaste import fetch
+  // Fetch from Pokepaste
   async function tryImportFromPokepaste(url) {
     const match = url.match(/pokepast\.es\/([a-z0-9]+)/i);
     if (!match) return null;
@@ -118,11 +126,10 @@ window.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Paste text parser
+  // Parser
   function parsePaste(text) {
     const team = [];
 
-    // Normalize newlines
     text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
     const blocks = text.trim().split(/\n{2,}(?=\S)/g);
 
