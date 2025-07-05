@@ -19,21 +19,21 @@ const natureMods = {
   lonely: { up: "atk", down: "def" }
 };
 
+// ✅ Define BEFORE usage
+function toShowdownId(name) {
+  return name
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]/g, "");
+}
+
 const params = new URLSearchParams(window.location.search);
 const pasteId = params.get('id');
 
 if (!pasteId) {
   document.getElementById('paste-title').textContent = "Invalid Paste Link";
   throw new Error("Missing paste ID in URL");
-}
-
-// Helper to generate proper Showdown sprite ID
-function toShowdownId(name) {
-  return name
-    .toLowerCase()
-    .normalize("NFD")                   // break accented chars
-    .replace(/[\u0300-\u036f]/g, "")   // remove accents
-    .replace(/[^a-z0-9]/g, "");        // remove non-alphanum
 }
 
 async function loadPaste() {
@@ -60,8 +60,7 @@ async function loadPaste() {
     const card = document.createElement('div');
     card.className = 'pokemon-card';
 
-    const base = "https://play.pokemonshowdown.com/sprites/";
-    const spriteUrl = `${base}dex${pokemon.shiny ? "-shiny" : ""}/${toShowdownId(pokemon.name)}.png`;
+    const spriteUrl = `https://play.pokemonshowdown.com/sprites/dex${pokemon.shiny ? "-shiny" : ""}/${toShowdownId(pokemon.name)}.png`;
 
     const statBlockHTML = await renderStatBlock(pokemon);
 
