@@ -87,11 +87,16 @@ window.addEventListener('DOMContentLoaded', () => {
 
  function parsePaste(text) {
   const team = [];
-  const blocks = text.trim().split(/\n\s*\n/);
+  
+  // Normalize all line endings to \n first
+  text = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+  // Split by two or more newlines (which may contain whitespace)
+  const blocks = text.trim().split(/\n{2,}/);
 
   for (const block of blocks) {
     const lines = block
-      .split(/\r?\n/)
+      .split("\n")
       .map(line => line.trim())
       .filter(Boolean);
 
@@ -159,6 +164,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   return team;
 }
+
 
 
     async function tryImportFromPokepaste(url) {
