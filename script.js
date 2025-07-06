@@ -1,6 +1,8 @@
 window.addEventListener('DOMContentLoaded', () => {
   const form = document.getElementById('pasteForm');
   const contentArea = document.getElementById('content');
+  const linkContainer = document.getElementById("paste-link");
+  let lastGeneratedContentHash = null;
 
   // Handle Pokepaste import on paste
   contentArea.addEventListener('paste', async (e) => {
@@ -35,6 +37,13 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    // Hash content to detect duplicates
+    const currentHash = await hashString(content);
+    if (currentHash === lastGeneratedContentHash) {
+      alert("⚠️ This team was already pasted. Please modify it first.");
+      return;
+    }
+
     let parsedTeam;
     try {
       parsedTeam = parsePaste(content);
@@ -56,27 +65,26 @@ window.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
+    lastGeneratedContentHash = currentHash;
     showLink(id);
   });
 
   // Show generated link
   function showLink(id) {
-    const container = document.getElementById("paste-link");
-
-    // ✅ Fixed GitHub Pages link
     const fullURL = `https://izyawastaken.github.io/NeoPaste/view.html?id=${id}`;
 
-    container.innerHTML = `
+    linkContainer.innerHTML = `
       <div class="paste-output fade-in">
         <p><strong>Your Paste Link:</strong></p>
         <div class="link-buttons">
           <a class="paste-url" href="${fullURL}" target="_blank">🔗 View Paste</a>
           <button class="copy-link-btn" data-link="${fullURL}">📋 Copy Link</button>
+          <span class="link-status" style="margin-left: 10px; color: green;">✅ Link updated!</span>
         </div>
       </div>
     `;
 
-    const copyBtn = container.querySelector(".copy-link-btn");
+    const copyBtn = linkContainer.querySelector(".copy-link-btn");
     copyBtn.addEventListener("click", () => {
       const url = copyBtn.dataset.link;
       navigator.clipboard.writeText(url).then(() => {
@@ -92,7 +100,7 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-    container.scrollIntoView({ behavior: "smooth", block: "center" });
+    linkContainer.scrollIntoView({ behavior: "smooth", block: "center" });
   }
 
   // Pokepaste import fetch
@@ -196,5 +204,13 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 
     return team;
+  }
+
+  // Utility: hash string using SHA-256
+  async function hashString(str) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(str);
+    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+    return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
   }
 });
