@@ -74,9 +74,9 @@ async function loadPaste() {
     card.innerHTML = `
       <h2>${pokemon.nickname ? `${pokemon.nickname} (${pokemon.name})` : pokemon.name} <small>@ ${pokemon.item || "None"}</small></h2>
       <img src="${spriteUrl}" alt="${pokemon.name}" />
-      <p><strong>Ability:</strong> ${pokemon.ability || "—"}</p>
-      <p><strong>Tera Type:</strong> ${pokemon.teraType || "—"}</p>
-      <p><strong>Nature:</strong> ${pokemon.nature || "—"}</p>
+      <p><strong>Ability:</strong> <span class="info-pill">${pokemon.ability || "—"}</span></p>
+      <p><strong>Tera Type:</strong> <span class="info-pill">${pokemon.teraType || "—"}</span></p>
+      <p><strong>Nature:</strong> <span class="info-pill">${pokemon.nature || "—"}</span></p>
       <p><strong>EVs:</strong> ${formatEVs(pokemon.evs)}</p>
       <p><strong>IVs:</strong> ${formatIVs(pokemon.ivs)}</p>
       ${statBlockHTML}
@@ -95,15 +95,15 @@ async function loadPaste() {
 function formatEVs(evs) {
   const entries = Object.entries(evs || {})
     .filter(([_, v]) => v > 0)
-    .map(([k, v]) => `${v} ${k.toUpperCase()}`);
-  return entries.length ? entries.join(" / ") : "—";
+    .map(([k, v]) => `<span class="info-pill">${v} ${k.toUpperCase()}</span>`);
+  return entries.length ? entries.join(" ") : '<span class="info-pill">—</span>';
 }
 
 function formatIVs(ivs) {
   const entries = Object.entries(ivs || {})
     .filter(([_, v]) => v < 31)
-    .map(([k, v]) => `${v} ${k.toUpperCase()}`);
-  return entries.length ? entries.join(" / ") : "Default (31)";
+    .map(([k, v]) => `<span class="info-pill">${v} ${k.toUpperCase()}</span>`);
+  return entries.length ? entries.join(" ") : '<span class="info-pill">Default (31)</span>';
 }
 
 async function renderStatBlock(pokemon) {
