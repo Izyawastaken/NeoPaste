@@ -144,7 +144,7 @@ async function renderStatBlock(pokemon) {
 async function renderMovePills(moves) {
   const pills = await Promise.all(
     moves.map(async (move) => {
-      const moveId = toShowdownId(move);
+      const moveId = move.toLowerCase().replace(/[^a-z0-9]+/g, "-");
       try {
         const res = await fetch(`https://pokeapi.co/api/v2/move/${moveId}`);
         const data = await res.json();
