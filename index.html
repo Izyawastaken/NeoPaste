@@ -5,6 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>NeoPaste</title>
   <link rel="stylesheet" href="main.css" />
+  <style>
+    .fade-in {
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .link-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .copy-link-btn.copied {
+      background-color: #4caf50;
+      color: white;
+      transition: background-color 0.3s ease;
+    }
+
+    .link-status {
+      font-size: 0.95em;
+      color: #4caf50;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -16,7 +45,7 @@
     <form id="pasteForm">
       <input type="text" id="title" placeholder="Paste Title" />
       <input type="text" id="author" placeholder="Author (optional)" />
-      <textarea id="content" placeholder="Paste your team here..." rows="20"></textarea>
+      <textarea id="content" placeholder="Paste your team here..." rows="20" spellcheck="false"></textarea>
       <button type="submit">Generate Link</button>
     </form>
 
