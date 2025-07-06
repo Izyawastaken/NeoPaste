@@ -310,3 +310,31 @@ body.dark .fancy-btn:hover {
 .type-steel    { background: #B8B8D0; color: black; }
 .type-fairy    { background: #EE99AC; color: black; }
 .type-normal   { background: #A8A878; }
+
+.move-pill-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(120px, 1fr));
+  gap: 0.75rem 1.25rem;
+  margin-top: 0.5rem;
+  max-width: 320px;
+}
+
+.move-pill {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-weight: 600;
+  color: white;
+  margin: 4px 0;
+  font-size: 0.9rem;
+  backdrop-filter: blur(6px);
+  text-align: center;
+  width: 100%;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-transform: capitalize;
+}
+.move-pill:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 8px var(--accent, #fff);
+}
