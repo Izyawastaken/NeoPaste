@@ -170,34 +170,32 @@ function parsePaste(text) {
     };
 
     const firstLine = lines[0];
-    let match = firstLine.match(/^(.+?) \(([^)]+)\)(?: \((M|F)\))? @ (.+)$/);
-    if (match) {
-      mon.nickname = match[1].trim();
-      mon.name = match[2].trim();
-      mon.gender = match[3] || null;
-      mon.item = match[4].trim();
-    } else {
-      match = firstLine.match(/^(.+?) \((M|F)\) @ (.+)$/);
-      if (match) {
-        mon.name = match[1].trim();
-        mon.gender = match[2];
-        mon.item = match[3].trim();
-      } else {
-        match = firstLine.match(/^(.+?) @ (.+)$/);
-        if (match) {
-          mon.name = match[1].trim();
-          mon.item = match[2].trim();
-        } else {
-          match = firstLine.match(/^(.+?)$/);
-          if (match) {
-            mon.name = match[1].trim();
-          } else {
-            continue;
-          }
-        }
-      }
+    let line = firstLine.trim();
+
+    // Gender (optional)
+    const genderMatch = line.match(/\((M|F)\) @/);
+    if (genderMatch) {
+      mon.gender = genderMatch[1];
+      line = line.replace(` (${mon.gender})`, "");
     }
 
+    // Item (required)
+    const itemMatch = line.match(/@ (.+)$/);
+    if (itemMatch) {
+      mon.item = itemMatch[1].trim();
+      line = line.replace(/@ .+$/, "").trim();
+    }
+
+    // Species (assume it's in the last parentheses group)
+    const speciesMatch = line.match(/^(.*)\(([^()]+)\)$/);
+    if (speciesMatch) {
+      mon.nickname = speciesMatch[1].trim();
+      mon.name = speciesMatch[2].trim();
+    } else {
+      mon.name = line.trim();
+    }
+
+    // Parse rest
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i];
       if (line.startsWith("Ability:")) mon.ability = line.split(":")[1].trim();
@@ -250,7 +248,6 @@ layoutToggleBtn.addEventListener('click', () => {
     next === 'horizontal' ? '🔳 Grid Layout' : '➡️ Horizontal Layout';
 });
 
-// Copy button
 document.getElementById('copyBtn').addEventListener('click', async () => {
   const text = window.rawPasteText || '';
   try {
