@@ -1,4 +1,48 @@
-// Make sure config.js is loaded BEFORE this file!
+document.addEventListener('DOMContentLoaded', () => {
+  // === DOM ELEMENTS ===
+  const layoutToggleBtn = document.getElementById('layoutToggle');
+  const teamContainer = document.getElementById('team-container');
+
+  // === Layout Toggle (only horizontal ↔ grid) ===
+  if (!teamContainer.dataset.layout) {
+    teamContainer.dataset.layout = 'horizontal';
+    teamContainer.classList.add('horizontal-layout');
+    layoutToggleBtn.textContent = '🔳 Grid Layout';
+  }
+
+  layoutToggleBtn.addEventListener('click', () => {
+    const current = teamContainer.dataset.layout;
+    const next = current === 'horizontal' ? 'grid' : 'horizontal';
+
+    teamContainer.classList.remove('horizontal-layout', 'grid-layout');
+    teamContainer.dataset.layout = next;
+    teamContainer.classList.add(`${next}-layout`);
+
+    layoutToggleBtn.textContent =
+      next === 'horizontal' ? '🔳 Grid Layout' : '➡️ Horizontal Layout';
+  });
+
+  // === Copy to Clipboard ===
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const text = window.rawPasteText || '';
+    try {
+      await navigator.clipboard.writeText(text.trim());
+      alert("✅ Copied to clipboard!");
+    } catch (err) {
+      console.error("❌ Copy failed", err);
+      alert("Failed to copy!");
+    }
+  });
+
+  // === Load Paste ===
+  loadPaste();
+});
+
+// === All your logic functions (unchanged) go here ===
+// They should NOT be inside DOMContentLoaded
+
+// KEEP THESE OUTSIDE `DOMContentLoaded` ↓↓↓
+
 const statNameMap = {
   hp: "HP", attack: "Atk", defense: "Def",
   "special-attack": "SpA", "special-defense": "SpD", speed: "Spe"
@@ -56,7 +100,7 @@ async function loadPaste() {
 
   const team = parsePaste(content);
   const teamContainer = document.getElementById('team-container');
-  teamContainer.innerHTML = ""; // clear existing content if any
+  teamContainer.innerHTML = "";
 
   for (const pokemon of team) {
     const card = document.createElement('div');
@@ -223,42 +267,3 @@ function parsePaste(text) {
 
   return team;
 }
-
-// ✅ Layout Toggle Logic — only between horizontal & grid
-document.addEventListener('DOMContentLoaded', () => {
-  const layoutToggleBtn = document.getElementById('layoutToggle');
-  const teamContainer = document.getElementById('team-container');
-
-  if (!teamContainer.dataset.layout) {
-    teamContainer.dataset.layout = 'horizontal';
-    teamContainer.classList.add('horizontal-layout');
-    layoutToggleBtn.textContent = '🔳 Grid Layout';
-  }
-
-  layoutToggleBtn.addEventListener('click', () => {
-    const current = teamContainer.dataset.layout;
-    const next = current === 'horizontal' ? 'grid' : 'horizontal';
-
-    teamContainer.classList.remove('horizontal-layout', 'grid-layout');
-    teamContainer.dataset.layout = next;
-    teamContainer.classList.add(`${next}-layout`);
-
-    layoutToggleBtn.textContent =
-      next === 'horizontal' ? '🔳 Grid Layout' : '➡️ Horizontal Layout';
-  });
-
-  // ✅ Copy to Clipboard
-  document.getElementById('copyBtn').addEventListener('click', async () => {
-    const text = window.rawPasteText || '';
-    try {
-      await navigator.clipboard.writeText(text.trim());
-      alert("✅ Copied to clipboard!");
-    } catch (err) {
-      console.error("❌ Copy failed", err);
-      alert("Failed to copy!");
-    }
-  });
-
-  // Load content
-  loadPaste();
-});
