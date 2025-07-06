@@ -81,8 +81,6 @@ h1 {
   position: relative;
   overflow: hidden;
   transition: background 0.3s ease;
-  width: 100%;
-  max-width: 100%;
 }
 
 body.dark .pokemon-card {
