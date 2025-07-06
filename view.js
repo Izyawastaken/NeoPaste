@@ -166,7 +166,6 @@ function parsePaste(text) {
 
     const firstLine = lines[0];
 
-    // Try to match: Nickname (Species) (Gender) @ Item
     let match = firstLine.match(/^(.+?) \(([^)]+)\)(?: \((M|F)\))? @ (.+)$/);
     if (match) {
       mon.nickname = match[1].trim();
@@ -225,42 +224,41 @@ function parsePaste(text) {
   return team;
 }
 
-// ✅ Layout Toggle Logic
-const layoutToggleBtn = document.getElementById('layoutToggle');
-const teamContainer = document.getElementById('team-container');
+// ✅ Layout Toggle Logic — only between horizontal & grid
+document.addEventListener('DOMContentLoaded', () => {
+  const layoutToggleBtn = document.getElementById('layoutToggle');
+  const teamContainer = document.getElementById('team-container');
 
-layoutToggleBtn.addEventListener('click', () => {
-  teamContainer.classList.remove('horizontal-layout', 'grid-layout', 'vertical-layout');
-
-  const current = teamContainer.dataset.layout || 'horizontal';
-
-  let next = '';
-  if (current === 'horizontal') {
-    next = 'grid';
-    layoutToggleBtn.textContent = '🔽 Vertical Layout';
-  } else if (current === 'grid') {
-    next = 'vertical';
-    layoutToggleBtn.textContent = '➡️ Horizontal Layout';
-  } else {
-    next = 'horizontal';
+  if (!teamContainer.dataset.layout) {
+    teamContainer.dataset.layout = 'horizontal';
+    teamContainer.classList.add('horizontal-layout');
     layoutToggleBtn.textContent = '🔳 Grid Layout';
   }
 
-  teamContainer.dataset.layout = next;
-  teamContainer.classList.add(`${next}-layout`);
-});
+  layoutToggleBtn.addEventListener('click', () => {
+    const current = teamContainer.dataset.layout;
+    const next = current === 'horizontal' ? 'grid' : 'horizontal';
 
-// ✅ Copy to Clipboard
-document.getElementById('copyBtn').addEventListener('click', async () => {
-  const text = window.rawPasteText || '';
-  try {
-    await navigator.clipboard.writeText(text.trim());
-    alert("✅ Copied to clipboard!");
-  } catch (err) {
-    console.error("❌ Copy failed", err);
-    alert("Failed to copy!");
-  }
-});
+    teamContainer.classList.remove('horizontal-layout', 'grid-layout');
+    teamContainer.dataset.layout = next;
+    teamContainer.classList.add(`${next}-layout`);
 
-// Load content
-loadPaste();
+    layoutToggleBtn.textContent =
+      next === 'horizontal' ? '🔳 Grid Layout' : '➡️ Horizontal Layout';
+  });
+
+  // ✅ Copy to Clipboard
+  document.getElementById('copyBtn').addEventListener('click', async () => {
+    const text = window.rawPasteText || '';
+    try {
+      await navigator.clipboard.writeText(text.trim());
+      alert("✅ Copied to clipboard!");
+    } catch (err) {
+      console.error("❌ Copy failed", err);
+      alert("Failed to copy!");
+    }
+  });
+
+  // Load content
+  loadPaste();
+});
