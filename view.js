@@ -69,6 +69,7 @@ async function loadPaste() {
 
     const spriteUrl = `https://play.pokemonshowdown.com/sprites/dex${pokemon.shiny ? "-shiny" : ""}/${toShowdownId(pokemon.name)}.png`;
     const statBlockHTML = await renderStatBlock(pokemon);
+    const movesHTML = await renderMovePills(pokemon.moves);
 
     card.innerHTML = `
       <h2>${pokemon.nickname ? `${pokemon.nickname} (${pokemon.name})` : pokemon.name} <small>@ ${pokemon.item || "None"}</small></h2>
@@ -81,7 +82,7 @@ async function loadPaste() {
       ${statBlockHTML}
       <div class="moves">
         <strong>Moves:</strong>
-        <ul>${pokemon.moves.map(m => `<li>${m}</li>`).join("")}</ul>
+        <div class="move-pill-container">${movesHTML}</div>
       </div>
     `;
 
@@ -140,6 +141,24 @@ async function renderStatBlock(pokemon) {
   }
 }
 
+async function renderMovePills(moves) {
+  const pills = await Promise.all(
+    moves.map(async (move) => {
+      const moveId = toShowdownId(move);
+      try {
+        const res = await fetch(`https://pokeapi.co/api/v2/move/${moveId}`);
+        const data = await res.json();
+        const type = data.type.name.toLowerCase();
+        const label = move.replace(/-/g, ' ');
+        return `<span class="move-pill type-${type}">${label}</span>`;
+      } catch {
+        return `<span class="move-pill type-normal">${move}</span>`;
+      }
+    })
+  );
+  return pills.join("");
+}
+
 function animateStatBars() {
   document.querySelectorAll(".stat-bar-fill").forEach(bar => {
     const base = parseInt(bar.dataset.base);
@@ -172,41 +191,34 @@ function parsePaste(text) {
     const firstLine = lines[0];
     let namePart = "", itemPart = "";
 
-    // Split at ' @ ' to separate item
     const atSplit = firstLine.split(" @ ");
     if (atSplit.length === 2) {
       namePart = atSplit[0].trim();
       itemPart = atSplit[1].trim();
       mon.item = itemPart;
     } else {
-      namePart = firstLine.trim(); // fallback
+      namePart = firstLine.trim();
     }
 
-    // Count number of (...) groups
     const parenMatches = [...namePart.matchAll(/\(([^)]+)\)/g)];
 
     if (parenMatches.length === 2) {
-      // Nickname (Species) (Gender)
       mon.nickname = namePart.split("(")[0].trim();
       mon.name = parenMatches[0][1];
       mon.gender = parenMatches[1][1];
     } else if (parenMatches.length === 1) {
       const parenValue = parenMatches[0][1];
       if (parenValue === "F" || parenValue === "M") {
-        // Species (Gender)
         mon.name = namePart.replace(/\s*\((M|F)\)/, "").trim();
         mon.gender = parenValue;
       } else {
-        // Nickname (Species)
         mon.nickname = namePart.split("(")[0].trim();
         mon.name = parenValue;
       }
     } else {
-      // Just species name
       mon.name = namePart;
     }
 
-    // Parse rest of the block
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i];
       if (line.startsWith("Ability:")) mon.ability = line.split(":")[1].trim();
@@ -236,7 +248,6 @@ function parsePaste(text) {
 
   return team;
 }
-
 
 // Layout toggle and clipboard setup
 const layoutToggleBtn = document.getElementById('layoutToggle');
