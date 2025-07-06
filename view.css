@@ -59,7 +59,7 @@ h1 {
   align-items: stretch;
 }
 
-/* Pokémon Card */
+/* Base style */
 .pokemon-card {
   background: var(--glass-light);
   border: 1px solid rgba(255, 255, 255, 0.1);
@@ -70,8 +70,28 @@ h1 {
   position: relative;
   overflow: hidden;
   transition: background 0.3s ease;
-  flex: 1 1 280px;
+  width: 100%;
   max-width: 100%;
+}
+
+/* In horizontal layout: wide cards */
+#team-container.horizontal-layout .pokemon-card {
+  flex: 1 1 auto;
+}
+
+/* In grid layout: nice responsive cards */
+#team-container.grid-layout .pokemon-card {
+  width: 100%;
+}
+
+/* In vertical layout: full-width cards */
+#team-container.vertical-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+#team-container.vertical-layout .pokemon-card {
+  width: 100%;
 }
 
 body.dark .pokemon-card {

@@ -56,6 +56,7 @@ async function loadPaste() {
 
   const team = parsePaste(content);
   const teamContainer = document.getElementById('team-container');
+  teamContainer.innerHTML = ""; // clear existing content if any
 
   for (const pokemon of team) {
     const card = document.createElement('div');
@@ -169,29 +170,26 @@ function parsePaste(text) {
     let match = firstLine.match(/^(.+?) \(([^)]+)\)(?: \((M|F)\))? @ (.+)$/);
     if (match) {
       mon.nickname = match[1].trim();
-      mon.name = match[2].trim(); // real species name
+      mon.name = match[2].trim();
       mon.gender = match[3] || null;
       mon.item = match[4].trim();
     } else {
-      // Try: Species (Gender) @ Item
       match = firstLine.match(/^(.+?) \((M|F)\) @ (.+)$/);
       if (match) {
         mon.name = match[1].trim();
         mon.gender = match[2];
         mon.item = match[3].trim();
       } else {
-        // Try: Species @ Item
         match = firstLine.match(/^(.+?) @ (.+)$/);
         if (match) {
           mon.name = match[1].trim();
           mon.item = match[2].trim();
         } else {
-          // Try: Species only
           match = firstLine.match(/^(.+?)$/);
           if (match) {
             mon.name = match[1].trim();
           } else {
-            continue; // skip invalid format
+            continue;
           }
         }
       }
@@ -227,8 +225,32 @@ function parsePaste(text) {
   return team;
 }
 
+// ✅ Layout Toggle Logic
+const layoutToggleBtn = document.getElementById('layoutToggle');
+const teamContainer = document.getElementById('team-container');
 
-// ✅ Copy-to-Clipboard Logic
+layoutToggleBtn.addEventListener('click', () => {
+  teamContainer.classList.remove('horizontal-layout', 'grid-layout', 'vertical-layout');
+
+  const current = teamContainer.dataset.layout || 'horizontal';
+
+  let next = '';
+  if (current === 'horizontal') {
+    next = 'grid';
+    layoutToggleBtn.textContent = '🔽 Vertical Layout';
+  } else if (current === 'grid') {
+    next = 'vertical';
+    layoutToggleBtn.textContent = '➡️ Horizontal Layout';
+  } else {
+    next = 'horizontal';
+    layoutToggleBtn.textContent = '🔳 Grid Layout';
+  }
+
+  teamContainer.dataset.layout = next;
+  teamContainer.classList.add(`${next}-layout`);
+});
+
+// ✅ Copy to Clipboard
 document.getElementById('copyBtn').addEventListener('click', async () => {
   const text = window.rawPasteText || '';
   try {
@@ -240,4 +262,5 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
   }
 });
 
+// Load content
 loadPaste();
