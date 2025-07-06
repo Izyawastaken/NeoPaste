@@ -170,32 +170,43 @@ function parsePaste(text) {
     };
 
     const firstLine = lines[0];
-    let line = firstLine.trim();
+    let namePart = "", itemPart = "";
 
-    // Gender (optional)
-    const genderMatch = line.match(/\((M|F)\) @/);
-    if (genderMatch) {
-      mon.gender = genderMatch[1];
-      line = line.replace(` (${mon.gender})`, "");
-    }
-
-    // Item (required)
-    const itemMatch = line.match(/@ (.+)$/);
-    if (itemMatch) {
-      mon.item = itemMatch[1].trim();
-      line = line.replace(/@ .+$/, "").trim();
-    }
-
-    // Species (assume it's in the last parentheses group)
-    const speciesMatch = line.match(/^(.*)\(([^()]+)\)$/);
-    if (speciesMatch) {
-      mon.nickname = speciesMatch[1].trim();
-      mon.name = speciesMatch[2].trim();
+    // Split at ' @ ' to separate item
+    const atSplit = firstLine.split(" @ ");
+    if (atSplit.length === 2) {
+      namePart = atSplit[0].trim();
+      itemPart = atSplit[1].trim();
+      mon.item = itemPart;
     } else {
-      mon.name = line.trim();
+      namePart = firstLine.trim(); // fallback
     }
 
-    // Parse rest
+    // Count number of (...) groups
+    const parenMatches = [...namePart.matchAll(/\(([^)]+)\)/g)];
+
+    if (parenMatches.length === 2) {
+      // Nickname (Species) (Gender)
+      mon.nickname = namePart.split("(")[0].trim();
+      mon.name = parenMatches[0][1];
+      mon.gender = parenMatches[1][1];
+    } else if (parenMatches.length === 1) {
+      const parenValue = parenMatches[0][1];
+      if (parenValue === "F" || parenValue === "M") {
+        // Species (Gender)
+        mon.name = namePart.replace(/\s*\((M|F)\)/, "").trim();
+        mon.gender = parenValue;
+      } else {
+        // Nickname (Species)
+        mon.nickname = namePart.split("(")[0].trim();
+        mon.name = parenValue;
+      }
+    } else {
+      // Just species name
+      mon.name = namePart;
+    }
+
+    // Parse rest of the block
     for (let i = 1; i < lines.length; i++) {
       const line = lines[i];
       if (line.startsWith("Ability:")) mon.ability = line.split(":")[1].trim();
@@ -225,6 +236,7 @@ function parsePaste(text) {
 
   return team;
 }
+
 
 // Layout toggle and clipboard setup
 const layoutToggleBtn = document.getElementById('layoutToggle');
