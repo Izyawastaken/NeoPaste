@@ -226,18 +226,29 @@ function parsePaste(text) {
 }
 
 // ✅ Layout Toggle Logic
+const layoutToggleBtn = document.getElementById('layoutToggle');
+const teamContainer = document.getElementById('team-container');
+
 layoutToggleBtn.addEventListener('click', () => {
-  teamContainer.classList.remove('horizontal-layout', 'grid-layout');
+  teamContainer.classList.remove('horizontal-layout', 'grid-layout', 'vertical-layout');
 
   const current = teamContainer.dataset.layout || 'horizontal';
-  const next = current === 'horizontal' ? 'grid' : 'horizontal';
+
+  let next = '';
+  if (current === 'horizontal') {
+    next = 'grid';
+    layoutToggleBtn.textContent = '🔽 Vertical Layout';
+  } else if (current === 'grid') {
+    next = 'vertical';
+    layoutToggleBtn.textContent = '➡️ Horizontal Layout';
+  } else {
+    next = 'horizontal';
+    layoutToggleBtn.textContent = '🔳 Grid Layout';
+  }
 
   teamContainer.dataset.layout = next;
   teamContainer.classList.add(`${next}-layout`);
-
-  layoutToggleBtn.textContent = next === 'horizontal' ? '🔳 Grid Layout' : '➡️ Horizontal Layout';
 });
-
 
 // ✅ Copy to Clipboard
 document.getElementById('copyBtn').addEventListener('click', async () => {
