@@ -87,8 +87,12 @@ const teraTypeClass = teraType ? `type-${teraType}` : "";
 
 
     card.innerHTML = `
-      <h2>${mon.nickname ? `${mon.nickname} (${mon.name})` : mon.name}
-        <small>@ ${mon.item || "None"}</small></h2>
+      <div class="card-header">
+  <h2>${mon.nickname ? `${mon.nickname} (${mon.name})` : mon.name}</h2>
+  <p class="item-line">@ ${mon.item || "None"}</p>
+</div>
+<img src="${spriteUrl}" alt="${mon.name}" />
+
       <img src="${spriteUrl}" alt="${mon.name}" />
       <p><strong>Ability:</strong> <span class="info-pill ability-pill">${mon.ability || "—"}</span></p>
       <p><strong>Tera Type:</strong> <span class="info-pill ${teraTypeClass}">${mon.teraType || "—"}</span></p>
@@ -246,18 +250,16 @@ function parsePaste(text) {
 const layoutBtn = document.getElementById('layoutToggle');
 const teamContainer = document.getElementById('team-container');
 
-if (!teamContainer.dataset.layout) {
-  teamContainer.dataset.layout = 'horizontal';
-  teamContainer.classList.add('horizontal-layout');
-  layoutBtn.textContent = '🔳 Grid Layout';
-}
-
 layoutBtn.addEventListener('click', () => {
-  const next = teamContainer.dataset.layout === 'horizontal' ? 'grid' : 'horizontal';
-  teamContainer.dataset.layout = next;
-  teamContainer.className = `horizontal-layout grid-layout`.split(" ").filter(cls => cls.startsWith(next)).join(" ");
-  layoutBtn.textContent = next === 'horizontal' ? '🔳 Grid Layout' : '➡️ Horizontal Layout';
+  teamContainer.classList.toggle('horizontal-layout');
+
+  if (teamContainer.classList.contains('horizontal-layout')) {
+    layoutBtn.textContent = 'Switch to Grid Layout';
+  } else {
+    layoutBtn.textContent = 'Switch to Horizontal Layout';
+  }
 });
+
 
 document.getElementById('copyBtn').addEventListener('click', async () => {
   try {
