@@ -1,180 +1,329 @@
-/* main.css */
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
 
-/* Reset + base */
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+:root {
+  --accent: #ff7a00;
+  --bg-light: #f0f2f5;
+  --bg-dark: #121212;
+  --glass-light: rgba(255, 255, 255, 0.06);
+  --glass-dark: rgba(30, 30, 30, 0.35);
+  --text-light: #333;
+  --text-dark: #eee;
 }
 
 body {
-  font-family: 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #0e0e0e, #1a1a1a);
-  color: #f0f0f0;
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-family: 'Fredoka', sans-serif;
+  background: linear-gradient(135deg, var(--bg-light), #e6eaf1);
+  color: var(--text-light);
+  margin: 0;
   padding: 2rem;
-}
-
-/* Container */
-.container {
-  width: 100%;
-  max-width: 700px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(15px);
-  -webkit-backdrop-filter: blur(15px);
-  border-radius: 20px;
-  padding: 2rem;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
-}
-
-/* Header */
-header {
   text-align: center;
-  margin-bottom: 2rem;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+body.dark {
+  background: linear-gradient(135deg, #1c1c1c, var(--bg-dark));
+  color: var(--text-dark);
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 2rem;
 }
 
 h1 {
-  font-size: 2.2rem;
-  color: #ff7a00;
+  font-size: 2.5rem;
+  color: var(--accent);
+  margin-bottom: 0.2rem;
 }
 
 .subtitle {
-  color: #bbbbbb;
-  font-size: 1rem;
-  margin-top: 0.5rem;
+  opacity: 0.8;
+  margin-bottom: 2rem;
 }
 
-/* Form */
-form {
+#team-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  padding: 1rem;
+  align-items: start;
+}
+
+#team-container.horizontal-layout {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  align-items: stretch;
+  gap: 1.5rem;
 }
 
-input,
-textarea {
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: #f0f0f0;
-  padding: 0.8rem 1rem;
-  border-radius: 12px;
-  font-size: 1rem;
-  outline: none;
-  resize: none;
-  transition: border 0.2s ease;
+#team-container.horizontal-layout .pokemon-card {
+  width: 100%;
 }
 
-input:focus,
-textarea:focus {
-  border-color: #ff7a00;
-}
-
-button {
-  background: #ff7a00;
-  color: #fff;
-  border: none;
-  padding: 0.9rem;
-  font-size: 1rem;
-  font-weight: bold;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-button:hover {
-  background: #e96a00;
-}
-
-/* Footer */
-footer {
-  margin-top: 2rem;
-  text-align: center;
-  font-size: 0.9rem;
-  color: #888;
-}
-
-footer a {
-  color: #ff7a00;
-  text-decoration: none;
-}
-
-footer a:hover {
-  text-decoration: underline;
-}
-
-/* Paste Output */
-.paste-output {
-  margin-top: 2rem;
-  padding: 1rem 1.5rem;
-  background: rgba(255, 255, 255, 0.05);
+.pokemon-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+  background: var(--glass-light);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  padding: 1.25rem;
+  backdrop-filter: blur(8px);
+  text-align: left;
+  overflow: hidden;
+  transition: background 0.3s ease;
 }
 
-/* Link and Button styles */
-.link-buttons {
+body.dark .pokemon-card {
+  background: var(--glass-dark);
+}
+
+.pokemon-card h2 {
+  font-size: 1.4rem;
+  color: var(--accent);
+  margin-bottom: 0.5rem;
+}
+
+.pokemon-card img {
+  width: 96px;
+  height: 96px;
+  image-rendering: pixelated;
+  margin-left: auto;
+  margin-bottom: 0.5rem;
+  align-self: flex-end;
+}
+
+.pokemon-card p {
+  margin: 0.25rem 0;
+  line-height: 1.4;
+}
+
+.info-pill {
+  display: inline-block;
+  background: var(--glass-light);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: inherit;
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  margin: 2px 4px 2px 0;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  text-transform: uppercase;
+}
+
+body.dark .info-pill {
+  background: var(--glass-dark);
+}
+
+/* EV Stat Color Pills */
+.stat-hp .info-pill     { background: #66bb6a; box-shadow: 0 0 10px #66bb6a; color: white; }
+.stat-atk .info-pill    { background: #ef5350; box-shadow: 0 0 10px #ef5350; color: white; }
+.stat-def .info-pill    { background: #42a5f5; box-shadow: 0 0 10px #42a5f5; color: white; }
+.stat-spa .info-pill    { background: #7e57c2; box-shadow: 0 0 10px #7e57c2; color: white; }
+.stat-spd .info-pill    { background: #26c6da; box-shadow: 0 0 10px #26c6da; color: white; }
+.stat-spe .info-pill    { background: #ffa726; box-shadow: 0 0 10px #ffa726; color: black; }
+
+/* Move / Tera Type Pills */
+.move-pill, .info-pill.type-pill {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  color: white;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  text-align: center;
+  width: 100%;
+  backdrop-filter: blur(6px);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
+}
+
+.move-pill:hover {
+  transform: scale(1.025);
+}
+
+/* Type colors (Move + Tera Type) */
+.type-fire     { background: #F08030; box-shadow: 0 0 10px #F08030; }
+.type-water    { background: #6890F0; box-shadow: 0 0 10px #6890F0; }
+.type-grass    { background: #78C850; box-shadow: 0 0 10px #78C850; }
+.type-electric { background: #F8D030; color: black; box-shadow: 0 0 10px #F8D030; }
+.type-ice      { background: #98D8D8; color: black; box-shadow: 0 0 10px #98D8D8; }
+.type-fighting { background: #C03028; box-shadow: 0 0 10px #C03028; }
+.type-poison   { background: #A040A0; box-shadow: 0 0 10px #A040A0; }
+.type-ground   { background: #E0C068; color: black; box-shadow: 0 0 10px #E0C068; }
+.type-flying   { background: #A890F0; box-shadow: 0 0 10px #A890F0; }
+.type-psychic  { background: #F85888; box-shadow: 0 0 10px #F85888; }
+.type-bug      { background: #A8B820; box-shadow: 0 0 10px #A8B820; }
+.type-rock     { background: #B8A038; box-shadow: 0 0 10px #B8A038; }
+.type-ghost    { background: #705898; box-shadow: 0 0 10px #705898; }
+.type-dragon   { background: #7038F8; box-shadow: 0 0 10px #7038F8; }
+.type-dark     { background: #705848; box-shadow: 0 0 10px #705848; }
+.type-steel    { background: #B8B8D0; color: black; box-shadow: 0 0 10px #B8B8D0; }
+.type-fairy    { background: #EE99AC; color: black; box-shadow: 0 0 10px #EE99AC; }
+.type-normal   { background: #A8A878; box-shadow: 0 0 10px #A8A878; }
+
+/* Move Pill Container */
+.moves {
+  margin-top: auto;
+  padding: 0 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.move-pill-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  width: 100%;
+  align-self: stretch;
+}
+
+/* Stat Section */
+.stat-block {
+  margin: 1rem 0;
+}
+
+.stat-line {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.stat-label {
+  min-width: 55px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 0.85rem;
+  text-align: right;
+}
+
+.stat-label.hp  { color: #66bb6a; }
+.stat-label.atk { color: #ef5350; }
+.stat-label.def { color: #42a5f5; }
+.stat-label.spa { color: #7e57c2; }
+.stat-label.spd { color: #26c6da; }
+.stat-label.spe { color: #ffa726; }
+
+.stat-bar {
+  flex: 1;
+  height: 8px;
+  background: #444;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+body.dark .stat-bar {
+  background: #333;
+}
+
+.stat-bar-fill {
+  height: 100%;
+  width: 0;
+  border-radius: 4px;
+  transition: width 0.6s ease-in-out, background-color 0.4s ease;
+  background: #42a5f5;
+}
+
+.stat-modifier {
+  margin-left: 0.5rem;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.stat-modifier.plus  { color: #00e676; }
+.stat-modifier.minus { color: #ef5350; }
+
+.stat-value {
+  width: 36px;
+  text-align: right;
+  font-weight: bold;
+  font-size: 0.85rem;
+}
+
+/* Footer Buttons */
+.footer-buttons {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
+  gap: 1rem;
+  margin: 1.5rem 0;
 }
 
-.paste-url {
-  display: inline-block;
-  padding: 0.5rem 1rem;
-  background: #222;
-  color: white;
-  border: 1px solid #555;
-  border-radius: 6px;
+.fancy-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  background: var(--glass-light);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: inherit;
+  font-size: 0.95rem;
   font-weight: 500;
-  text-decoration: none;
-  transition: background 0.2s ease;
-}
-
-.paste-url:hover {
-  background: #333;
-}
-
-.copy-link-btn {
-  padding: 0.5rem 1rem;
-  background: #222;
-  color: white;
-  border: 1px solid #555;
-  border-radius: 6px;
   cursor: pointer;
+  transition: background 0.3s ease, transform 0.15s ease;
+}
+
+body.dark .fancy-btn {
+  background: var(--glass-dark);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.fancy-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+body.dark .fancy-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.back-link {
+  display: inline-block;
+  margin-top: 1.5rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  text-decoration: none;
+  border-radius: 8px;
   font-weight: 500;
-  transition: background 0.2s;
+  color: white;
+  background-color: var(--accent, #3f51b5);
+  transition: background-color 0.2s ease, transform 0.1s ease;
 }
 
-.copy-link-btn:hover {
-  background: #333;
+.back-link:hover {
+  background-color: var(--accent-dark, #303f9f);
+  transform: translateY(-2px);
 }
 
-.copy-link-btn.copied {
-  background: #4caf50;
-  border-color: #4caf50;
+/* Animation */
+.fade-in-up {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: fadeUp 0.6s ease forwards;
 }
 
-/* Responsive tweaks */
-@media (max-width: 600px) {
-  .paste-url,
-  .copy-link-btn {
-    font-size: 0.95rem;
-    padding: 0.4rem 0.8rem;
+@keyframes fadeUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
+}
 
-  .container {
-    padding: 1.5rem;
-  }
-
-  body {
+/* Responsive */
+@media (max-width: 480px) {
+  #team-container {
+    grid-template-columns: 1fr;
     padding: 1rem;
+  }
+  .move-pill-container {
+    grid-template-columns: 1fr;
   }
 }
