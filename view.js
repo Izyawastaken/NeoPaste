@@ -23,7 +23,7 @@ function toShowdownId(name) {
   return name
     .toLowerCase()
     .normalize("NFD")
-    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[̀-ͯ]/g, "")
     .replace(/[^a-z0-9]/g, "");
 }
 
@@ -71,11 +71,13 @@ async function loadPaste() {
     const statBlockHTML = await renderStatBlock(pokemon);
     const movesHTML = await renderMovePills(pokemon.moves);
 
+    const teraTypeClass = pokemon.teraType ? `type-${pokemon.teraType.toLowerCase()}` : "";
+
     card.innerHTML = `
       <h2>${pokemon.nickname ? `${pokemon.nickname} (${pokemon.name})` : pokemon.name} <small>@ ${pokemon.item || "None"}</small></h2>
       <img src="${spriteUrl}" alt="${pokemon.name}" />
       <p><strong>Ability:</strong> <span class="info-pill">${pokemon.ability || "—"}</span></p>
-      <p><strong>Tera Type:</strong> <span class="info-pill">${pokemon.teraType || "—"}</span></p>
+      <p><strong>Tera Type:</strong> <span class="info-pill ${teraTypeClass}">${pokemon.teraType || "—"}</span></p>
       <p><strong>Nature:</strong> <span class="info-pill">${pokemon.nature || "—"}</span></p>
       <p><strong>EVs:</strong> ${formatEVs(pokemon.evs)}</p>
       <p><strong>IVs:</strong> ${formatIVs(pokemon.ivs)}</p>
@@ -95,7 +97,7 @@ async function loadPaste() {
 function formatEVs(evs) {
   const entries = Object.entries(evs || {})
     .filter(([_, v]) => v > 0)
-    .map(([k, v]) => `<span class="info-pill">${v} ${k.toUpperCase()}</span>`);
+    .map(([k, v]) => `<span class="info-pill stat-${k.toLowerCase()}">${v} ${k.toUpperCase()}</span>`);
   return entries.length ? entries.join(" ") : '<span class="info-pill">—</span>';
 }
 
@@ -249,7 +251,6 @@ function parsePaste(text) {
   return team;
 }
 
-// Layout toggle and clipboard setup
 const layoutToggleBtn = document.getElementById('layoutToggle');
 const teamContainer = document.getElementById('team-container');
 
@@ -282,5 +283,4 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
   }
 });
 
-// Load it!
 loadPaste();
