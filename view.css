@@ -351,3 +351,26 @@ body.dark .fancy-btn:hover {
   0%   { box-shadow: 0 0 6px rgba(255, 255, 255, 0.15); }
   100% { box-shadow: 0 0 12px rgba(255, 255, 255, 0.3); }
 }
+
+.info-pill[style*="background-color"] {
+  color: white !important;
+  font-weight: bold;
+  text-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+}
+.info-pill[class*="stat-"] {
+  color: white !important;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+.info-pill[class*="type-"],
+.move-pill {
+  padding: 8px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  color: white;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
+}
