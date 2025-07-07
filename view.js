@@ -109,9 +109,18 @@ function getIVColor(percent) {
 
 // ✅ EVs match stat color classes (e.g. .stat-atk)
 function formatEVs(evs) {
+  const evStatMap = {
+    hp: "hp", attack: "atk", defense: "def",
+    "special-attack": "spa", "special-defense": "spd", speed: "spe"
+  };
+
   const entries = Object.entries(evs || {})
     .filter(([_, v]) => v > 0)
-    .map(([k, v]) => `<span class="info-pill stat-${k.toLowerCase()}">${v} ${k.toUpperCase()}</span>`);
+    .map(([k, v]) => {
+      const short = evStatMap[k.toLowerCase()] || k.toLowerCase();
+      return `<span class="info-pill stat-${short}">${v} ${short.toUpperCase()}</span>`;
+    });
+
   return entries.length ? entries.join(" ") : '<span class="info-pill">—</span>';
 }
 
@@ -124,7 +133,8 @@ function formatIVs(ivs) {
       const color = getIVColor(percent);
       return `<span class="info-pill" style="background-color: ${color};">${v} ${k.toUpperCase()}</span>`;
     });
-  return entries.length ? entries.join(" ") : '<span class="info-pill">Default (31)</span>';
+  return entries.length ? entries.join(" ") : `<span class="info-pill" style="background-color: ${getIVColor(1)};">Default (31)</span>`;
+
 
 }
 
