@@ -1,376 +1,249 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
 
 :root {
   --accent: #ff7a00;
   --bg-light: #f0f2f5;
   --bg-dark: #121212;
-  --glass-light: rgba(255, 255, 255, 0.06);
-  --glass-dark: rgba(30, 30, 30, 0.35);
+  --glass-light: rgba(255,255,255,0.06);
+  --glass-dark: rgba(30,30,30,0.35);
   --text-light: #333;
   --text-dark: #eee;
 }
 
 body {
+  margin:0; padding:2rem; text-align:center;
   font-family: 'Fredoka', sans-serif;
   background: linear-gradient(135deg, var(--bg-light), #e6eaf1);
   color: var(--text-light);
-  margin: 0;
-  padding: 2rem;
-  text-align: center;
-  transition: background 0.4s ease, color 0.4s ease;
+  transition: background .4s, color .4s;
 }
-
 body.dark {
   background: linear-gradient(135deg, #1c1c1c, var(--bg-dark));
   color: var(--text-dark);
 }
 
-.container {
-  max-width: 1200px;
-  margin: auto;
-  padding: 2rem;
-}
+/* Container & Header */
+.container { max-width:1200px; margin:auto; padding:2rem; }
+h1 { font-size:2.5rem; color:var(--accent); margin-bottom:.2rem; }
+.subtitle { opacity:.8; margin-bottom:2rem; }
 
-h1 {
-  font-size: 2.5rem;
-  color: var(--accent);
-  margin-bottom: 0.2rem;
-}
-
-.subtitle {
-  opacity: 0.8;
-  margin-bottom: 2rem;
-}
-
+/* Pokemon Card Layout */
 #team-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 2rem;
-  padding: 1rem;
-  align-items: start;
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:2rem; padding:1rem; align-items:start;
 }
-
 #team-container.horizontal-layout {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: 1.5rem;
+  display:flex; flex-direction:column; gap:1.5rem;
 }
-
-#team-container.horizontal-layout .pokemon-card {
-  width: 100%;
-}
-
 .pokemon-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
+  display:grid;
+  grid-template-columns: 96px 1fr;
+  gap: 0 1rem;
   background: var(--glass-light);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
-  padding: 1.25rem;
-  backdrop-filter: blur(8px);
-  text-align: left;
-  overflow: hidden;
-  transition: background 0.3s ease;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:16px;
+  padding:1.25rem;
+  backdrop-filter:blur(8px);
+  text-align:left;
+  overflow:hidden;
+  transition:background .3s;
 }
+body.dark .pokemon-card { background:var(--glass-dark); }
 
-body.dark .pokemon-card {
-  background: var(--glass-dark);
-}
-
+/* Header area within card */
 .pokemon-card h2 {
-  font-size: 1.4rem;
-  color: var(--accent);
-  margin-bottom: 0.5rem;
+  grid-column: span 2;
+  font-size:1.4rem; color:var(--accent);
+  margin:0 0 .5rem 0;
 }
 
+/* Sprite alignment */
 .pokemon-card img {
-  width: 96px;
-  height: 96px;
-  image-rendering: pixelated;
-  margin-left: auto;
-  margin-bottom: 0.5rem;
-  align-self: flex-end;
+  width:96px; height:96px;
+  image-rendering:pixelated;
+  justify-self:end; align-self:start;
+  margin-top:4px;
 }
 
-.pokemon-card p {
-  margin: 0.25rem 0;
-  line-height: 1.4;
-}
-
+/* Info pills & text column */
+.pokemon-card p { margin:.25rem 0; line-height:1.4; }
 .info-pill {
-  display: inline-block;
-  background: var(--glass-light);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: inherit;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 0.8rem;
-  font-weight: 500;
-  margin: 2px 4px 2px 0;
-  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
-  text-transform: uppercase;
+  display:inline-block;
+  padding:.25rem .75rem;
+  border-radius:9999px;
+  font-weight:500; font-size:.8rem;
+  text-transform:uppercase;
+  background:var(--glass-light);
+  backdrop-filter:blur(4px);
+  border:1px solid rgba(255,255,255,.1);
+  transition:background .3s,color .3s,box-shadow .3s;
+}
+body.dark .info-pill { background:var(--glass-dark); }
+
+/* Stat-colors for EV pills */
+.info-pill.stat-hp    { background:#66bb6a; box-shadow:0 0 10px #66bb6a; color:white; }
+.info-pill.stat-atk   { background:#ef5350; box-shadow:0 0 10px #ef5350; color:white; }
+.info-pill.stat-def   { background:#42a5f5; box-shadow:0 0 10px #42a5f5; color:white; }
+.info-pill.stat-spa   { background:#7e57c2; box-shadow:0 0 10px #7e57c2; color:white; }
+.info-pill.stat-spd   { background:#26c6da; box-shadow:0 0 10px #26c6da; color:white; }
+.info-pill.stat-spe   { background:#ffa726; box-shadow:0 0 10px #ffa726; color:black; }
+
+/* Move & Tera pills */
+.move-pill, .info-pill[class*="type-"] {
+  padding: .5rem 1rem;
+  border-radius:9999px;
+  font-weight:600;
+  font-size:.9rem;
+  text-transform:capitalize;
+  color:white;
+  backdrop-filter:blur(6px);
+  display:inline-block;
+  box-shadow:0 0 8px rgba(255,255,255,.08);
+  white-space:nowrap;
+  margin:2px 4px 2px 0;
 }
 
-body.dark .info-pill {
-  background: var(--glass-dark);
-}
+/* Tera-type pills don’t fill width */
+.info-pill[class*="type-"] { width:auto; }
 
-/* EV Stat Color Pills */
-.info-pill.stat-hp     { background: #66bb6a; box-shadow: 0 0 10px #66bb6a; color: white; }
-.info-pill.stat-atk    { background: #ef5350; box-shadow: 0 0 10px #ef5350; color: white; }
-.info-pill.stat-def    { background: #42a5f5; box-shadow: 0 0 10px #42a5f5; color: white; }
-.info-pill.stat-spa    { background: #7e57c2; box-shadow: 0 0 10px #7e57c2; color: white; }
-.info-pill.stat-spd    { background: #26c6da; box-shadow: 0 0 10px #26c6da; color: white; }
-.info-pill.stat-spe    { background: #ffa726; box-shadow: 0 0 10px #ffa726; color: black; }
+/* Generic type colors */
+.type-fire     { background:#F08030; box-shadow:0 0 10px #F08030; }
+.type-water    { background:#6890F0; box-shadow:0 0 10px #6890F0; }
+.type-grass    { background:#78C850; box-shadow:0 0 10px #78C850; }
+.type-electric { background:#F8D030; color:black; box-shadow:0 0 10px #F8D030; }
+.type-ice      { background:#98D8D8; color:black; box-shadow:0 0 10px #98D8D8; }
+.type-fighting { background:#C03028; box-shadow:0 0 10px #C03028; }
+.type-poison   { background:#A040A0; box-shadow:0 0 10px #A040A0; }
+.type-ground   { background:#E0C068; color:black; box-shadow:0 0 10px #E0C068; }
+.type-flying   { background:#A890F0; box-shadow:0 0 10px #A890F0; }
+.type-psychic  { background:#F85888; box-shadow:0 0 10px #F85888; }
+.type-bug      { background:#A8B820; box-shadow:0 0 10px #A8B820; }
+.type-rock     { background:#B8A038; box-shadow:0 0 10px #B8A038; }
+.type-ghost    { background:#705898; box-shadow:0 0 10px #705898; }
+.type-dragon   { background:#7038F8; box-shadow:0 0 10px #7038F8; }
+.type-dark     { background:#705848; box-shadow:0 0 10px #705848; }
+.type-steel    { background:#B8B8D0; color:black; box-shadow:0 0 10px #B8B8D0; }
+.type-fairy    { background:#EE99AC; color:black; box-shadow:0 0 10px #EE99AC; }
+.type-normal   { background:#A8A878; box-shadow:0 0 10px #A8A878; }
 
-/* Move / Tera Type Pills */
-.move-pill, .info-pill.type-pill, .info-pill[class*="type-"] {
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: 9999px;
-  font-weight: 600;
-  color: white;
-  font-size: 0.9rem;
-  text-transform: capitalize;
-  text-align: center;
-  width: auto;
-  backdrop-filter: blur(6px);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
-}
-
-.move-pill:hover {
-  transform: scale(1.025);
-}
-
-/* Type colors (Move + Tera Type) */
-.type-fire     { background: #F08030; box-shadow: 0 0 10px #F08030; }
-.type-water    { background: #6890F0; box-shadow: 0 0 10px #6890F0; }
-.type-grass    { background: #78C850; box-shadow: 0 0 10px #78C850; }
-.type-electric { background: #F8D030; color: black; box-shadow: 0 0 10px #F8D030; }
-.type-ice      { background: #98D8D8; color: black; box-shadow: 0 0 10px #98D8D8; }
-.type-fighting { background: #C03028; box-shadow: 0 0 10px #C03028; }
-.type-poison   { background: #A040A0; box-shadow: 0 0 10px #A040A0; }
-.type-ground   { background: #E0C068; color: black; box-shadow: 0 0 10px #E0C068; }
-.type-flying   { background: #A890F0; box-shadow: 0 0 10px #A890F0; }
-.type-psychic  { background: #F85888; box-shadow: 0 0 10px #F85888; }
-.type-bug      { background: #A8B820; box-shadow: 0 0 10px #A8B820; }
-.type-rock     { background: #B8A038; box-shadow: 0 0 10px #B8A038; }
-.type-ghost    { background: #705898; box-shadow: 0 0 10px #705898; }
-.type-dragon   { background: #7038F8; box-shadow: 0 0 10px #7038F8; }
-.type-dark     { background: #705848; box-shadow: 0 0 10px #705848; }
-.type-steel    { background: #B8B8D0; color: black; box-shadow: 0 0 10px #B8B8D0; }
-.type-fairy    { background: #EE99AC; color: black; box-shadow: 0 0 10px #EE99AC; }
-.type-normal   { background: #A8A878; box-shadow: 0 0 10px #A8A878; }
-
-/* Move Pill Container */
-.moves {
-  margin-top: auto;
-  padding: 0 0.5rem 0.75rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
+/* Moves grid container */
+.moves { margin-top:auto; padding:0 .5rem .75rem; }
 .move-pill-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem 1rem;
-  margin-top: 0.5rem;
-  width: 100%;
-  align-self: stretch;
+  display:grid;
+  grid-template-columns:repeat(2, 1fr);
+  gap:.75rem 1rem;
+  align-self:stretch;
 }
 
-/* Stat Section */
-.stat-block {
-  margin: 1rem 0;
-}
-
+/* Stat bar section */
+.stat-block { margin:1rem 0; }
 .stat-line {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.9rem;
-  margin-bottom: 0.4rem;
+  display:flex; align-items:center;
+  gap:.5rem; font-size:.9rem; margin-bottom:.4rem;
 }
-
 .stat-label {
-  min-width: 55px;
-  text-transform: uppercase;
-  font-weight: bold;
-  font-size: 0.85rem;
-  text-align: right;
+  min-width:55px;
+  font-weight:bold;
+  font-size:.85rem;
+  text-transform:uppercase;
+  text-align:right;
 }
-
-.stat-label.hp  { color: #66bb6a; }
-.stat-label.atk { color: #ef5350; }
-.stat-label.def { color: #42a5f5; }
-.stat-label.spa { color: #7e57c2; }
-.stat-label.spd { color: #26c6da; }
-.stat-label.spe { color: #ffa726; }
+.stat-label.hp  { color:#66bb6a; }
+.stat-label.atk { color:#ef5350; }
+.stat-label.def { color:#42a5f5; }
+.stat-label.spa { color:#7e57c2; }
+.stat-label.spd { color:#26c6da; }
+.stat-label.spe { color:#ffa726; }
 
 .stat-bar {
-  flex: 1;
-  height: 8px;
-  background: #444;
-  border-radius: 4px;
-  overflow: hidden;
+  flex:1;
+  background:#444;
+  height:8px;
+  border-radius:4px;
+  overflow:hidden;
 }
-
-body.dark .stat-bar {
-  background: #333;
-}
+body.dark .stat-bar { background:#333; }
 
 .stat-bar-fill {
-  height: 100%;
-  width: 0;
-  border-radius: 4px;
-  transition: width 0.6s ease-in-out, background-color 0.4s ease;
-  background: #42a5f5;
+  width:0;
+  height:100%;
+  border-radius:4px;
+  transition:width .6s ease-in-out, background-color .4s ease;
 }
-
-.stat-modifier {
-  margin-left: 0.5rem;
-  font-weight: bold;
-  font-size: 0.95rem;
-}
-
-.stat-modifier.plus  { color: #00e676; }
-.stat-modifier.minus { color: #ef5350; }
-
+.stat-modifier { margin-left:.5rem; font-weight:bold; font-size:.95rem; }
+.stat-modifier.plus  { color:#00e676; }
+.stat-modifier.minus { color:#ef5350; }
 .stat-value {
-  width: 36px;
-  text-align: right;
-  font-weight: bold;
-  font-size: 0.85rem;
+  width:36px;
+  text-align:right;
+  font-weight:bold;
+  font-size:.85rem;
 }
 
-/* Footer Buttons */
+/* Footer & controls */
 .footer-buttons {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin: 1.5rem 0;
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:1rem;
+  margin:1.5rem 0;
 }
-
 .fancy-btn {
-  padding: 0.6rem 1.2rem;
-  border-radius: 12px;
-  background: var(--glass-light);
-  backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: inherit;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.3s ease, transform 0.15s ease;
+  padding:.6rem 1.2rem;
+  border-radius:12px;
+  background:var(--glass-light);
+  backdrop-filter:blur(6px);
+  border:1px solid rgba(255,255,255,.15);
+  cursor:pointer;
+  font-size:.95rem;
+  font-weight:500;
+  transition:background .3s,transform .15s;
 }
-
-body.dark .fancy-btn {
-  background: var(--glass-dark);
-  border-color: rgba(255, 255, 255, 0.1);
-}
-
-.fancy-btn:hover {
-  background: rgba(255, 255, 255, 0.12);
-  transform: translateY(-2px);
-}
-
-body.dark .fancy-btn:hover {
-  background: rgba(255, 255, 255, 0.05);
-}
+body.dark .fancy-btn { background:var(--glass-dark); border-color:rgba(255,255,255,.1); }
+.fancy-btn:hover { background:rgba(255,255,255,.12); transform:translateY(-2px); }
+body.dark .fancy-btn:hover { background:rgba(255,255,255,.05); }
 
 .back-link {
-  display: inline-block;
-  margin-top: 1.5rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.95rem;
-  text-decoration: none;
-  border-radius: 8px;
-  font-weight: 500;
-  color: white;
-  background-color: var(--accent, #3f51b5);
-  transition: background-color 0.2s ease, transform 0.1s ease;
+  display:inline-block;
+  margin-top:1.5rem;
+  padding:.5rem 1rem;
+  font-size:.95rem;
+  font-weight:500;
+  border-radius:8px;
+  color:white;
+  text-decoration:none;
+  background-color: var(--accent);
+  transition:background-color .2s,transform .1s;
 }
-
 .back-link:hover {
-  background-color: var(--accent-dark, #303f9f);
-  transform: translateY(-2px);
+  background-color: #e66e00;
+  transform:translateY(-2px);
 }
 
-/* Animation */
-.fade-in-up {
-  opacity: 0;
-  transform: translateY(20px);
-  animation: fadeUp 0.6s ease forwards;
-}
-
-@keyframes fadeUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive */
-@media (max-width: 480px) {
-  #team-container {
-    grid-template-columns: 1fr;
-    padding: 1rem;
-  }
-  .move-pill-container {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* IV pill override: ensure contrast and padding for gradient backgrounds */
-.info-pill[style*="background-color"],
-.info-pill[style*="linear-gradient"] {
-  color: white !important;
-  border: none;
-  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+/* IV gradient pills & glow */
+.info-pill[style*="background-color"] {
+  border:none;
+  color:white !important;
+  box-shadow:0 0 6px rgba(0,0,0,.2);
   animation: pulseGlow 1.5s ease-in-out infinite alternate;
 }
 
-/* EV pill hover info */
-.info-pill.stat-hp::after    { content: " (HP)"; display: none; }
-.info-pill.stat-atk::after   { content: " (Atk)"; display: none; }
-.info-pill.stat-def::after   { content: " (Def)"; display: none; }
-.info-pill.stat-spa::after   { content: " (SpA)"; display: none; }
-.info-pill.stat-spd::after   { content: " (SpD)"; display: none; }
-.info-pill.stat-spe::after   { content: " (Spe)"; display: none; }
-.info-pill:hover::after      { display: inline; opacity: 0.6; }
+/* Tooltip suffix on EV pills */
+.info-pill.stat-hp::after    { content:" (HP)"; display:none; }
+.info-pill.stat-atk::after   { content:" (Atk)"; display:none; }
+.info-pill.stat-def::after   { content:" (Def)"; display:none; }
+.info-pill.stat-spa::after   { content:" (SpA)"; display:none; }
+.info-pill.stat-spd::after   { content:" (SpD)"; display:none; }
+.info-pill.stat-spe::after   { content:" (Spe)"; display:none; }
+.info-pill:hover::after      { display:inline; opacity:.6; }
 
+/* Animations & responsive */
 @keyframes pulseGlow {
-  0%   { box-shadow: 0 0 6px rgba(255, 255, 255, 0.15); }
-  100% { box-shadow: 0 0 12px rgba(255, 255, 255, 0.3); }
+  0% { box-shadow:0 0 6px rgba(255,255,255,.15); }
+  100% { box-shadow:0 0 12px rgba(255,255,255,.3); }
 }
 
-.info-pill[style*="background-color"] {
-  color: white !important;
-  font-weight: bold;
-  text-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
-}
-.info-pill[class*="stat-"] {
-  color: white !important;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-}
-.info-pill[class*="type-"],
-.move-pill {
-  padding: 8px 12px;
-  border-radius: 9999px;
-  font-weight: 600;
-  color: white;
-  font-size: 0.9rem;
-  text-transform: capitalize;
-  text-align: center;
-  backdrop-filter: blur(6px);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
+@media(max-width:480px) {
+  #team-container { grid-template-columns:1fr; padding:1rem; }
+  .move-pill-container { grid-template-columns:1fr; }
 }
