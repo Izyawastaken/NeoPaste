@@ -77,8 +77,8 @@ window.addEventListener('DOMContentLoaded', () => {
       <div class="paste-output fade-in">
         <p><strong>Your Paste Link:</strong></p>
         <div class="link-buttons">
-          <a class="paste-url" href="${fullURL}" target="_blank">🔗 View Paste</a>
-          <button class="copy-link-btn" data-link="${fullURL}">📋 Copy Link</button>
+<a class="fancy-btn" href="${fullURL}" target="_blank">🔗 View Paste</a>
+          <button class="copy-link-btn fancy-btn" data-link="${fullURL}">📋 Copy Link</button>
           <span class="link-status" style="margin-left: 10px; color: green;">✅ Link updated!</span>
         </div>
       </div>

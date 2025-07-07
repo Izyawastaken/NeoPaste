@@ -206,3 +206,35 @@ footer a:hover {
     height: 300px;
   }
 }
+/* Reuse styling for both links and buttons */
+.fancy-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  background: var(--glass-light);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: background 0.3s ease, transform 0.15s ease;
+  cursor: pointer;
+}
+
+body.dark .fancy-btn {
+  background: var(--glass-dark);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--text-dark);
+}
+
+.fancy-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+/* When copied, keep consistent styling */
+.copy-link-btn.copied {
+  background-color: #4caf50 !important;
+  border-color: #4caf50 !important;
+  color: white !important;
+}
