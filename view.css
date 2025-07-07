@@ -422,3 +422,25 @@ body.dark .fancy-btn:hover {
   background: #A8A878;
   box-shadow: 0 0 10px #A8A878;
 }
+
+/* IV pill override: ensure contrast and padding for gradient backgrounds */
+.info-pill[style*="background-color"] {
+  color: white;
+  border: none;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+}
+.info-pill.stat-hp::after    { content: " (HP)"; display: none; }
+.info-pill.stat-atk::after   { content: " (Atk)"; display: none; }
+.info-pill.stat-def::after   { content: " (Def)"; display: none; }
+.info-pill.stat-spa::after   { content: " (SpA)"; display: none; }
+.info-pill.stat-spd::after   { content: " (SpD)"; display: none; }
+.info-pill.stat-spe::after   { content: " (Spe)"; display: none; }
+.info-pill:hover::after      { display: inline; opacity: 0.6; }
+.info-pill[style*="background-color"] {
+  animation: pulseGlow 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes pulseGlow {
+  0%   { box-shadow: 0 0 6px rgba(255, 255, 255, 0.15); }
+  100% { box-shadow: 0 0 12px rgba(255, 255, 255, 0.3); }
+}
