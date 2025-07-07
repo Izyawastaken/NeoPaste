@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
 
 :root {
@@ -120,15 +121,15 @@ body.dark .info-pill {
 }
 
 /* EV Stat Color Pills */
-.stat-hp .info-pill     { background: #66bb6a; box-shadow: 0 0 10px #66bb6a; color: white; }
-.stat-atk .info-pill    { background: #ef5350; box-shadow: 0 0 10px #ef5350; color: white; }
-.stat-def .info-pill    { background: #42a5f5; box-shadow: 0 0 10px #42a5f5; color: white; }
-.stat-spa .info-pill    { background: #7e57c2; box-shadow: 0 0 10px #7e57c2; color: white; }
-.stat-spd .info-pill    { background: #26c6da; box-shadow: 0 0 10px #26c6da; color: white; }
-.stat-spe .info-pill    { background: #ffa726; box-shadow: 0 0 10px #ffa726; color: black; }
+.info-pill.stat-hp     { background: #66bb6a; box-shadow: 0 0 10px #66bb6a; color: white; }
+.info-pill.stat-atk    { background: #ef5350; box-shadow: 0 0 10px #ef5350; color: white; }
+.info-pill.stat-def    { background: #42a5f5; box-shadow: 0 0 10px #42a5f5; color: white; }
+.info-pill.stat-spa    { background: #7e57c2; box-shadow: 0 0 10px #7e57c2; color: white; }
+.info-pill.stat-spd    { background: #26c6da; box-shadow: 0 0 10px #26c6da; color: white; }
+.info-pill.stat-spe    { background: #ffa726; box-shadow: 0 0 10px #ffa726; color: black; }
 
 /* Move / Tera Type Pills */
-.move-pill, .info-pill.type-pill {
+.move-pill, .info-pill.type-pill, .info-pill[class*="type-"] {
   display: inline-block;
   padding: 8px 12px;
   border-radius: 9999px;
@@ -327,108 +328,17 @@ body.dark .fancy-btn:hover {
     grid-template-columns: 1fr;
   }
 }
-/* Type-based coloring + glow */
-.type-fire {
-  background: #F08030;
-  box-shadow: 0 0 10px #F08030;
-}
-
-.type-water {
-  background: #6890F0;
-  box-shadow: 0 0 10px #6890F0;
-}
-
-.type-grass {
-  background: #78C850;
-  box-shadow: 0 0 10px #78C850;
-}
-
-.type-electric {
-  background: #F8D030;
-  color: black;
-  box-shadow: 0 0 10px #F8D030;
-}
-
-.type-ice {
-  background: #98D8D8;
-  color: black;
-  box-shadow: 0 0 10px #98D8D8;
-}
-
-.type-fighting {
-  background: #C03028;
-  box-shadow: 0 0 10px #C03028;
-}
-
-.type-poison {
-  background: #A040A0;
-  box-shadow: 0 0 10px #A040A0;
-}
-
-.type-ground {
-  background: #E0C068;
-  color: black;
-  box-shadow: 0 0 10px #E0C068;
-}
-
-.type-flying {
-  background: #A890F0;
-  box-shadow: 0 0 10px #A890F0;
-}
-
-.type-psychic {
-  background: #F85888;
-  box-shadow: 0 0 10px #F85888;
-}
-
-.type-bug {
-  background: #A8B820;
-  box-shadow: 0 0 10px #A8B820;
-}
-
-.type-rock {
-  background: #B8A038;
-  box-shadow: 0 0 10px #B8A038;
-}
-
-.type-ghost {
-  background: #705898;
-  box-shadow: 0 0 10px #705898;
-}
-
-.type-dragon {
-  background: #7038F8;
-  box-shadow: 0 0 10px #7038F8;
-}
-
-.type-dark {
-  background: #705848;
-  box-shadow: 0 0 10px #705848;
-}
-
-.type-steel {
-  background: #B8B8D0;
-  color: black;
-  box-shadow: 0 0 10px #B8B8D0;
-}
-
-.type-fairy {
-  background: #EE99AC;
-  color: black;
-  box-shadow: 0 0 10px #EE99AC;
-}
-
-.type-normal {
-  background: #A8A878;
-  box-shadow: 0 0 10px #A8A878;
-}
 
 /* IV pill override: ensure contrast and padding for gradient backgrounds */
-.info-pill[style*="background-color"] {
-  color: white;
+.info-pill[style*="background-color"],
+.info-pill[style*="linear-gradient"] {
+  color: white !important;
   border: none;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  animation: pulseGlow 1.5s ease-in-out infinite alternate;
 }
+
+/* EV pill hover info */
 .info-pill.stat-hp::after    { content: " (HP)"; display: none; }
 .info-pill.stat-atk::after   { content: " (Atk)"; display: none; }
 .info-pill.stat-def::after   { content: " (Def)"; display: none; }
@@ -436,9 +346,6 @@ body.dark .fancy-btn:hover {
 .info-pill.stat-spd::after   { content: " (SpD)"; display: none; }
 .info-pill.stat-spe::after   { content: " (Spe)"; display: none; }
 .info-pill:hover::after      { display: inline; opacity: 0.6; }
-.info-pill[style*="background-color"] {
-  animation: pulseGlow 1.5s ease-in-out infinite alternate;
-}
 
 @keyframes pulseGlow {
   0%   { box-shadow: 0 0 6px rgba(255, 255, 255, 0.15); }
