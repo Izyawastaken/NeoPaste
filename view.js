@@ -33,8 +33,15 @@ function sanitizeType(type) {
 function toShowdownId(name) {
   return name.toLowerCase()
     .normalize("NFD").replace(/[̀-ͯ]/g, "")
-    .replace(/[^a-z0-9]/g, "");
+    .replace(/[^a-z0-9]/g, ""); // removes everything but a-z and 0-9
 }
+
+function toSpriteId(name) {
+  return name.toLowerCase()
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/[^a-z0-9-]/g, ""); // keeps hyphens for sprite names
+}
+
 
 const params = new URLSearchParams(location.search);
 const pasteId = params.get('id');
@@ -57,7 +64,7 @@ async function loadPaste() {
   }
 
   const { title, author, content } = data;
-  const team = parsePaste(content);
+const team = await parsePaste(content);
 
   document.getElementById('paste-title').textContent = title || "Untitled Paste";
   document.getElementById('paste-author').textContent = author ? `By ${author}` : "";
@@ -71,11 +78,11 @@ async function loadPaste() {
     const card = document.createElement('div');
     card.className = 'pokemon-card';
 
-    const spriteUrl = `https://play.pokemonshowdown.com/sprites/dex${mon.shiny ? "-shiny" : ""}/${toShowdownId(mon.name)}.png`;
+    const spriteUrl = `https://play.pokemonshowdown.com/sprites/home${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
     const statBlock = await renderStatBlock(mon);
     const movePills = await renderMovePills(mon.moves);
 
-const teraType = sanitizeType(mon.teraType || "");
+const teraType = sanitizeType(mon.teraType || ""); // ✅ uses toShowdownId internally
 const teraTypeClass = teraType ? `type-${teraType}` : "";
 
 
@@ -83,7 +90,7 @@ const teraTypeClass = teraType ? `type-${teraType}` : "";
       <h2>${mon.nickname ? `${mon.nickname} (${mon.name})` : mon.name}
         <small>@ ${mon.item || "None"}</small></h2>
       <img src="${spriteUrl}" alt="${mon.name}" />
-      <p><strong>Ability:</strong> <span class="info-pill">${mon.ability || "—"}</span></p>
+      <p><strong>Ability:</strong> <span class="info-pill ability-pill">${mon.ability || "—"}</span></p>
       <p><strong>Tera Type:</strong> <span class="info-pill ${teraTypeClass}">${mon.teraType || "—"}</span></p>
       <p><strong>Nature:</strong> <span class="info-pill nature-pill nature-${mon.nature?.toLowerCase() || 'none'}">${mon.nature || "—"}</span></p>
       <p><strong>EVs:</strong> ${formatEVs(mon.evs)}</p>
@@ -128,7 +135,7 @@ function formatIVs(ivs = {}) {
 async function renderStatBlock(p) {
   const mods = natureMods[(p.nature || "").toLowerCase()] || {};
   try {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${toShowdownId(p.name)}`);
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${toSpriteId(p.name)}`);
     const data = await res.json();
 
     return `
@@ -179,7 +186,6 @@ function animateStatBars() {
     });
   });
 }
-
 function parsePaste(text) {
   const blocks = text.trim().split(/\n\s*\n/);
   return blocks.map(block => {
@@ -192,13 +198,30 @@ function parsePaste(text) {
     const [nameLine, ...rest] = lines;
     const [namePart, item] = nameLine.split(" @ ");
     mon.item = item?.trim() || "";
-    const match = namePart.match(/^(.*?)\s*(?:\(([^()]+)\))?\s*(?:\(([^()]+)\))?$/);
-    if (match) {
-      mon.nickname = match[1]?.trim() || "";
-      mon.name = match[2] && match[2] !== "M" && match[2] !== "F" ? match[2] : match[1]?.trim();
-      mon.gender = ["M", "F"].includes(match[3]) ? match[3] : null;
-    }
 
+    const parens = [...namePart.matchAll(/\(([^)]+)\)/g)].map(m => m[1].trim());
+    const baseName = namePart.replace(/\s*\([^)]*\)/g, '').trim();
+
+    // Handle gender
+    let gender = null;
+    if (parens.length > 0 && ["M", "F"].includes(parens[parens.length - 1])) {
+      gender = parens.pop();
+    }
+    mon.gender = gender;
+
+    // Guess species (second-to-last paren if any left, else base)
+    let species = parens.length ? parens.pop() : baseName;
+    mon.name = species;
+
+    // Whatever parens remain + baseName = nickname
+    mon.nickname = parens.length ? `${baseName} (${parens.join(") (")})` : baseName;
+    if (mon.nickname === mon.name) mon.nickname = "";
+    // Build nickname
+    mon.nickname = parens.length > 0
+      ? `${baseName} (${parens.join(") (")})`
+      : (mon.name !== baseName ? baseName : "");
+
+    // Remaining lines: Ability, Nature, EVs, IVs, etc.
     rest.forEach(line => {
       if (line.startsWith("Ability:")) mon.ability = line.split(":")[1].trim();
       else if (line.startsWith("Shiny:")) mon.shiny = line.toLowerCase().includes("yes");

@@ -344,7 +344,7 @@ body.dark .fancy-btn:hover {
     padding: 1rem;
   }
   .move-pill-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr; 
   }
 }
 
@@ -489,4 +489,93 @@ body.dark .fancy-btn:hover {
   padding: 0.3em 0.8em;
   font-weight: bold;
   box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
+
+
+/* Override base background styles for nature pills */
+span.info-pill.nature-pill[class*="nature-"] {
+  background: unset !important;
+  background-image: unset !important;
+  box-shadow: none !important;
+}
+
+/* Competitive Nature Gradient Styles */
+span.info-pill.nature-pill.nature-adamant {
+  background: linear-gradient(to right, #7e57c2, #ef5350) !important; /* SpA → Atk */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-modest {
+  background: linear-gradient(to right, #ef5350, #7e57c2) !important; /* Atk → SpA */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-timid {
+  background: linear-gradient(to right, #ef5350, #ffa726) !important; /* Atk → Spe */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-jolly {
+  background: linear-gradient(to right, #7e57c2, #ffa726) !important; /* SpA → Spe */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-bold {
+  background: linear-gradient(to right, #ef5350, #42a5f5) !important; /* Atk → Def */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-calm {
+  background: linear-gradient(to right, #ef5350, #26c6da) !important; /* Atk → SpD */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-careful {
+  background: linear-gradient(to right, #7e57c2, #26c6da) !important; /* SpA → SpD */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-impish {
+  background: linear-gradient(to right, #7e57c2, #42a5f5) !important; /* SpA → Def */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-relaxed {
+  background: linear-gradient(to right, #ffa726, #42a5f5) !important; /* Spe → Def */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-quiet {
+  background: linear-gradient(to right, #ffa726, #7e57c2) !important; /* Spe → SpA */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-brave {
+  background: linear-gradient(to right, #ffa726, #ef5350) !important; /* Spe → Atk */
+  color: white !important;
+}
+
+span.info-pill.nature-pill.nature-lonely {
+  background: linear-gradient(to right, #42a5f5, #ef5350) !important; /* Def → Atk */
+  color: white !important;
+}
+@keyframes pulseGlow {
+  0%   { box-shadow: 0 0 6px rgba(255, 255, 255, 0.15); }
+  100% { box-shadow: 0 0 12px rgba(255, 255, 255, 0.3); }
+}
+span.info-pill.nature-pill[class*="nature-"] {
+  animation: pulseGlow 1.6s ease-in-out infinite alternate;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+.info-pill.ability-pill {
+  background: var(--accent) !important;
+  color: white !important;
+  font-weight: bold;
+  box-shadow: 0 0 10px rgba(255, 122, 0, 0.5);
+  animation: pulseGlow 1.6s ease-in-out infinite alternate;
+  text-shadow: 0 0 4px rgba(0,0,0,0.4);
+}
+@keyframes pulseGlow {
+  0%   { box-shadow: 0 0 6px rgba(255, 255, 255, 0.15); }
+  100% { box-shadow: 0 0 12px rgba(255, 255, 255, 0.3); }
 }
