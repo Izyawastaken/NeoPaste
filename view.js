@@ -94,6 +94,20 @@ async function loadPaste() {
   animateStatBars();
 }
 
+// 🆕 Gradient IVs: 0 (red) → 31 (green)
+function getIVColor(percent) {
+  let r, g;
+  if (percent < 0.5) {
+    r = 255;
+    g = Math.round(510 * percent);
+  } else {
+    r = Math.round(510 * (1 - percent));
+    g = 255;
+  }
+  return `rgb(${r}, ${g}, 100)`;
+}
+
+// ✅ EVs match stat color classes (e.g. .stat-atk)
 function formatEVs(evs) {
   const entries = Object.entries(evs || {})
     .filter(([_, v]) => v > 0)
@@ -101,10 +115,15 @@ function formatEVs(evs) {
   return entries.length ? entries.join(" ") : '<span class="info-pill">—</span>';
 }
 
+// ✅ IVs now have colored backgrounds using gradient
 function formatIVs(ivs) {
   const entries = Object.entries(ivs || {})
     .filter(([_, v]) => v < 31)
-    .map(([k, v]) => `<span class="info-pill">${v} ${k.toUpperCase()}</span>`);
+    .map(([k, v]) => {
+      const percent = v / 31;
+      const color = getIVColor(percent);
+      return `<span class="info-pill" style="background-color: ${color};">${v} ${k.toUpperCase()}</span>`;
+    });
   return entries.length ? entries.join(" ") : '<span class="info-pill">Default (31)</span>';
 }
 
