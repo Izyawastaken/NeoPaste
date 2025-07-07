@@ -125,6 +125,7 @@ function formatIVs(ivs) {
       return `<span class="info-pill" style="background-color: ${color};">${v} ${k.toUpperCase()}</span>`;
     });
   return entries.length ? entries.join(" ") : '<span class="info-pill">Default (31)</span>';
+
 }
 
 async function renderStatBlock(pokemon) {
