@@ -41,8 +41,13 @@ NeoPaste fully supports the **Pokémon Showdown format**, which is the de-facto 
 ## Contact
 
 Feel free to reach out with feedback or suggestions! NeoPaste is built with love, not for profit and all input is welcome. 
+---
+## Support me!
 
+I stream on [twitch](https://www.twitch.tv/izyalovesgothmommies) from time to time check me out!
 
+Support me on [Ko-Fi](https://ko-fi.com/izyalovesgothmommies)!
+---
 ## License
 
 This project is © 2025 Izya. All rights reserved.  
