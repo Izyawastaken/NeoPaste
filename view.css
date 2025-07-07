@@ -86,15 +86,15 @@ body.dark .pokemon-card {
   color: var(--accent);
   margin-bottom: 0.5rem;
 }
-
 .pokemon-card img {
-  width: 96px;
-  height: 96px;
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  width: 200px;     /* was 96px */
+  height: 200px;    /* was 96px */
   image-rendering: pixelated;
-  margin-left: auto;
-  margin-bottom: 0.5rem;
-  align-self: flex-end;
 }
+
 
 .pokemon-card p {
   margin: 0.25rem 0;
