@@ -143,6 +143,30 @@ body.dark .info-pill {
   transition: transform 0.15s ease, box-shadow 0.2s ease;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
 }
+/* STRONG override to ensure type pills get their unique backgrounds */
+.info-pill.type-fire     { background: #F08030 !important; box-shadow: 0 0 12px #F08030 !important; }
+.info-pill.type-water    { background: #6890F0 !important; box-shadow: 0 0 12px #6890F0 !important; }
+.info-pill.type-grass    { background: #78C850 !important; box-shadow: 0 0 12px #78C850 !important; }
+.info-pill.type-electric { background: #F8D030 !important; color: black !important; box-shadow: 0 0 12px #F8D030 !important; }
+.info-pill.type-ice      { background: #98D8D8 !important; color: black !important; box-shadow: 0 0 12px #98D8D8 !important; }
+.info-pill.type-fighting { background: #C03028 !important; box-shadow: 0 0 12px #C03028 !important; }
+.info-pill.type-poison   { background: #A040A0 !important; box-shadow: 0 0 12px #A040A0 !important; }
+.info-pill.type-ground   { background: #E0C068 !important; color: black !important; box-shadow: 0 0 12px #E0C068 !important; }
+.info-pill.type-flying   { background: #A890F0 !important; box-shadow: 0 0 12px #A890F0 !important; }
+.info-pill.type-psychic  { background: #F85888 !important; box-shadow: 0 0 12px #F85888 !important; }
+.info-pill.type-bug      { background: #A8B820 !important; box-shadow: 0 0 12px #A8B820 !important; }
+.info-pill.type-rock     { background: #B8A038 !important; box-shadow: 0 0 12px #B8A038 !important; }
+.info-pill.type-ghost    { background: #705898 !important; box-shadow: 0 0 12px #705898 !important; }
+.info-pill.type-dragon   { background: #7038F8 !important; box-shadow: 0 0 12px #7038F8 !important; }
+.info-pill.type-dark     { background: #705848 !important; box-shadow: 0 0 12px #705848 !important; }
+.info-pill.type-steel    { background: #B8B8D0 !important; color: black !important; box-shadow: 0 0 12px #B8B8D0 !important; }
+.info-pill.type-fairy    { background: #EE99AC !important; color: black !important; box-shadow: 0 0 12px #EE99AC !important; }
+.info-pill.type-normal   { background: #A8A878 !important; box-shadow: 0 0 12px #A8A878 !important; }
+
+/* Force background to be solid for type pills */
+.info-pill[class*="type-"] {
+  background: unset !important;
+}
 
 .move-pill:hover {
   transform: scale(1.025);
@@ -374,3 +398,55 @@ body.dark .fancy-btn:hover {
   transition: transform 0.15s ease, box-shadow 0.2s ease;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
 }
+
+/* Override dark mode for EV Stat Pills */
+:is(.info-pill, body.dark .info-pill).stat-hp  { background: #66bb6a; box-shadow: 0 0 10px #66bb6a; color: white; }
+:is(.info-pill, body.dark .info-pill).stat-atk { background: #ef5350; box-shadow: 0 0 10px #ef5350; color: white; }
+:is(.info-pill, body.dark .info-pill).stat-def { background: #42a5f5; box-shadow: 0 0 10px #42a5f5; color: white; }
+:is(.info-pill, body.dark .info-pill).stat-spa { background: #7e57c2; box-shadow: 0 0 10px #7e57c2; color: white; }
+:is(.info-pill, body.dark .info-pill).stat-spd { background: #26c6da; box-shadow: 0 0 10px #26c6da; color: white; }
+:is(.info-pill, body.dark .info-pill).stat-spe { background: #ffa726; box-shadow: 0 0 10px #ffa726; color: black; }
+
+/* Make sure Tera Type pills always show colored backgrounds */
+.info-pill[class*="type-"] {
+  background: unset !important; /* Avoid dark-mode override */
+  color: white;
+  font-weight: bold;
+  text-shadow: 0 0 4px rgba(0,0,0,0.6);
+  padding: 8px 12px;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  text-align: center;
+  backdrop-filter: blur(6px);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+}
+
+/* Reapply all type-specific colors for clarity and glow */
+.type-fire     { background: #F08030 !important; box-shadow: 0 0 12px #F08030; }
+.type-water    { background: #6890F0 !important; box-shadow: 0 0 12px #6890F0; }
+.type-grass    { background: #78C850 !important; box-shadow: 0 0 12px #78C850; }
+.type-electric { background: #F8D030 !important; color: black !important; box-shadow: 0 0 12px #F8D030; }
+.type-ice      { background: #98D8D8 !important; color: black !important; box-shadow: 0 0 12px #98D8D8; }
+.type-fighting { background: #C03028 !important; box-shadow: 0 0 12px #C03028; }
+.type-poison   { background: #A040A0 !important; box-shadow: 0 0 12px #A040A0; }
+.type-ground   { background: #E0C068 !important; color: black !important; box-shadow: 0 0 12px #E0C068; }
+.type-flying   { background: #A890F0 !important; box-shadow: 0 0 12px #A890F0; }
+.type-psychic  { background: #F85888 !important; box-shadow: 0 0 12px #F85888; }
+.type-bug      { background: #A8B820 !important; box-shadow: 0 0 12px #A8B820; }
+.type-rock     { background: #B8A038 !important; box-shadow: 0 0 12px #B8A038; }
+.type-ghost    { background: #705898 !important; box-shadow: 0 0 12px #705898; }
+.type-dragon   { background: #7038F8 !important; box-shadow: 0 0 12px #7038F8; }
+.type-dark     { background: #705848 !important; box-shadow: 0 0 12px #705848; }
+.type-steel    { background: #B8B8D0 !important; color: black !important; box-shadow: 0 0 12px #B8B8D0; }
+.type-fairy    { background: #EE99AC !important; color: black !important; box-shadow: 0 0 12px #EE99AC; }
+.type-normal   { background: #A8A878 !important; box-shadow: 0 0 12px #A8A878; }
+
+.info-pill[class*="type-"], .move-pill {
+  animation: pulseGlow 1.6s ease-in-out infinite alternate;
+}
+
+.info-pill[class*="type-"], .move-pill {
+  animation: pulseGlow 1.6s ease-in-out infinite alternate;
+}
+

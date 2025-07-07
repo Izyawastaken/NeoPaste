@@ -3,6 +3,12 @@ const statNameMap = {
   hp: "HP", attack: "Atk", defense: "Def",
   "special-attack": "SpA", "special-defense": "SpD", speed: "Spe"
 };
+const validTypes = [
+  "normal", "fire", "water", "electric", "grass", "ice",
+  "fighting", "poison", "ground", "flying", "psychic", "bug",
+  "rock", "ghost", "dragon", "dark", "steel", "fairy"
+];
+
 
 const natureMods = {
   adamant: { up: "atk", down: "spa" },
@@ -18,6 +24,11 @@ const natureMods = {
   brave: { up: "atk", down: "spe" },
   lonely: { up: "atk", down: "def" }
 };
+
+function sanitizeType(type) {
+  const clean = toShowdownId(type.trim());
+  return validTypes.includes(clean) ? clean : null;
+}
 
 function toShowdownId(name) {
   return name.toLowerCase()
@@ -64,7 +75,9 @@ async function loadPaste() {
     const statBlock = await renderStatBlock(mon);
     const movePills = await renderMovePills(mon.moves);
 
-    const teraTypeClass = mon.teraType ? `type-${mon.teraType.toLowerCase()}` : "";
+const teraType = sanitizeType(mon.teraType || "");
+const teraTypeClass = teraType ? `type-${teraType}` : "";
+
 
     card.innerHTML = `
       <h2>${mon.nickname ? `${mon.nickname} (${mon.name})` : mon.name}
@@ -96,10 +109,13 @@ function getIVColor(percent) {
 function formatEVs(evs = {}) {
   return Object.entries(evs)
     .filter(([_, v]) => v > 0)
-    .map(([k, v]) => {
-      const short = statNameMap[k] ? k : k.toLowerCase();
-      return `<span class="info-pill stat-${short}">${v} ${short.toUpperCase()}</span>`;
-    }).join(" ") || '<span class="info-pill">—</span>';
+   .map(([k, v]) => {
+  const shortKey = k.toLowerCase();
+  const short = statNameMap[k] || shortKey;
+  const cssKey = short.toLowerCase(); // "atk", "spa", etc.
+  return `<span class="info-pill stat-${cssKey}">${v} ${short}</span>`;
+})
+
 }
 
 function formatIVs(ivs = {}) {
@@ -186,7 +202,7 @@ function parsePaste(text) {
     rest.forEach(line => {
       if (line.startsWith("Ability:")) mon.ability = line.split(":")[1].trim();
       else if (line.startsWith("Shiny:")) mon.shiny = line.toLowerCase().includes("yes");
-      else if (line.startsWith("Tera Type:")) mon.teraType = line.split(":")[1].trim();
+      else if (line.startsWith("Tera Type:")) mon.teraType = line.split(":")[1].trim().toLowerCase();
       else if (line.startsWith("EVs:")) line.slice(4).split("/").forEach(part => {
         const [val, stat] = part.trim().split(" ");
         mon.evs[stat.toLowerCase()] = +val;
