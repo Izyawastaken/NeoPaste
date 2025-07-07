@@ -47,6 +47,7 @@ Feel free to reach out with feedback or suggestions! NeoPaste is built with love
 I stream on [twitch](https://www.twitch.tv/izyalovesgothmommies) from time to time check me out!
 
 Support me on [Ko-Fi](https://ko-fi.com/izyalovesgothmommies)!
+
 ---
 ## License
 
