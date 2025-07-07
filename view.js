@@ -85,7 +85,7 @@ const teraTypeClass = teraType ? `type-${teraType}` : "";
       <img src="${spriteUrl}" alt="${mon.name}" />
       <p><strong>Ability:</strong> <span class="info-pill">${mon.ability || "—"}</span></p>
       <p><strong>Tera Type:</strong> <span class="info-pill ${teraTypeClass}">${mon.teraType || "—"}</span></p>
-      <p><strong>Nature:</strong> <span class="info-pill">${mon.nature || "—"}</span></p>
+      <p><strong>Nature:</strong> <span class="info-pill nature-pill nature-${mon.nature?.toLowerCase() || 'none'}">${mon.nature || "—"}</span></p>
       <p><strong>EVs:</strong> ${formatEVs(mon.evs)}</p>
       <p><strong>IVs:</strong> ${formatIVs(mon.ivs)}</p>
       ${statBlock}

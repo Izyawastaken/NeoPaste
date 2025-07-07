@@ -147,11 +147,11 @@ body.dark .info-pill {
 .info-pill.type-fire     { background: #F08030 !important; box-shadow: 0 0 12px #F08030 !important; }
 .info-pill.type-water    { background: #6890F0 !important; box-shadow: 0 0 12px #6890F0 !important; }
 .info-pill.type-grass    { background: #78C850 !important; box-shadow: 0 0 12px #78C850 !important; }
-.info-pill.type-electric { background: #F8D030 !important; color: black !important; box-shadow: 0 0 12px #F8D030 !important; }
-.info-pill.type-ice      { background: #98D8D8 !important; color: black !important; box-shadow: 0 0 12px #98D8D8 !important; }
+.info-pill.type-electric { background: #F8D030 !important; box-shadow: 0 0 12px #F8D030 !important; }
+.info-pill.type-ice      { background: #98D8D8 !important; box-shadow: 0 0 12px #98D8D8 !important; }
 .info-pill.type-fighting { background: #C03028 !important; box-shadow: 0 0 12px #C03028 !important; }
 .info-pill.type-poison   { background: #A040A0 !important; box-shadow: 0 0 12px #A040A0 !important; }
-.info-pill.type-ground   { background: #E0C068 !important; color: black !important; box-shadow: 0 0 12px #E0C068 !important; }
+.info-pill.type-ground   { background: #E0C068 !important; box-shadow: 0 0 12px #E0C068 !important; }
 .info-pill.type-flying   { background: #A890F0 !important; box-shadow: 0 0 12px #A890F0 !important; }
 .info-pill.type-psychic  { background: #F85888 !important; box-shadow: 0 0 12px #F85888 !important; }
 .info-pill.type-bug      { background: #A8B820 !important; box-shadow: 0 0 12px #A8B820 !important; }
@@ -159,14 +159,9 @@ body.dark .info-pill {
 .info-pill.type-ghost    { background: #705898 !important; box-shadow: 0 0 12px #705898 !important; }
 .info-pill.type-dragon   { background: #7038F8 !important; box-shadow: 0 0 12px #7038F8 !important; }
 .info-pill.type-dark     { background: #705848 !important; box-shadow: 0 0 12px #705848 !important; }
-.info-pill.type-steel    { background: #B8B8D0 !important; color: black !important; box-shadow: 0 0 12px #B8B8D0 !important; }
-.info-pill.type-fairy    { background: #EE99AC !important; color: black !important; box-shadow: 0 0 12px #EE99AC !important; }
+.info-pill.type-steel    { background: #B8B8D0 !important; box-shadow: 0 0 12px #B8B8D0 !important; }
+.info-pill.type-fairy    { background: #EE99AC !important; box-shadow: 0 0 12px #EE99AC !important; }
 .info-pill.type-normal   { background: #A8A878 !important; box-shadow: 0 0 12px #A8A878 !important; }
-
-/* Force background to be solid for type pills */
-.info-pill[class*="type-"] {
-  background: unset !important;
-}
 
 .move-pill:hover {
   transform: scale(1.025);
@@ -176,11 +171,11 @@ body.dark .info-pill {
 .type-fire     { background: #F08030; box-shadow: 0 0 10px #F08030; }
 .type-water    { background: #6890F0; box-shadow: 0 0 10px #6890F0; }
 .type-grass    { background: #78C850; box-shadow: 0 0 10px #78C850; }
-.type-electric { background: #F8D030; color: black; box-shadow: 0 0 10px #F8D030; }
-.type-ice      { background: #98D8D8; color: black; box-shadow: 0 0 10px #98D8D8; }
+.type-electric { background: #F8D030; box-shadow: 0 0 10px #F8D030; }
+.type-ice      { background: #98D8D8; box-shadow: 0 0 10px #98D8D8; }
 .type-fighting { background: #C03028; box-shadow: 0 0 10px #C03028; }
 .type-poison   { background: #A040A0; box-shadow: 0 0 10px #A040A0; }
-.type-ground   { background: #E0C068; color: black; box-shadow: 0 0 10px #E0C068; }
+.type-ground   { background: #E0C068; box-shadow: 0 0 10px #E0C068; }
 .type-flying   { background: #A890F0; box-shadow: 0 0 10px #A890F0; }
 .type-psychic  { background: #F85888; box-shadow: 0 0 10px #F85888; }
 .type-bug      { background: #A8B820; box-shadow: 0 0 10px #A8B820; }
@@ -188,8 +183,8 @@ body.dark .info-pill {
 .type-ghost    { background: #705898; box-shadow: 0 0 10px #705898; }
 .type-dragon   { background: #7038F8; box-shadow: 0 0 10px #7038F8; }
 .type-dark     { background: #705848; box-shadow: 0 0 10px #705848; }
-.type-steel    { background: #B8B8D0; color: black; box-shadow: 0 0 10px #B8B8D0; }
-.type-fairy    { background: #EE99AC; color: black; box-shadow: 0 0 10px #EE99AC; }
+.type-steel    { background: #B8B8D0; box-shadow: 0 0 10px #B8B8D0; }
+.type-fairy    { background: #EE99AC; box-shadow: 0 0 10px #EE99AC; }
 .type-normal   { background: #A8A878; box-shadow: 0 0 10px #A8A878; }
 
 /* Move Pill Container */
@@ -409,7 +404,6 @@ body.dark .fancy-btn:hover {
 
 /* Make sure Tera Type pills always show colored backgrounds */
 .info-pill[class*="type-"] {
-  background: unset !important; /* Avoid dark-mode override */
   color: white;
   font-weight: bold;
   text-shadow: 0 0 4px rgba(0,0,0,0.6);
@@ -422,26 +416,6 @@ body.dark .fancy-btn:hover {
   transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
-/* Reapply all type-specific colors for clarity and glow */
-.type-fire     { background: #F08030 !important; box-shadow: 0 0 12px #F08030; }
-.type-water    { background: #6890F0 !important; box-shadow: 0 0 12px #6890F0; }
-.type-grass    { background: #78C850 !important; box-shadow: 0 0 12px #78C850; }
-.type-electric { background: #F8D030 !important; color: black !important; box-shadow: 0 0 12px #F8D030; }
-.type-ice      { background: #98D8D8 !important; color: black !important; box-shadow: 0 0 12px #98D8D8; }
-.type-fighting { background: #C03028 !important; box-shadow: 0 0 12px #C03028; }
-.type-poison   { background: #A040A0 !important; box-shadow: 0 0 12px #A040A0; }
-.type-ground   { background: #E0C068 !important; color: black !important; box-shadow: 0 0 12px #E0C068; }
-.type-flying   { background: #A890F0 !important; box-shadow: 0 0 12px #A890F0; }
-.type-psychic  { background: #F85888 !important; box-shadow: 0 0 12px #F85888; }
-.type-bug      { background: #A8B820 !important; box-shadow: 0 0 12px #A8B820; }
-.type-rock     { background: #B8A038 !important; box-shadow: 0 0 12px #B8A038; }
-.type-ghost    { background: #705898 !important; box-shadow: 0 0 12px #705898; }
-.type-dragon   { background: #7038F8 !important; box-shadow: 0 0 12px #7038F8; }
-.type-dark     { background: #705848 !important; box-shadow: 0 0 12px #705848; }
-.type-steel    { background: #B8B8D0 !important; color: black !important; box-shadow: 0 0 12px #B8B8D0; }
-.type-fairy    { background: #EE99AC !important; color: black !important; box-shadow: 0 0 12px #EE99AC; }
-.type-normal   { background: #A8A878 !important; box-shadow: 0 0 12px #A8A878; }
-
 .info-pill[class*="type-"], .move-pill {
   animation: pulseGlow 1.6s ease-in-out infinite alternate;
 }
@@ -450,3 +424,69 @@ body.dark .fancy-btn:hover {
   animation: pulseGlow 1.6s ease-in-out infinite alternate;
 }
 
+.nature-adamant {
+  background: linear-gradient(to right, #7e57c2, #ef5350); /* SpA → Atk */
+  color: white;
+}
+
+.nature-modest {
+  background: linear-gradient(to right, #ef5350, #7e57c2); /* Atk → SpA */
+  color: white;
+}
+
+.nature-timid {
+  background: linear-gradient(to right, #ef5350, #ffa726); /* Atk → Spe */
+  color: white;
+}
+
+.nature-jolly {
+  background: linear-gradient(to right, #7e57c2, #ffa726); /* SpA → Spe */
+  color: white;
+}
+
+.nature-bold {
+  background: linear-gradient(to right, #ef5350, #42a5f5); /* Atk → Def */
+  color: white;
+}
+
+.nature-calm {
+  background: linear-gradient(to right, #ef5350, #26c6da); /* Atk → SpD */
+  color: white;
+}
+
+.nature-careful {
+  background: linear-gradient(to right, #7e57c2, #26c6da); /* SpA → SpD */
+  color: white;
+}
+
+.nature-impish {
+  background: linear-gradient(to right, #7e57c2, #42a5f5); /* SpA → Def */
+  color: white;
+}
+
+.nature-relaxed {
+  background: linear-gradient(to right, #ffa726, #42a5f5); /* Spe → Def */
+  color: white;
+}
+
+.nature-quiet {
+  background: linear-gradient(to right, #ffa726, #7e57c2); /* Spe → SpA */
+  color: white;
+}
+
+.nature-brave {
+  background: linear-gradient(to right, #ffa726, #ef5350); /* Spe → Atk */
+  color: white;
+}
+
+.nature-lonely {
+  background: linear-gradient(to right, #42a5f5, #ef5350); /* Def → Atk */
+  color: white;
+}
+
+.nature-pill {
+  border-radius: 999px;
+  padding: 0.3em 0.8em;
+  font-weight: bold;
+  box-shadow: 0 0 5px rgba(0,0,0,0.2);
+}
