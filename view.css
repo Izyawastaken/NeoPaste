@@ -111,12 +111,81 @@ body.dark .pokemon-card {
   font-size: 0.8rem;
   font-weight: 500;
   margin: 2px 4px 2px 0;
+  transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+  text-transform: uppercase;
 }
 
 body.dark .info-pill {
   background: var(--glass-dark);
 }
 
+/* EV Stat Color Pills */
+.stat-hp .info-pill     { background: #66bb6a; box-shadow: 0 0 10px #66bb6a; color: white; }
+.stat-atk .info-pill    { background: #ef5350; box-shadow: 0 0 10px #ef5350; color: white; }
+.stat-def .info-pill    { background: #42a5f5; box-shadow: 0 0 10px #42a5f5; color: white; }
+.stat-spa .info-pill    { background: #7e57c2; box-shadow: 0 0 10px #7e57c2; color: white; }
+.stat-spd .info-pill    { background: #26c6da; box-shadow: 0 0 10px #26c6da; color: white; }
+.stat-spe .info-pill    { background: #ffa726; box-shadow: 0 0 10px #ffa726; color: black; }
+
+/* Move / Tera Type Pills */
+.move-pill, .info-pill.type-pill {
+  display: inline-block;
+  padding: 8px 12px;
+  border-radius: 9999px;
+  font-weight: 600;
+  color: white;
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  text-align: center;
+  width: 100%;
+  backdrop-filter: blur(6px);
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
+}
+
+.move-pill:hover {
+  transform: scale(1.025);
+}
+
+/* Type colors (Move + Tera Type) */
+.type-fire     { background: #F08030; box-shadow: 0 0 10px #F08030; }
+.type-water    { background: #6890F0; box-shadow: 0 0 10px #6890F0; }
+.type-grass    { background: #78C850; box-shadow: 0 0 10px #78C850; }
+.type-electric { background: #F8D030; color: black; box-shadow: 0 0 10px #F8D030; }
+.type-ice      { background: #98D8D8; color: black; box-shadow: 0 0 10px #98D8D8; }
+.type-fighting { background: #C03028; box-shadow: 0 0 10px #C03028; }
+.type-poison   { background: #A040A0; box-shadow: 0 0 10px #A040A0; }
+.type-ground   { background: #E0C068; color: black; box-shadow: 0 0 10px #E0C068; }
+.type-flying   { background: #A890F0; box-shadow: 0 0 10px #A890F0; }
+.type-psychic  { background: #F85888; box-shadow: 0 0 10px #F85888; }
+.type-bug      { background: #A8B820; box-shadow: 0 0 10px #A8B820; }
+.type-rock     { background: #B8A038; box-shadow: 0 0 10px #B8A038; }
+.type-ghost    { background: #705898; box-shadow: 0 0 10px #705898; }
+.type-dragon   { background: #7038F8; box-shadow: 0 0 10px #7038F8; }
+.type-dark     { background: #705848; box-shadow: 0 0 10px #705848; }
+.type-steel    { background: #B8B8D0; color: black; box-shadow: 0 0 10px #B8B8D0; }
+.type-fairy    { background: #EE99AC; color: black; box-shadow: 0 0 10px #EE99AC; }
+.type-normal   { background: #A8A878; box-shadow: 0 0 10px #A8A878; }
+
+/* Move Pill Container */
+.moves {
+  margin-top: auto;
+  padding: 0 0.5rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.move-pill-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem 1rem;
+  margin-top: 0.5rem;
+  width: 100%;
+  align-self: stretch;
+}
+
+/* Stat Section */
 .stat-block {
   margin: 1rem 0;
 }
@@ -180,42 +249,7 @@ body.dark .stat-bar {
   font-size: 0.85rem;
 }
 
-.moves {
-  margin-top: auto;
-  padding: 0 0.5rem 0.75rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-}
-
-.move-pill-container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 0.75rem 1rem;
-  margin-top: 0.5rem;
-  width: 100%;
-  align-self: stretch;
-}
-
-.move-pill {
-  display: inline-block;
-  padding: 8px 12px;
-  border-radius: 9999px;
-  font-weight: 600;
-  color: white;
-  font-size: 0.9rem;
-  text-transform: capitalize;
-  text-align: center;
-  width: 100%;
-  backdrop-filter: blur(6px);
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
-  box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
-}
-
-.move-pill:hover {
-  transform: scale(1.025);
-}
-
+/* Footer Buttons */
 .footer-buttons {
   display: flex;
   justify-content: center;
@@ -269,6 +303,7 @@ body.dark .fancy-btn:hover {
   transform: translateY(-2px);
 }
 
+/* Animation */
 .fade-in-up {
   opacity: 0;
   transform: translateY(20px);
@@ -282,113 +317,13 @@ body.dark .fancy-btn:hover {
   }
 }
 
-.layout-toggle-btn {
-  margin: 1rem auto 1.5rem;
-}
-
+/* Responsive */
 @media (max-width: 480px) {
-  #team-container.grid-layout {
+  #team-container {
     grid-template-columns: 1fr;
     padding: 1rem;
   }
-
   .move-pill-container {
     grid-template-columns: 1fr;
   }
-}
-
-/* Type-based coloring + glow */
-.type-fire {
-  background: #F08030;
-  box-shadow: 0 0 10px #F08030;
-}
-
-.type-water {
-  background: #6890F0;
-  box-shadow: 0 0 10px #6890F0;
-}
-
-.type-grass {
-  background: #78C850;
-  box-shadow: 0 0 10px #78C850;
-}
-
-.type-electric {
-  background: #F8D030;
-  color: black;
-  box-shadow: 0 0 10px #F8D030;
-}
-
-.type-ice {
-  background: #98D8D8;
-  color: black;
-  box-shadow: 0 0 10px #98D8D8;
-}
-
-.type-fighting {
-  background: #C03028;
-  box-shadow: 0 0 10px #C03028;
-}
-
-.type-poison {
-  background: #A040A0;
-  box-shadow: 0 0 10px #A040A0;
-}
-
-.type-ground {
-  background: #E0C068;
-  color: black;
-  box-shadow: 0 0 10px #E0C068;
-}
-
-.type-flying {
-  background: #A890F0;
-  box-shadow: 0 0 10px #A890F0;
-}
-
-.type-psychic {
-  background: #F85888;
-  box-shadow: 0 0 10px #F85888;
-}
-
-.type-bug {
-  background: #A8B820;
-  box-shadow: 0 0 10px #A8B820;
-}
-
-.type-rock {
-  background: #B8A038;
-  box-shadow: 0 0 10px #B8A038;
-}
-
-.type-ghost {
-  background: #705898;
-  box-shadow: 0 0 10px #705898;
-}
-
-.type-dragon {
-  background: #7038F8;
-  box-shadow: 0 0 10px #7038F8;
-}
-
-.type-dark {
-  background: #705848;
-  box-shadow: 0 0 10px #705848;
-}
-
-.type-steel {
-  background: #B8B8D0;
-  color: black;
-  box-shadow: 0 0 10px #B8B8D0;
-}
-
-.type-fairy {
-  background: #EE99AC;
-  color: black;
-  box-shadow: 0 0 10px #EE99AC;
-}
-
-.type-normal {
-  background: #A8A878;
-  box-shadow: 0 0 10px #A8A878;
 }
