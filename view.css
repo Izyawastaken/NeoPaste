@@ -138,7 +138,7 @@ body.dark .info-pill {
   font-size: 0.9rem;
   text-transform: capitalize;
   text-align: center;
-  width: 100%;
+  width: auto;
   backdrop-filter: blur(6px);
   transition: transform 0.15s ease, box-shadow 0.2s ease;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
