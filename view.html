@@ -2,13 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>View Pokepaste</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeoPaste Viewer</title>
 
-  <!-- CSS (dark mode ready) -->
+  <!-- Fonts with Display Swap for Non-Blocking Rendering -->
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Preconnects for Performance -->
+  <link rel="preconnect" href="https://pokeapi.co" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+  <!-- Stylesheet -->
   <link rel="stylesheet" href="view.css" />
 
-  <!-- Dark mode enabled by default -->
+  <!-- Default Dark Mode Toggle via LocalStorage -->
   <script>
     window.addEventListener("DOMContentLoaded", () => {
       const saved = localStorage.getItem("theme");
@@ -21,15 +28,19 @@
 <body>
   <div class="container">
     <header>
-      <h1 id="paste-title">Loading....</h1>
+      <h1 id="paste-title">Loading…</h1>
       <p class="subtitle" id="paste-author"></p>
     </header>
 
+    <!-- Dynamically Populated Team Cards -->
     <div id="team-container"></div>
 
+    <!-- Footer -->
     <footer>
+      <!-- Hidden Raw Paste Preview -->
       <pre id="pasteDisplay" style="display: none;"></pre>
 
+      <!-- Action Buttons -->
       <div class="footer-buttons">
         <button id="copyBtn" class="fancy-btn">📋 Copy to Clipboard</button>
         <button id="layoutToggle" class="fancy-btn">🔀 Vertical Layout</button>
@@ -39,11 +50,11 @@
     </footer>
   </div>
 
-  <!-- Supabase first -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="config.js"></script>
+  <!-- Supabase Config (must come first) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+  <script src="config.js" defer></script>
 
-  <!-- Viewer logic -->
+  <!-- Viewer Logic -->
   <script src="view.js" defer></script>
 </body>
 </html>
