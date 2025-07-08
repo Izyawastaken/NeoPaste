@@ -206,7 +206,6 @@ const teraTypeClass = teraType ? `type-${teraType}` : "";
 </div>
 <img src="${spriteUrl}" alt="${mon.name}" />
 
-      <img src="${spriteUrl}" alt="${mon.name}" />
       <p><strong>Ability:</strong> <span class="info-pill ability-pill">${mon.ability || "—"}</span></p>
       <p><strong>Tera Type:</strong> <span class="info-pill ${teraTypeClass}">${mon.teraType || "—"}</span></p>
 ${(() => {
@@ -412,5 +411,133 @@ document.getElementById('copyBtn').addEventListener('click', async () => {
     alert("❌ Failed to copy!");
   }
 });
+
+// Export single Pokémon card as PNG on click after export button is pressed
+const exportBtn = document.getElementById('exportPngBtn');
+let exportMode = false;
+
+if (exportBtn) {
+  exportBtn.addEventListener('click', () => {
+    exportMode = true;
+    document.body.style.cursor = 'crosshair';
+    const cards = document.querySelectorAll('.pokemon-card');
+    cards.forEach(card => {
+      card.classList.add('export-selectable');
+      card.title = 'Click to export this card as PNG';
+    });
+    // Use event delegation for card click
+    document.addEventListener('click', exportDelegatedHandler, { capture: true });
+  });
+}
+
+function exportDelegatedHandler(e) {
+  const card = e.target.closest('.pokemon-card.export-selectable');
+  if (exportMode && card) {
+    e.stopPropagation();
+    exportCardHandler(card);
+    cleanupExportMode();
+  } else if (exportMode) {
+    // Clicked outside any selectable card, cancel export mode
+    cleanupExportMode();
+  }
+}
+
+function highlightCard(e) {
+  e.currentTarget.style.boxShadow = '0 0 0 4px var(--accent, #ff9800), 0 4px 24px rgba(0,0,0,0.18)';
+  e.currentTarget.style.transform = 'scale(1.03)';
+}
+function unhighlightCard(e) {
+  e.currentTarget.style.boxShadow = '';
+  e.currentTarget.style.transform = '';
+}
+
+// Modified exportCardHandler to accept card element directly
+function exportCardHandler(card) {
+  // Remove highlight and add export-for-png class before export
+  card.classList.remove('export-selectable');
+  card.classList.add('export-for-png');
+  card.style.boxShadow = 'none';
+  card.style.filter = 'none';
+  // Get Pokémon name for filename
+  const nameElem = card.querySelector('.card-header h2');
+  let monName = 'pokemon-card';
+  if (nameElem) {
+    monName = nameElem.textContent.replace(/[^a-z0-9]+/gi, '_').replace(/^_+|_+$/g, '').toLowerCase();
+  }
+  setTimeout(() => {
+    // Always select the first img (the sprite)
+    const img = card.querySelector('img');
+    if (img && !img.complete) {
+      img.onload = () => doExport();
+      img.onerror = () => doExport();
+    } else {
+      doExport();
+    }
+    function doExport() {
+      if (window.html2canvas) {
+        // Force background color to match dark mode
+        html2canvas(card, {
+          backgroundColor: '#23272e',
+          useCORS: true,
+          scale: 2,
+          imageTimeout: 2000,
+          allowTaint: false,
+          logging: false
+        }).then(canvas => {
+          card.classList.remove('export-for-png');
+          card.style.boxShadow = '';
+          card.style.filter = '';
+          const link = document.createElement('a');
+          link.download = monName + '.png';
+          link.href = canvas.toDataURL('image/png');
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }).catch(() => {
+          card.classList.remove('export-for-png');
+          card.style.boxShadow = '';
+          card.style.filter = '';
+          alert('Export failed. Try again.');
+        });
+      } else {
+        card.classList.remove('export-for-png');
+        card.style.boxShadow = '';
+        card.style.filter = '';
+        alert('Export feature not loaded yet.');
+      }
+    }
+  }, 30);
+}
+
+function cleanupExportMode() {
+  exportMode = false;
+  document.body.style.cursor = '';
+  const cards = document.querySelectorAll('.pokemon-card');
+  cards.forEach(card => {
+    card.classList.remove('export-selectable');
+    card.title = '';
+    card.style.boxShadow = '';
+    card.style.transform = '';
+  });
+  document.removeEventListener('click', exportDelegatedHandler, { capture: true });
+}
+
+// Add export-selectable style and subtle glow
+const style = document.createElement('style');
+style.textContent = `
+.pokemon-card.export-selectable {
+  cursor: pointer !important;
+  filter: brightness(1.08) drop-shadow(0 0 8px var(--accent, #ff9800));
+  box-shadow: 0 0 0 4px var(--accent, #ff9800), 0 4px 24px rgba(0,0,0,0.18) !important;
+  transition: box-shadow 0.2s, filter 0.2s;
+  z-index: 2000;
+}
+.pokemon-card.export-selectable:active,
+.pokemon-card.export-selectable:focus {
+  outline: none !important;
+  box-shadow: 0 0 0 4px var(--accent, #ff9800), 0 4px 24px rgba(0,0,0,0.18) !important;
+}
+`;
+document.head.appendChild(style);
 
 loadPaste();

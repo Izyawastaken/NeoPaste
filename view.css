@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap');
 
 :root {
@@ -364,6 +363,43 @@ body.dark .fancy-btn:hover {
   }
 }
 
+/* Accent Picker Circle */
+.accent-picker-container {
+  position: fixed;
+  top: 18px;
+  left: 18px;
+  z-index: 1200;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  user-select: none;
+}
+
+.accent-picker-container input[type="color"] {
+  width: 36px;
+  height: 36px;
+  border: none;
+  padding: 0;
+  background: none;
+  cursor: pointer;
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.accent-picker-container .accent-circle {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent, #ff9800);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  border: 2px solid #fff;
+  display: inline-block;
+  pointer-events: none;
+  transition: background 0.3s;
+}
+
 /* Responsive */
 @media (max-width: 480px) {
   #team-container {
@@ -677,4 +713,57 @@ span.info-pill.nature-pill[class*="nature-"] {
 .report-btn:hover {
   background-color: #d32f2f;
   transform: translateY(-2px);
+}
+
+/* --- Export PNG fixes --- */
+.pokemon-card.export-for-png {
+  background: #23272e !important;
+  color: #eee !important;
+  border: 1px solid #222 !important;
+  filter: none !important;
+  outline: none !important;
+  position: relative !important;
+  z-index: 10 !important;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18) !important;
+  padding: 1.5rem 1.5rem 1.5rem 1.5rem !important;
+  min-width: 340px !important;
+  min-height: 480px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  align-items: stretch !important;
+  border-radius: 18px !important;
+}
+.pokemon-card.export-for-png img {
+  display: block !important;
+  position: static !important;
+  margin: 1.2rem auto 1.5rem auto !important;
+  width: 120px !important;
+  height: 120px !important;
+  image-rendering: pixelated !important;
+  z-index: 1 !important;
+  background: none !important;
+  box-shadow: none !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+  order: -1 !important;
+}
+.pokemon-card.export-for-png .card-header {
+  min-height: unset !important;
+  margin-bottom: 0.75rem !important;
+}
+.pokemon-card.export-for-png .card-header h2 {
+  font-size: 1.5rem !important;
+  color: #4ec3ff !important;
+  margin-bottom: 0.2rem !important;
+  font-weight: 700 !important;
+}
+.pokemon-card.export-for-png .card-header .item-line {
+  font-size: 1rem !important;
+  color: #aaa !important;
+  margin-top: 0.1rem !important;
+}
+.pokemon-card.export-for-png .info-pill, .pokemon-card.export-for-png .move-pill {
+  box-shadow: none !important;
+  filter: none !important;
 }

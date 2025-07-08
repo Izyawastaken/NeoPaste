@@ -1,83 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("theme");
-      if (!saved || saved === "dark") {
-        document.body.classList.add("dark");
-      }
-    });
-  </script>
-  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.25/bundled/lenis.min.js"></script>
-<script>
-  const lenis = new Lenis({
-    duration: 1.2,
-    smooth: true
-  })
-
-  function raf(time) {
-    lenis.raf(time)
-    requestAnimationFrame(raf)
-  }
-
-  requestAnimationFrame(raf)
-</script>
-
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NeoPaste is a modern, aesthetic, and fast PokéPaste successor proudly built by Izya">
   <title>NeoPaste Viewer</title>
 
-  <!-- Fonts with Display Swap for Non-Blocking Rendering -->
-  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+  <!-- Critical Theme Script (unchanged, for dark mode) -->
+  <script>window.addEventListener("DOMContentLoaded",()=>{const saved=localStorage.getItem("theme");if(!saved||saved==="dark"){document.body.classList.add("dark");}});</script>
 
-  <!-- Preconnects for Performance -->
-  <link rel="preconnect" href="https://pokeapi.co" />
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-
-  <!-- Optional: Preload stylesheet to improve render timing -->
+  <!-- Preload CSS and Fonts for fast rendering -->
   <link rel="preload" as="style" href="view.css" onload="this.rel='stylesheet'">
   <noscript><link rel="stylesheet" href="view.css"></noscript>
-  <meta name="description" content="NeoPaste is a modern, aesthetic, and fast PokéPaste successor proudly built by Izya">
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 </head>
 
-
 <body>
-
+  <div class="accent-picker-container">
+    <input type="color" id="accentColorPicker" aria-label="Pick accent color" value="#ff9800" />
+    <span class="accent-circle"></span>
+  </div>
   <div class="container">
     <header>
       <h1 id="paste-title">Loading…</h1>
       <p class="subtitle" id="paste-author"></p>
     </header>
-
     <!-- Dynamically Populated Team Cards -->
     <div id="team-container" role="main"></div>
-
     <!-- Footer -->
     <footer>
       <!-- Hidden Raw Paste Preview -->
       <pre id="pasteDisplay" style="display: none;"></pre>
-
       <!-- Action Buttons -->
       <div class="footer-buttons">
         <button id="copyBtn" class="fancy-btn">📋 Copy to Clipboard</button>
         <button id="layoutToggle" class="fancy-btn">🔀 Vertical Layout</button>
+        <button id="exportPngBtn" class="fancy-btn">🖼️ Export as PNG</button>
       </div>
-        <div id="report-issue-container" style="text-align:center; margin: 2rem 0;">
-  <a href="https://github.com/Izyawastaken/NeoPaste/issues" target="_blank" rel="noopener noreferrer" class="report-btn">
-    🐛 Report Issues Here
-  </a>
-</div>
-
-
+      <div id="report-issue-container" style="text-align:center; margin: 2rem 0;">
+        <a href="https://github.com/Izyawastaken/NeoPaste/issues" target="_blank" rel="noopener noreferrer" class="report-btn">
+          🐛 Report Issues Here
+        </a>
+      </div>
       <a href="index.html" class="back-link">Back to Paste Builder</a>
     </footer>
   </div>
 
-  <!-- Scripts -->
+  <!-- Scripts: loaded at end for non-blocking -->
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.25/bundled/lenis.min.js" defer></script>
+  <script>
+    window.addEventListener("DOMContentLoaded",()=>{
+      if(window.Lenis){
+        const lenis=new Lenis({duration:1.2,smooth:true});
+        function raf(time){lenis.raf(time);requestAnimationFrame(raf);}
+        requestAnimationFrame(raf);
+      }
+    });
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
   <script src="config.js" defer></script>
   <script src="view.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" defer></script>
+  <script>
+  // Accent color picker logic
+  document.addEventListener('DOMContentLoaded', function() {
+    const picker = document.getElementById('accentColorPicker');
+    const circle = document.querySelector('.accent-circle');
+    const defaultAccent = '#ff9800';
+    // Restore accent from localStorage
+    const saved = localStorage.getItem('accentColor') || defaultAccent;
+    setAccent(saved);
+    picker.value = saved;
+    picker.addEventListener('input', function(e) {
+      setAccent(e.target.value);
+      localStorage.setItem('accentColor', e.target.value);
+    });
+    function setAccent(color) {
+      document.documentElement.style.setProperty('--accent', color);
+      if(circle) circle.style.background = color;
+    }
+  });
+  </script>
 </body>
 </html>
