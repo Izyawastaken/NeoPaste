@@ -53,5 +53,8 @@ Support me on [Ko-Fi](https://ko-fi.com/izyalovesgothmommies)!
 
 This project is © 2025 Izya. All rights reserved.  
 Do not copy or reuse any part of this codebase without permission.
+NeoPaste is **not an open-source project**.
 
 NeoPaste is a fan-made project. Pokémon and related content are © Nintendo, Game Freak, and The Pokémon Company.
+You are welcome to **read the code to learn** how it works and understand its structure.
+However, **you may not clone, fork, rehost, or reuse** any part of this project without permission.
