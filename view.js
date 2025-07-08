@@ -105,7 +105,21 @@ const pokeapiNameMap = {
   "mimikyu-busted": "mimikyu-busted",
   "mimikyu": "mimikyu-disguised",
 
-  // Add more if you hit edge cases
+    // Paradox Pokémon
+  "great tusk": "great-tusk",
+  "scream tail": "scream-tail",
+  "brute bonnet": "brute-bonnet",
+  "flutter mane": "flutter-mane",
+  "slither wing": "slither-wing",
+  "sandy shocks": "sandy-shocks",
+  "iron treads": "iron-treads",
+  "iron bundle": "iron-bundle",
+  "iron hands": "iron-hands",
+  "iron jugulis": "iron-jugulis",
+  "iron moth": "iron-moth",
+  "iron thorns": "iron-thorns",
+  "roaring moon": "roaring-moon",
+  "iron valiant": "iron-valiant"
 };
 
 
