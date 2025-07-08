@@ -13,7 +13,7 @@ NeoPaste is a passion project inspired by PokéPaste, rebuilt from scratch with 
 NeoPaste has **two main modes**:
 
 -  **Viewer** – For viewing existing pastes via a simple, clean link.
--  **Creator** – For building and sharing your own pastes.
+-  [**Creator**](https://izyawastaken.github.io/NeoPaste/) – For building and sharing your own pastes.
 
 ---
 
