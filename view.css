@@ -133,7 +133,7 @@ body.dark .info-pill {
 .info-pill.stat-def    { background: #42a5f5; box-shadow: 0 0 10px #42a5f5; color: white; }
 .info-pill.stat-spa    { background: #7e57c2; box-shadow: 0 0 10px #7e57c2; color: white; }
 .info-pill.stat-spd    { background: #26c6da; box-shadow: 0 0 10px #26c6da; color: white; }
-.info-pill.stat-spe    { background: #ffa726; box-shadow: 0 0 10px #ffa726; color: black; }
+.info-pill.stat-spe    { background: #ffa726; box-shadow: 0 0 10px #ffa726; color: white; } 
 
 /* Move / Tera Type Pills */
 .move-pill, .info-pill.type-pill, .info-pill[class*="type-"] {
@@ -150,6 +150,26 @@ body.dark .info-pill {
   transition: transform 0.15s ease, box-shadow 0.2s ease;
   box-shadow: 0 0 8px rgba(255, 255, 255, 0.08);
 }
+/* Move Pill Glow by Type */
+.move-pill.type-fire     { background: #F08030; box-shadow: 0 0 12px #F08030; }
+.move-pill.type-water    { background: #6890F0; box-shadow: 0 0 12px #6890F0; }
+.move-pill.type-grass    { background: #78C850; box-shadow: 0 0 12px #78C850; }
+.move-pill.type-electric { background: #F8D030; box-shadow: 0 0 12px #F8D030; }
+.move-pill.type-ice      { background: #98D8D8; box-shadow: 0 0 12px #98D8D8; }
+.move-pill.type-fighting { background: #C03028; box-shadow: 0 0 12px #C03028; }
+.move-pill.type-poison   { background: #A040A0; box-shadow: 0 0 12px #A040A0; }
+.move-pill.type-ground   { background: #E0C068; box-shadow: 0 0 12px #E0C068; }
+.move-pill.type-flying   { background: #A890F0; box-shadow: 0 0 12px #A890F0; }
+.move-pill.type-psychic  { background: #F85888; box-shadow: 0 0 12px #F85888; }
+.move-pill.type-bug      { background: #A8B820; box-shadow: 0 0 12px #A8B820; }
+.move-pill.type-rock     { background: #B8A038; box-shadow: 0 0 12px #B8A038; }
+.move-pill.type-ghost    { background: #705898; box-shadow: 0 0 12px #705898; }
+.move-pill.type-dragon   { background: #7038F8; box-shadow: 0 0 12px #7038F8; }
+.move-pill.type-dark     { background: #705848; box-shadow: 0 0 12px #705848; }
+.move-pill.type-steel    { background: #B8B8D0; box-shadow: 0 0 12px #B8B8D0; }
+.move-pill.type-fairy    { background: #EE99AC; box-shadow: 0 0 12px #EE99AC; }
+.move-pill.type-normal   { background: #A8A878; box-shadow: 0 0 12px #A8A878; }
+
 /* STRONG override to ensure type pills get their unique backgrounds */
 .info-pill.type-fire     { background: #F08030 !important; box-shadow: 0 0 12px #F08030 !important; }
 .info-pill.type-water    { background: #6890F0 !important; box-shadow: 0 0 12px #6890F0 !important; }
@@ -402,12 +422,15 @@ body.dark .fancy-btn:hover {
 }
 
 /* Override dark mode for EV Stat Pills */
-:is(.info-pill, body.dark .info-pill).stat-hp  { background: #66bb6a; box-shadow: 0 0 10px #66bb6a; color: white; }
-:is(.info-pill, body.dark .info-pill).stat-atk { background: #ef5350; box-shadow: 0 0 10px #ef5350; color: white; }
-:is(.info-pill, body.dark .info-pill).stat-def { background: #42a5f5; box-shadow: 0 0 10px #42a5f5; color: white; }
-:is(.info-pill, body.dark .info-pill).stat-spa { background: #7e57c2; box-shadow: 0 0 10px #7e57c2; color: white; }
-:is(.info-pill, body.dark .info-pill).stat-spd { background: #26c6da; box-shadow: 0 0 10px #26c6da; color: white; }
-:is(.info-pill, body.dark .info-pill).stat-spe { background: #ffa726; box-shadow: 0 0 10px #ffa726; color: black; }
+/* Stat Colors (Unified with .stat-label and EV/nature pills) */
+
+:is(.info-pill, body.dark .info-pill).stat-hp  { background-color: #66bb6a !important; color: white !important; }
+:is(.info-pill, body.dark .info-pill).stat-atk { background-color: #ef5350 !important; color: white !important; }
+:is(.info-pill, body.dark .info-pill).stat-def { background-color: #42a5f5 !important; color: white !important; }
+:is(.info-pill, body.dark .info-pill).stat-spa { background-color: #7e57c2 !important; color: white !important; }
+:is(.info-pill, body.dark .info-pill).stat-spd { background-color: #26c6da !important; color: white !important; }
+:is(.info-pill, body.dark .info-pill).stat-spe { background-color: #ffa726 !important; color: white !important; }
+
 
 /* Make sure Tera Type pills always show colored backgrounds */
 .info-pill[class*="type-"] {
@@ -422,14 +445,44 @@ body.dark .fancy-btn:hover {
   backdrop-filter: blur(6px);
   transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
-
-.info-pill[class*="type-"], .move-pill {
-  animation: pulseGlow 1.6s ease-in-out infinite alternate;
-}
-
-.info-pill[class*="type-"], .move-pill {
-  animation: pulseGlow 1.6s ease-in-out infinite alternate;
-}
+/* === TYPE-SPECIFIC GLOW ANIMATIONS === */
+@keyframes pulseFire     { 0% { box-shadow: 0 0 4px #F0803088; } 100% { box-shadow: 0 0 8px #F08030cc; } }
+@keyframes pulseWater    { 0% { box-shadow: 0 0 4px #6890F088; } 100% { box-shadow: 0 0 8px #6890F0cc; } }
+@keyframes pulseGrass    { 0% { box-shadow: 0 0 4px #78C85088; } 100% { box-shadow: 0 0 8px #78C850cc; } }
+@keyframes pulseElectric { 0% { box-shadow: 0 0 4px #F8D03088; } 100% { box-shadow: 0 0 8px #F8D030cc; } }
+@keyframes pulseIce      { 0% { box-shadow: 0 0 4px #98D8D888; } 100% { box-shadow: 0 0 8px #98D8D8cc; } }
+@keyframes pulseFighting { 0% { box-shadow: 0 0 4px #C0302888; } 100% { box-shadow: 0 0 8px #C03028cc; } }
+@keyframes pulsePoison   { 0% { box-shadow: 0 0 4px #A040A088; } 100% { box-shadow: 0 0 8px #A040A0cc; } }
+@keyframes pulseGround   { 0% { box-shadow: 0 0 4px #E0C06888; } 100% { box-shadow: 0 0 8px #E0C068cc; } }
+@keyframes pulseFlying   { 0% { box-shadow: 0 0 4px #A890F088; } 100% { box-shadow: 0 0 8px #A890F0cc; } }
+@keyframes pulsePsychic  { 0% { box-shadow: 0 0 4px #F8588888; } 100% { box-shadow: 0 0 8px #F85888cc; } }
+@keyframes pulseBug      { 0% { box-shadow: 0 0 4px #A8B82088; } 100% { box-shadow: 0 0 8px #A8B820cc; } }
+@keyframes pulseRock     { 0% { box-shadow: 0 0 4px #B8A03888; } 100% { box-shadow: 0 0 8px #B8A038cc; } }
+@keyframes pulseGhost    { 0% { box-shadow: 0 0 4px #70589888; } 100% { box-shadow: 0 0 8px #705898cc; } }
+@keyframes pulseDragon   { 0% { box-shadow: 0 0 4px #7038F888; } 100% { box-shadow: 0 0 8px #7038F8cc; } }
+@keyframes pulseDark     { 0% { box-shadow: 0 0 4px #70584888; } 100% { box-shadow: 0 0 8px #705848cc; } }
+@keyframes pulseSteel    { 0% { box-shadow: 0 0 4px #B8B8D088; } 100% { box-shadow: 0 0 8px #B8B8D0cc; } }
+@keyframes pulseFairy    { 0% { box-shadow: 0 0 4px #EE99AC88; } 100% { box-shadow: 0 0 8px #EE99ACcc; } }
+@keyframes pulseNormal   { 0% { box-shadow: 0 0 4px #A8A87888; } 100% { box-shadow: 0 0 8px #A8A878cc; } }
+/* === APPLY THE ANIMATIONS TO EACH TYPE === */
+.info-pill.type-fire,     .move-pill.type-fire     { animation: pulseFire     2.6s ease-in-out infinite alternate; }
+.info-pill.type-water,    .move-pill.type-water    { animation: pulseWater    2.6s ease-in-out infinite alternate; }
+.info-pill.type-grass,    .move-pill.type-grass    { animation: pulseGrass    2.6s ease-in-out infinite alternate; }
+.info-pill.type-electric, .move-pill.type-electric { animation: pulseElectric 2.6s ease-in-out infinite alternate; }
+.info-pill.type-ice,      .move-pill.type-ice      { animation: pulseIce      2.6s ease-in-out infinite alternate; }
+.info-pill.type-fighting, .move-pill.type-fighting { animation: pulseFighting 2.6s ease-in-out infinite alternate; }
+.info-pill.type-poison,   .move-pill.type-poison   { animation: pulsePoison   2.6s ease-in-out infinite alternate; }
+.info-pill.type-ground,   .move-pill.type-ground   { animation: pulseGround   2.6s ease-in-out infinite alternate; }
+.info-pill.type-flying,   .move-pill.type-flying   { animation: pulseFlying   2.6s ease-in-out infinite alternate; }
+.info-pill.type-psychic,  .move-pill.type-psychic  { animation: pulsePsychic  2.6s ease-in-out infinite alternate; }
+.info-pill.type-bug,      .move-pill.type-bug      { animation: pulseBug      2.6s ease-in-out infinite alternate; }
+.info-pill.type-rock,     .move-pill.type-rock     { animation: pulseRock     2.6s ease-in-out infinite alternate; }
+.info-pill.type-ghost,    .move-pill.type-ghost    { animation: pulseGhost    2.6s ease-in-out infinite alternate; }
+.info-pill.type-dragon,   .move-pill.type-dragon   { animation: pulseDragon   2.6s ease-in-out infinite alternate; }
+.info-pill.type-dark,     .move-pill.type-dark     { animation: pulseDark     2.6s ease-in-out infinite alternate; }
+.info-pill.type-steel,    .move-pill.type-steel    { animation: pulseSteel    2.6s ease-in-out infinite alternate; }
+.info-pill.type-fairy,    .move-pill.type-fairy    { animation: pulseFairy    2.6s ease-in-out infinite alternate; }
+.info-pill.type-normal,   .move-pill.type-normal   { animation: pulseNormal   2.6s ease-in-out infinite alternate; }
 
 .nature-adamant {
   background: linear-gradient(to right, #7e57c2, #ef5350); /* SpA → Atk */
@@ -498,74 +551,14 @@ body.dark .fancy-btn:hover {
   box-shadow: 0 0 5px rgba(0,0,0,0.2);
 }
 
+/* Stat Colors (Solid) */
+.stat-atk { background-color: #F08030 !important; color: white !important; }   /* Orange */
+.stat-def { background-color: #F8D030 !important; color: black !important; }   /* Yellow */
+.stat-spa { background-color: #6890F0 !important; color: white !important; }   /* Blue */
+.stat-spd { background-color: #78C850 !important; color: black !important; }   /* Green */
+.stat-spe { background-color: #F85888 !important; color: white !important; }   /* Pink */
+.stat-hp  { background-color: #FF5959 !important; color: white !important; }   /* Red */
 
-/* Override base background styles for nature pills */
-span.info-pill.nature-pill[class*="nature-"] {
-  background: unset !important;
-  background-image: unset !important;
-  box-shadow: none !important;
-}
-
-/* Competitive Nature Gradient Styles */
-span.info-pill.nature-pill.nature-adamant {
-  background: linear-gradient(to right, #7e57c2, #ef5350) !important; /* SpA → Atk */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-modest {
-  background: linear-gradient(to right, #ef5350, #7e57c2) !important; /* Atk → SpA */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-timid {
-  background: linear-gradient(to right, #ef5350, #ffa726) !important; /* Atk → Spe */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-jolly {
-  background: linear-gradient(to right, #7e57c2, #ffa726) !important; /* SpA → Spe */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-bold {
-  background: linear-gradient(to right, #ef5350, #42a5f5) !important; /* Atk → Def */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-calm {
-  background: linear-gradient(to right, #ef5350, #26c6da) !important; /* Atk → SpD */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-careful {
-  background: linear-gradient(to right, #7e57c2, #26c6da) !important; /* SpA → SpD */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-impish {
-  background: linear-gradient(to right, #7e57c2, #42a5f5) !important; /* SpA → Def */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-relaxed {
-  background: linear-gradient(to right, #ffa726, #42a5f5) !important; /* Spe → Def */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-quiet {
-  background: linear-gradient(to right, #ffa726, #7e57c2) !important; /* Spe → SpA */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-brave {
-  background: linear-gradient(to right, #ffa726, #ef5350) !important; /* Spe → Atk */
-  color: white !important;
-}
-
-span.info-pill.nature-pill.nature-lonely {
-  background: linear-gradient(to right, #42a5f5, #ef5350) !important; /* Def → Atk */
-  color: white !important;
-}
 @keyframes pulseGlow {
   0%   { box-shadow: 0 0 6px rgba(255, 255, 255, 0.15); }
   100% { box-shadow: 0 0 12px rgba(255, 255, 255, 0.3); }
@@ -603,3 +596,9 @@ span.info-pill.nature-pill[class*="nature-"] {
   margin-top: 0.25rem;
 }
 
+.stat-atk    { background-color: #F08030; } /* Orange for Attack */
+.stat-def    { background-color: #F8D030; } /* Yellow for Defense */
+.stat-spa    { background-color: #6890F0; } /* Blue for SpA */
+.stat-spd    { background-color: #78C850; } /* Green for SpD */
+.stat-spe    { background-color: #F85888; } /* Pink for Speed */
+.stat-hp     { background-color: #FF5959; } /* Red for HP */

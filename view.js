@@ -96,7 +96,12 @@ const teraTypeClass = teraType ? `type-${teraType}` : "";
       <img src="${spriteUrl}" alt="${mon.name}" />
       <p><strong>Ability:</strong> <span class="info-pill ability-pill">${mon.ability || "—"}</span></p>
       <p><strong>Tera Type:</strong> <span class="info-pill ${teraTypeClass}">${mon.teraType || "—"}</span></p>
-      <p><strong>Nature:</strong> <span class="info-pill nature-pill nature-${mon.nature?.toLowerCase() || 'none'}">${mon.nature || "—"}</span></p>
+${(() => {
+  const nature = mon.nature?.toLowerCase();
+  const upStat = natureMods[nature]?.up;
+  const colorClass = upStat ? `stat-${upStat}` : '';
+  return `<p><strong>Nature:</strong> <span class="info-pill nature-pill ${colorClass}">${mon.nature || "—"}</span></p>`;
+})()}
       <p><strong>EVs:</strong> ${formatEVs(mon.evs)}</p>
       <p><strong>IVs:</strong> ${formatIVs(mon.ivs)}</p>
       ${statBlock}
