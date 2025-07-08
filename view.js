@@ -9,6 +9,105 @@ const validTypes = [
   "rock", "ghost", "dragon", "dark", "steel", "fairy"
 ];
 
+const pokeapiNameMap = {
+  // Gendered forms
+  "indeedee-f": "indeedee-female",
+  "indeedee-m": "indeedee-male",
+  "meowstic-f": "meowstic-female",
+  "meowstic-m": "meowstic-male",
+  "basculegion-f": "basculegion-female",
+  "basculegion-m": "basculegion-male",
+  "oinkologne-f": "oinkologne-female",
+  "oinkologne-m": "oinkologne-male",
+  "frillish-f": "frillish-female",
+  "frillish-m": "frillish-male",
+  "jellicent-f": "jellicent-female",
+  "jellicent-m": "jellicent-male",
+  "pyroar-f": "pyroar-female",
+  "pyroar-m": "pyroar-male",
+  "unfezant-f": "unfezant-female",
+  "unfezant-m": "unfezant-male",
+
+  // Normal form aliases (for default male mapping)
+  "indeedee": "indeedee-male",
+  "meowstic": "meowstic-male",
+  "basculegion": "basculegion-male",
+  "oinkologne": "oinkologne-male",
+  "frillish": "frillish-male",
+  "jellicent": "jellicent-male",
+  "pyroar": "pyroar-male",
+  "unfezant": "unfezant-male",
+
+  // Formes & variants
+  "rotom-wash": "rotom-wash",
+  "rotom-heat": "rotom-heat",
+  "rotom-frost": "rotom-frost",
+  "rotom-fan": "rotom-fan",
+  "rotom-mow": "rotom-mow",
+  "rotom": "rotom", // base form
+
+  "urshifu-rapid-strike": "urshifu-rapid-strike",
+  "urshifu-single-strike": "urshifu-single-strike",
+  "urshifu": "urshifu-single-strike",
+
+  "zacian-crowned": "zacian-crowned",
+  "zamazenta-crowned": "zamazenta-crowned",
+
+  "calyrex-ice": "calyrex-ice",
+  "calyrex-shadow": "calyrex-shadow",
+
+  "toxtricity-low-key": "toxtricity-low-key",
+  "toxtricity-amped": "toxtricity-amped",
+  "toxtricity": "toxtricity-amped",
+
+  "basculin-blue-striped": "basculin-blue-striped",
+  "basculin-white-striped": "basculin-white-striped",
+  "basculin-red-striped": "basculin-red-striped", // default
+  "basculin": "basculin-red-striped",
+
+  "lycanroc-midnight": "lycanroc-midnight",
+  "lycanroc-dusk": "lycanroc-dusk",
+  "lycanroc": "lycanroc", // midday default
+
+  "darmanitan-galar": "darmanitan-galar",
+  "darmanitan-galar-zen": "darmanitan-galar-zen",
+  "darmanitan": "darmanitan", // normal form
+
+  "giratina-origin": "giratina-origin",
+  "giratina": "giratina-altered",
+
+  "shaymin-sky": "shaymin-sky",
+  "shaymin": "shaymin-land",
+
+  "tornadus-therian": "tornadus-therian",
+  "thundurus-therian": "thundurus-therian",
+  "landorus-therian": "landorus-therian",
+  "tornadus": "tornadus-incarnate",
+  "thundurus": "thundurus-incarnate",
+  "landorus": "landorus-incarnate",
+
+  "enamorus-therian": "enamorus-therian",
+  "enamorus": "enamorus-incarnate",
+
+  "zygarde-10": "zygarde-10",
+  "zygarde-complete": "zygarde-complete",
+  "zygarde": "zygarde", // 50%
+
+  "polteageist-antique": "polteageist",
+  "polteageist": "polteageist",
+
+  "sinistea-antique": "sinistea",
+  "sinistea": "sinistea",
+
+  "minior-red": "minior-red-meteor", // core form = red-meteor
+  "minior": "minior-red-meteor",
+
+  "mimikyu-busted": "mimikyu-busted",
+  "mimikyu": "mimikyu-disguised",
+
+  // Add more if you hit edge cases
+};
+
 
 const natureMods = {
   adamant: { up: "atk", down: "spa" },
@@ -144,7 +243,9 @@ function formatIVs(ivs = {}) {
 async function renderStatBlock(p) {
   const mods = natureMods[(p.nature || "").toLowerCase()] || {};
   try {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${toSpriteId(p.name)}`);
+    const mappedName = pokeapiNameMap[toShowdownId(p.name)] || toSpriteId(p.name);
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${mappedName}`);
+
     const data = await res.json();
 
     return `
