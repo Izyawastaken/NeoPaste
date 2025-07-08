@@ -635,7 +635,7 @@ span.info-pill.nature-pill[class*="nature-"] {
   .mobile-layout .pokemon-card img {
     max-width: 100%;
     height: auto;
-    transform: translateY(30px);
+    transform: translateY(50px);
     padding-left: 10px; /* Slight left padding on mobile */
   }
 
