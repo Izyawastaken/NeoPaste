@@ -238,3 +238,23 @@ body.dark .fancy-btn {
   border-color: #4caf50 !important;
   color: white !important;
 }
+.report-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 0.6em 1.2em;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #ef5350;
+  border-radius: 6px;
+  text-decoration: none;
+  z-index: 1000;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.report-btn:hover {
+  background-color: #d32f2f;
+  transform: translateY(-2px);
+}
