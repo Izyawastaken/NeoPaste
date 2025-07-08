@@ -177,7 +177,22 @@ async function loadPaste() {
   }
 
   const { title, author, content } = data;
-const team = await parsePaste(content);
+  const team = await parsePaste(content);
+
+  // Preload all sprite images for this team
+  const head = document.head;
+  // Remove previous preloads (if any)
+  [...head.querySelectorAll('link[data-preload-sprite]')].forEach(link => link.remove());
+  for (const mon of team) {
+    const originalSpriteUrl = `https://play.pokemonshowdown.com/sprites/home${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
+    const spriteUrl = `https://neopasteimgexporter.agastyawastaken.workers.dev/?url=${encodeURIComponent(originalSpriteUrl)}`;
+    const preload = document.createElement('link');
+    preload.rel = 'preload';
+    preload.as = 'image';
+    preload.href = spriteUrl;
+    preload.setAttribute('data-preload-sprite', '');
+    head.appendChild(preload);
+  }
 
   document.getElementById('paste-title').textContent = title || "Untitled Paste";
   document.getElementById('paste-author').textContent = author ? `By ${author}` : "";
@@ -227,6 +242,7 @@ ${(() => {
   }
 
   animateStatBars();
+  afterCardsRendered();
 }
 
 function getIVColor(percent) {
@@ -312,6 +328,40 @@ function animateStatBars() {
     });
   });
 }
+
+// Animate cards in with staggered delay
+function animateCardsIn() {
+  const cards = document.querySelectorAll('.pokemon-card');
+  cards.forEach((card, i) => {
+    card.style.setProperty('--card-delay', `${i * 60}ms`);
+  });
+}
+
+// Add ripple effect to all .fancy-btn and .report-btn
+function addButtonRipples() {
+  function createRipple(e) {
+    const btn = e.currentTarget;
+    const circle = document.createElement('span');
+    circle.className = 'ripple';
+    const rect = btn.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    circle.style.width = circle.style.height = `${size}px`;
+    circle.style.left = `${e.clientX - rect.left - size/2}px`;
+    circle.style.top = `${e.clientY - rect.top - size/2}px`;
+    btn.appendChild(circle);
+    setTimeout(() => circle.remove(), 500);
+  }
+  document.querySelectorAll('.fancy-btn, .report-btn').forEach(btn => {
+    btn.addEventListener('pointerdown', createRipple);
+  });
+}
+
+// Call after cards are rendered
+function afterCardsRendered() {
+  animateCardsIn();
+  addButtonRipples();
+}
+
 function parsePaste(text) {
   const blocks = text.trim().split(/\n\s*\n/);
   return blocks.map(block => {
@@ -404,12 +454,25 @@ window.addEventListener('DOMContentLoaded', autoApplyMobileLayout);
 
 
 document.getElementById('copyBtn').addEventListener('click', async () => {
+  const btn = document.getElementById('copyBtn');
   try {
     await navigator.clipboard.writeText((window.rawPasteText || "").trim());
-    alert("✅ Copied to clipboard!");
+    btn.classList.add('copied');
+    btn.textContent = '📋 Copied!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.textContent = '📋 Copy to Clipboard';
+    }, 1200);
   } catch (e) {
     console.error("Copy failed", e);
-    alert("❌ Failed to copy!");
+    btn.classList.add('copied');
+    btn.style.background = '#ef5350';
+    btn.textContent = '❌ Copy Failed';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.style.background = '';
+      btn.textContent = '📋 Copy to Clipboard';
+    }, 1500);
   }
 });
 

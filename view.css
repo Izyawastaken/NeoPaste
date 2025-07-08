@@ -76,6 +76,10 @@ h1 {
   text-align: left;
   overflow: hidden;
   transition: background 0.3s ease;
+  opacity: 0;
+  transform: translateY(24px) scale(0.98);
+  animation: cardIn 0.6s cubic-bezier(.23,1.12,.62,1.01) forwards;
+  animation-delay: var(--card-delay, 0ms);
 }
 
 body.dark .pokemon-card {
@@ -315,6 +319,9 @@ body.dark .stat-bar {
   font-weight: 500;
   cursor: pointer;
   transition: background 0.3s ease, transform 0.15s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
 body.dark .fancy-btn {
@@ -329,6 +336,22 @@ body.dark .fancy-btn {
 
 body.dark .fancy-btn:hover {
   background: rgba(255, 255, 255, 0.05);
+}
+
+.fancy-btn .ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 0.5s linear;
+  background: var(--accent, #ff9800);
+  opacity: 0.25;
+  pointer-events: none;
+}
+@keyframes ripple {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
+  }
 }
 
 .back-link {
@@ -766,4 +789,83 @@ span.info-pill.nature-pill[class*="nature-"] {
 .pokemon-card.export-for-png .info-pill, .pokemon-card.export-for-png .move-pill {
   box-shadow: none !important;
   filter: none !important;
+}
+
+/* 1. Card Entrance Animation */
+.pokemon-card {
+  opacity: 0;
+  transform: translateY(24px) scale(0.98);
+  animation: cardIn 0.6s cubic-bezier(.23,1.12,.62,1.01) forwards;
+  animation-delay: var(--card-delay, 0ms);
+}
+@keyframes cardIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 2. Button Ripple Effect */
+.fancy-btn {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.fancy-btn .ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 0.5s linear;
+  background: var(--accent, #ff9800);
+  opacity: 0.25;
+  pointer-events: none;
+}
+@keyframes ripple {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+/* 3. Accent Glow on Card Hover */
+.pokemon-card:hover {
+  box-shadow: 0 0 0 4px var(--accent, #ff9800), 0 4px 24px rgba(0,0,0,0.18);
+  filter: brightness(1.04) drop-shadow(0 0 8px var(--accent, #ff9800));
+  transition: box-shadow 0.2s, filter 0.2s;
+}
+
+/* 4. Footer Pulse Animation */
+.footer-buttons .fancy-btn, .report-btn {
+  animation: pulse 2.2s infinite cubic-bezier(.4,0,.6,1);
+}
+@keyframes pulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--accent, #ff9800, 0.18); }
+  50% { box-shadow: 0 0 0 8px var(--accent, #ff9800, 0.12); }
+}
+
+/* Remove faint glow/border from .fancy-btn and .footer-buttons .fancy-btn, but keep pulse animation */
+.fancy-btn, .footer-buttons .fancy-btn {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* Pulse animation only affects background, not box-shadow */
+.footer-buttons .fancy-btn, .report-btn {
+  animation: pulseBg 2.2s infinite cubic-bezier(.4,0,.6,1);
+}
+@keyframes pulseBg {
+  0%, 100% { background-color: var(--glass-light); }
+  50% { background-color: rgba(255, 152, 0, 0.10); }
+}
+body.dark .footer-buttons .fancy-btn, body.dark .report-btn {
+  background: var(--glass-dark);
+}
+
+/* Copy to Clipboard Success State */
+.fancy-btn.copied {
+  background: #43d675 !important;
+  color: #fff !important;
+  font-weight: bold;
+  box-shadow: 0 0 0 2px #43d67555 !important;
+  animation: none !important;
 }
