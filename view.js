@@ -106,20 +106,20 @@ const pokeapiNameMap = {
   "mimikyu": "mimikyu-disguised",
 
     // Paradox Pokémon
-  "great tusk": "great-tusk",
-  "scream tail": "scream-tail",
-  "brute bonnet": "brute-bonnet",
-  "flutter mane": "flutter-mane",
-  "slither wing": "slither-wing",
-  "sandy shocks": "sandy-shocks",
-  "iron treads": "iron-treads",
-  "iron bundle": "iron-bundle",
-  "iron hands": "iron-hands",
-  "iron jugulis": "iron-jugulis",
-  "iron moth": "iron-moth",
-  "iron thorns": "iron-thorns",
-  "roaring moon": "roaring-moon",
-  "iron valiant": "iron-valiant"
+  "greattusk": "great-tusk",
+  "screamtail": "scream-tail",
+  "brutebonnet": "brute-bonnet",
+  "fluttermane": "flutter-mane",
+  "slitherwing": "slither-wing",
+  "sandyshocks": "sandy-shocks",
+  "irontreads": "iron-treads",
+  "ironbundle": "iron-bundle",
+  "ironhands": "iron-hands",
+  "ironjugulis": "iron-jugulis",
+  "ironmoth": "iron-moth",
+  "ironthorns": "iron-thorns",
+  "roaringmoon": "roaring-moon",
+  "ironvaliant": "iron-valiant"
 };
 
 
@@ -257,10 +257,12 @@ function formatIVs(ivs = {}) {
 async function renderStatBlock(p) {
   const mods = natureMods[(p.nature || "").toLowerCase()] || {};
   try {
-    const mappedName = pokeapiNameMap[toShowdownId(p.name)] || toSpriteId(p.name);
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${mappedName}`);
+    const mappedKey = toSpriteId(p.name); // ✅ keep hyphens for mapping
+    const mappedName = pokeapiNameMap[mappedKey] || mappedKey;
 
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${mappedName}`);
     const data = await res.json();
+
 
     return `
       <div class="stat-block">
