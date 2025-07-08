@@ -602,90 +602,57 @@ span.info-pill.nature-pill[class*="nature-"] {
 .stat-spd    { background-color: #78C850; } /* Green for SpD */
 .stat-spe    { background-color: #F85888; } /* Pink for Speed */
 .stat-hp     { background-color: #FF5959; } /* Red for HP */
-@media (max-width: 480px) {
-  h1 {
-    font-size: 1.4rem;
-    margin-bottom: 0.5rem;
-  }
 
-  .subtitle {
-    font-size: 0.85rem;
-    margin-bottom: 1rem;
-  }
-
-  .pokemon-card {
-    padding: 1rem;
-    border-radius: 12px;
-  }
-
-  .pokemon-card img {
-    top: 3.2rem;
-    right: 0.8rem;
-    width: 80px;
-    height: 80px;
-  }
-
-  .card-header {
-    margin-bottom: 1rem;
-    min-height: auto;
-  }
-
-  .card-header h2 {
-    font-size: 1rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .info-pill,
-  .move-pill {
-    font-size: 0.8rem;
-    padding: 5px 10px;
-    margin-bottom: 4px;
-  }
-
-  .move-pill-container {
-    grid-template-columns: 1fr;
-    gap: 0.5rem;
-  }
-
-  .moves {
-    padding: 0.5rem 0.5rem 0.75rem;
-  }
-
-  .stat-line {
-    font-size: 0.75rem;
-  }
-
-  .stat-label {
-    font-size: 0.7rem;
-    min-width: 40px;
-  }
-
-  .stat-value {
-    font-size: 0.7rem;
-    width: 30px;
-  }
-
-  .fancy-btn,
-  .back-link {
-    font-size: 0.75rem;
-    padding: 0.4rem 0.8rem;
+@media (max-width: 768px) {
+  .mobile-layout .pokemon-card img {
+    width: 30%;           /* Smaller size */
+    height: auto;
+    display: block;
+    margin-left: auto;    /* Push image to the right */
+    margin-right: 0;
+    padding-left: 0;      /* Remove left padding */
   }
 }
-@media (max-width: 480px) {
+
+
+@media (max-width: 768px) {
   #team-container {
-    grid-template-columns: 1fr;
-    padding: 1rem;
+    max-width: 100vw;
+    padding: 0;
+    margin: 0;
+    
   }
 
-  .pokemon-card {
-    width: 100%;
+  .mobile-layout .pokemon-card {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .mobile-layout .pokemon-card h2 {
+    font-size: 1rem;
+  }
+
+  .mobile-layout .pokemon-card img {
     max-width: 100%;
-    padding: 1.2rem;
+    height: auto;
+    padding-left: 10px; /* Slight left padding on mobile */
+  }
+
+  .mobile-layout .pokemon-card .stat-line {
+    gap: 4px;
+  }
+
+  .mobile-layout .pokemon-card .stat-bar {
+    height: 8px;
+  }
+
+  .mobile-layout .pokemon-card .move-pill {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.5rem;
   }
 }
-body {
-  padding: 1rem;
-}
-h1 {
-  font-size: clamp(1.4rem, 4vw, 2.2rem);
+
+/* Outside media query: still applies on desktop too */
+#team-container.mobile-layout {
+  gap: 0.5rem;
 }

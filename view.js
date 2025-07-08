@@ -255,15 +255,35 @@ function parsePaste(text) {
 const layoutBtn = document.getElementById('layoutToggle');
 const teamContainer = document.getElementById('team-container');
 
-layoutBtn.addEventListener('click', () => {
-  teamContainer.classList.toggle('horizontal-layout');
+function updateLayoutLabel() {
+  layoutBtn.textContent = teamContainer.classList.contains('horizontal-layout')
+    ? 'Switch to Grid Layout'
+    : 'Switch to Horizontal Layout';
+}
 
-  if (teamContainer.classList.contains('horizontal-layout')) {
-    layoutBtn.textContent = 'Switch to Grid Layout';
-  } else {
-    layoutBtn.textContent = 'Switch to Horizontal Layout';
-  }
+layoutBtn.addEventListener('click', () => {
+  if (window.innerWidth <= 768) return; // Disable toggle on mobile
+  teamContainer.classList.toggle('horizontal-layout');
+  teamContainer.classList.remove('mobile-layout'); // Ensure not active
+  updateLayoutLabel();
 });
+function autoApplyMobileLayout() {
+  const isMobile = window.innerWidth <= 768;
+  if (isMobile) {
+    teamContainer.classList.remove('horizontal-layout');
+    teamContainer.classList.remove('grid-layout');
+    teamContainer.classList.add('mobile-layout');
+    layoutBtn.style.display = 'none'; // hide button on mobile
+  } else {
+    teamContainer.classList.remove('mobile-layout');
+    teamContainer.classList.add('grid-layout');
+    layoutBtn.style.display = 'inline-block';
+    updateLayoutLabel();
+  }
+}
+
+window.addEventListener('resize', autoApplyMobileLayout);
+window.addEventListener('DOMContentLoaded', autoApplyMobileLayout);
 
 
 document.getElementById('copyBtn').addEventListener('click', async () => {
