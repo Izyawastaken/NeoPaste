@@ -191,13 +191,14 @@ const team = await parsePaste(content);
     const card = document.createElement('div');
     card.className = 'pokemon-card';
 
-    const spriteUrl = `https://play.pokemonshowdown.com/sprites/home${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
+    // Use Cloudflare Worker proxy for sprite images
+    const originalSpriteUrl = `https://play.pokemonshowdown.com/sprites/home${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
+    const spriteUrl = `https://neopasteimgexporter.agastyawastaken.workers.dev/?url=${encodeURIComponent(originalSpriteUrl)}`;
     const statBlock = await renderStatBlock(mon);
     const movePills = await renderMovePills(mon.moves);
 
 const teraType = sanitizeType(mon.teraType || ""); // ✅ uses toShowdownId internally
 const teraTypeClass = teraType ? `type-${teraType}` : "";
-
 
     card.innerHTML = `
       <div class="card-header">
