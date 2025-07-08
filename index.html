@@ -1,11 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script>
+    // Apply dark mode class before paint to prevent white flash
+    try {
+      var theme = localStorage.getItem('theme');
+      if (!theme || theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      }
+    } catch(e) {}
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="NeoPaste: Share your Pokémon teams with style. Modern, fast, and aesthetic PokéPaste alternative." />
   <title>NeoPaste</title>
-  <link rel="stylesheet" href="main.css" />
+  <link rel="icon" href="favicon.ico" type="image/x-icon" />
+  <!-- Preload main CSS for fast first paint -->
+  <link rel="preload" as="style" href="main.css" onload="this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="main.css"></noscript>
   <style>
+    :root {
+      --accent: #ff9800;
+      --accent-dark: #c66900;
+      --bg-light: #f0f2f5;
+      --bg-dark: #121212;
+      --glass-light: rgba(255, 255, 255, 0.18);
+      --glass-dark: rgba(30, 30, 30, 0.35);
+      --glass-blur: 18px;
+      --text-light: #333;
+      --text-dark: #eee;
+    }
+    html, body {
+      min-height: 100vh;
+    }
+    html.dark, body.dark {
+      background: linear-gradient(135deg, #1c1c1c, #121212 80%) !important;
+      color: #eee !important;
+    }
+
     .fade-in {
       animation: fadeIn 0.4s ease-in-out;
     }
@@ -33,42 +65,184 @@
       color: #4caf50;
       font-weight: bold;
     }
-  </style>
-  <script>
-  window.addEventListener("DOMContentLoaded", () => {
-    const saved = localStorage.getItem("theme");
-    if (!saved || saved === "dark") document.body.classList.add("dark");
-  });
-</script>
 
+    /* Animations for accent picker */
+    .accent-picker-container {
+      position: fixed;
+      top: 18px;
+      left: 18px;
+      z-index: 1200;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      user-select: none;
+      animation: fadeInSlide 0.7s cubic-bezier(.23,1.12,.62,1.01) 0.1s both;
+    }
+    .accent-circle {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--accent, #ff9800);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      border: 2px solid #fff;
+      display: inline-block;
+      pointer-events: none;
+      transition: background 0.3s, box-shadow 0.3s;
+      animation: pulseAccent 2.2s infinite alternate;
+    }
+    @keyframes fadeInSlide {
+      from { opacity: 0; transform: translateY(-24px) scale(0.95); }
+      to   { opacity: 1; transform: none; }
+    }
+    @keyframes pulseAccent {
+      0%   { box-shadow: 0 2px 8px rgba(0,0,0,0.12), 0 0 0 0 var(--accent, #ff9800, 0.12); }
+      100% { box-shadow: 0 2px 16px rgba(0,0,0,0.18), 0 0 0 8px var(--accent, #ff9800, 0.10); }
+    }
+    /* Animate container in */
+    .container {
+      animation: fadeInUp 0.7s cubic-bezier(.23,1.12,.62,1.01) 0.15s both;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(32px) scale(0.98); }
+      to   { opacity: 1; transform: none; }
+    }
+    /* Animate form fields in staggered */
+    #pasteForm > * {
+      opacity: 0;
+      transform: translateY(18px) scale(0.98);
+      animation: fadeInField 0.6s cubic-bezier(.23,1.12,.62,1.01) forwards;
+    }
+    #pasteForm > *:nth-child(1) { animation-delay: 0.25s; }
+    #pasteForm > *:nth-child(2) { animation-delay: 0.32s; }
+    #pasteForm > *:nth-child(3) { animation-delay: 0.39s; }
+    #pasteForm > *:nth-child(4) { animation-delay: 0.46s; }
+    @keyframes fadeInField {
+      to {
+        opacity: 1;
+        transform: none;
+      }
+    }
+    /* Animate paste link output */
+    #paste-link {
+      animation: fadeInLink 0.7s cubic-bezier(.23,1.12,.62,1.01) 0.6s both;
+    }
+    @keyframes fadeInLink {
+      from { opacity: 0; transform: translateY(18px) scale(0.98); }
+      to   { opacity: 1; transform: none; }
+    }
+    /* Button ripple effect */
+    .fancy-btn, .copy-link-btn {
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .fancy-btn .ripple, .copy-link-btn .ripple {
+      position: absolute;
+      border-radius: 50%;
+      transform: scale(0);
+      animation: ripple 0.5s linear;
+      background: var(--accent, #ff9800);
+      opacity: 0.25;
+      pointer-events: none;
+    }
+    @keyframes ripple {
+      to {
+        transform: scale(2.5);
+        opacity: 0;
+      }
+    }
+    .report-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      padding: 0.6em 1.2em;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: #fff;
+      background-color: #ef5350;
+      border-radius: 8px;
+      text-decoration: none;
+      z-index: 1000;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+      transition: background-color 0.3s, transform 0.2s;
+      border: none;
+      display: inline-block;
+    }
+    .report-btn:hover {
+      background-color: #d32f2f;
+      transform: translateY(-2px) scale(1.04);
+    }
+  </style>
+  <!-- Remove old theme script, now handled above -->
 </head>
 <body>
-  <div class="container">
+  <div class="accent-picker-container">
+    <input type="color" id="accentColorPicker" aria-label="Pick accent color" value="#ff9800" />
+    <span class="accent-circle"></span>
+  </div>
+  <div class="container" role="main">
     <header>
       <h1>NeoPaste</h1>
       <p class="subtitle">Share your Pokémon teams with style.</p>
     </header>
 
-    <form id="pasteForm">
-      <input type="text" id="title" placeholder="Paste Title" />
-      <input type="text" id="author" placeholder="Author (optional)" />
-      <textarea id="content" placeholder="Paste your team here..." rows="20" spellcheck="false"></textarea>
+    <form id="pasteForm" autocomplete="off">
+      <input type="text" id="title" placeholder="Paste Title" autocomplete="off" spellcheck="false" aria-label="Paste Title" inputmode="text" minlength="2" maxlength="64" required />
+      <input type="text" id="author" placeholder="Author (optional)" autocomplete="off" spellcheck="false" aria-label="Author (optional)" inputmode="text" maxlength="32" />
+      <textarea id="content" placeholder="Paste your team here..." rows="20" spellcheck="false" autocomplete="off" aria-label="Paste Content" minlength="10" maxlength="4000"></textarea>
       <button type="submit">Generate Link</button>
     </form>
 
-    <div id="paste-link"></div>
+    <div id="paste-link" tabindex="0"></div>
 
     <footer>
-      <p>Inspired by <a href="https://pokepast.es" target="_blank">Pokepaste</a> by felixphew</p>
+      <p>Inspired by <a href="https://pokepast.es" target="_blank" rel="noopener noreferrer">Pokepaste</a> by felixphew</p>
     </footer>
-      <a href="https://github.com/Izyawastaken/NeoPaste/issues" target="_blank" rel="noopener noreferrer" class="report-btn">
-    🐛 Report Issues Here
-  </a>
+    <a href="https://github.com/Izyawastaken/NeoPaste/issues" target="_blank" rel="noopener noreferrer" class="report-btn">
+      🐛 Report Issues Here
+    </a>
   </div>
 
-  <!-- Supabase SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="config.js"></script>
-  <script src="script.js"></script>
+  <!-- Scripts loaded at end for non-blocking -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js" defer></script>
+  <script src="config.js" defer></script>
+  <script src="script.js" defer></script>
+  <script>
+  // Accent color picker logic (shared with viewer)
+  document.addEventListener('DOMContentLoaded', function() {
+    const picker = document.getElementById('accentColorPicker');
+    const circle = document.querySelector('.accent-circle');
+    const defaultAccent = '#ff9800';
+    // Restore accent from localStorage
+    const saved = localStorage.getItem('accentColor') || defaultAccent;
+    setAccent(saved);
+    picker.value = saved;
+    picker.addEventListener('input', function(e) {
+      setAccent(e.target.value);
+      localStorage.setItem('accentColor', e.target.value);
+    });
+    function setAccent(color) {
+      document.documentElement.style.setProperty('--accent', color);
+      if(circle) circle.style.background = color;
+    }
+
+    // Button ripple effect for .fancy-btn and .copy-link-btn
+    function createRipple(e) {
+      const btn = e.currentTarget;
+      const circle = document.createElement('span');
+      circle.className = 'ripple';
+      const rect = btn.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      circle.style.width = circle.style.height = `${size}px`;
+      circle.style.left = `${e.clientX - rect.left - size/2}px`;
+      circle.style.top = `${e.clientY - rect.top - size/2}px`;
+      btn.appendChild(circle);
+      setTimeout(() => circle.remove(), 500);
+    }
+    document.querySelectorAll('.fancy-btn, .copy-link-btn').forEach(btn => {
+      btn.addEventListener('pointerdown', createRipple);
+    });
+  });
+  </script>
 </body>
 </html>
