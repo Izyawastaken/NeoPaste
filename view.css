@@ -740,7 +740,7 @@ span.info-pill.nature-pill[class*="nature-"] {
 
 /* --- Export PNG fixes --- */
 .pokemon-card.export-for-png {
-  background: #23272e !important;
+  background: #181a20 !important;
   color: #eee !important;
   border: 1px solid #222 !important;
   filter: none !important;
