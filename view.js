@@ -522,6 +522,18 @@ function exportCardHandler(card) {
   card.classList.add('export-for-png');
   card.style.boxShadow = 'none';
   card.style.filter = 'none';
+  // --- PATCH: Force visibility and remove animation/opacity for export ---
+  card.style.opacity = '1';
+  card.style.transform = 'none';
+  card.style.animation = 'none';
+  card.style.animationDelay = '0s';
+  // Remove animation/opacity/transform from all children
+  card.querySelectorAll('*').forEach(el => {
+    el.style.opacity = '1';
+    el.style.transform = 'none';
+    el.style.animation = 'none';
+    el.style.animationDelay = '0s';
+  });
   // Get Pokémon name for filename
   const nameElem = card.querySelector('.card-header h2');
   let monName = 'pokemon-card';
@@ -551,6 +563,16 @@ function exportCardHandler(card) {
           card.classList.remove('export-for-png');
           card.style.boxShadow = '';
           card.style.filter = '';
+          card.style.opacity = '';
+          card.style.transform = '';
+          card.style.animation = '';
+          card.style.animationDelay = '';
+          card.querySelectorAll('*').forEach(el => {
+            el.style.opacity = '';
+            el.style.transform = '';
+            el.style.animation = '';
+            el.style.animationDelay = '';
+          });
           const link = document.createElement('a');
           link.download = monName + '.png';
           link.href = canvas.toDataURL('image/png');
@@ -561,12 +583,32 @@ function exportCardHandler(card) {
           card.classList.remove('export-for-png');
           card.style.boxShadow = '';
           card.style.filter = '';
+          card.style.opacity = '';
+          card.style.transform = '';
+          card.style.animation = '';
+          card.style.animationDelay = '';
+          card.querySelectorAll('*').forEach(el => {
+            el.style.opacity = '';
+            el.style.transform = '';
+            el.style.animation = '';
+            el.style.animationDelay = '';
+          });
           alert('Export failed. Try again.');
         });
       } else {
         card.classList.remove('export-for-png');
         card.style.boxShadow = '';
         card.style.filter = '';
+        card.style.opacity = '';
+        card.style.transform = '';
+        card.style.animation = '';
+        card.style.animationDelay = '';
+        card.querySelectorAll('*').forEach(el => {
+          el.style.opacity = '';
+          el.style.transform = '';
+          el.style.animation = '';
+          el.style.animationDelay = '';
+        });
         alert('Export feature not loaded yet.');
       }
     }
