@@ -208,7 +208,7 @@ async function loadPaste() {
 
     // Use Cloudflare Worker proxy for sprite images
     const originalSpriteUrl = `https://play.pokemonshowdown.com/sprites/home${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
-    const spriteUrl = `https://neopasteimgexporter.agastyawastaken.workers.dev/?url=${encodeURIComponent(originalSpriteUrl)}`;
+    const spriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(originalSpriteUrl)}`;
     const statBlock = await renderStatBlock(mon);
     const movePills = await renderMovePills(mon.moves);
 
@@ -218,8 +218,8 @@ async function loadPaste() {
     // --- Item icon logic ---
     let itemIconHtml = '';
     if (mon.item) {
-      const itemId = mon.item.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '') + '.png';
-      const itemUrl = `https://play.pokemonshowdown.com/sprites/itemicons/${itemId}`;
+      const itemId = mon.item.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+      const itemUrl = `items/${itemId}.png`;
       itemIconHtml = ` <img class="item-icon" src="${itemUrl}" alt="${mon.item}" title="${mon.item}" loading="lazy" />`;
     }
 
@@ -583,7 +583,6 @@ function exportCardHandler(card) {
           card.style.transform = '';
           card.style.animation = '';
           card.style.animationDelay = '';
-          card.style.removeProperty('--accent');
           card.querySelectorAll('*').forEach(el => {
             el.style.opacity = '';
             el.style.transform = '';
@@ -605,7 +604,6 @@ function exportCardHandler(card) {
           card.style.transform = '';
           card.style.animation = '';
           card.style.animationDelay = '';
-          card.style.removeProperty('--accent');
           card.querySelectorAll('*').forEach(el => {
             el.style.opacity = '';
             el.style.transform = '';
@@ -623,7 +621,6 @@ function exportCardHandler(card) {
         card.style.transform = '';
         card.style.animation = '';
         card.style.animationDelay = '';
-        card.style.removeProperty('--accent');
         card.querySelectorAll('*').forEach(el => {
           el.style.opacity = '';
           el.style.transform = '';
