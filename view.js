@@ -212,15 +212,32 @@ async function loadPaste() {
     const statBlock = await renderStatBlock(mon);
     const movePills = await renderMovePills(mon.moves);
 
-const teraType = sanitizeType(mon.teraType || ""); // ✅ uses toShowdownId internally
-const teraTypeClass = teraType ? `type-${teraType}` : "";
+    const teraType = sanitizeType(mon.teraType || ""); // ✅ uses toShowdownId internally
+    const teraTypeClass = teraType ? `type-${teraType}` : "";
+
+    // --- Item icon logic ---
+    let itemIconHtml = '';
+    if (mon.item) {
+      const itemId = mon.item.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '') + '.png';
+      const itemUrl = `https://play.pokemonshowdown.com/sprites/itemicons/${itemId}`;
+      itemIconHtml = ` <img class="item-icon" src="${itemUrl}" alt="${mon.item}" title="${mon.item}" loading="lazy" />`;
+    }
+
+    // Use Gen 5 Showdown sprites as default (static)
+    let showdownName = toSpriteId(mon.name);
+    let finalSpriteUrl;
+    if (mon.shiny) {
+      finalSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`;
+    } else {
+      finalSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`;
+    }
 
     card.innerHTML = `
       <div class="card-header">
-  <h2>${mon.nickname ? `${mon.nickname} (${mon.name})` : mon.name}</h2>
-  <p class="item-line">@ ${mon.item || "None"}</p>
-</div>
-<img src="${spriteUrl}" alt="${mon.name}" />
+        <h2>${mon.nickname ? mon.nickname + ' (' + mon.name + ')' : mon.name}</h2>
+        <p class="item-line">@ <span>${mon.item || "None"}${itemIconHtml}</span></p>
+      </div>
+      <img src="${finalSpriteUrl}" alt="${mon.name}" data-pokemon-name="${mon.name}" data-shiny="${mon.shiny ? '1' : '0'}" />
 
       <p><strong>Ability:</strong> <span class="info-pill ability-pill">${mon.ability || "—"}</span></p>
       <p><strong>Tera Type:</strong> <span class="info-pill ${teraTypeClass}">${mon.teraType || "—"}</span></p>
@@ -517,17 +534,16 @@ function unhighlightCard(e) {
 
 // Modified exportCardHandler to accept card element directly
 function exportCardHandler(card) {
-  // Remove highlight and add export-for-png class before export
   card.classList.remove('export-selectable');
   card.classList.add('export-for-png');
-  card.style.boxShadow = 'none';
-  card.style.filter = 'none';
-  // --- PATCH: Force visibility and remove animation/opacity for export ---
+  card.classList.add('force-glow');
+  // --- Ensure accent color is set inline for html2canvas ---
+  const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent');
+  card.style.setProperty('--accent', accent);
   card.style.opacity = '1';
   card.style.transform = 'none';
   card.style.animation = 'none';
   card.style.animationDelay = '0s';
-  // Remove animation/opacity/transform from all children
   card.querySelectorAll('*').forEach(el => {
     el.style.opacity = '1';
     el.style.transform = 'none';
@@ -551,7 +567,6 @@ function exportCardHandler(card) {
     }
     function doExport() {
       if (window.html2canvas) {
-        // Force background color to match dark mode
         html2canvas(card, {
           backgroundColor: '#23272e',
           useCORS: true,
@@ -561,12 +576,14 @@ function exportCardHandler(card) {
           logging: false
         }).then(canvas => {
           card.classList.remove('export-for-png');
+          card.classList.remove('force-glow'); // Remove after export
           card.style.boxShadow = '';
           card.style.filter = '';
           card.style.opacity = '';
           card.style.transform = '';
           card.style.animation = '';
           card.style.animationDelay = '';
+          card.style.removeProperty('--accent');
           card.querySelectorAll('*').forEach(el => {
             el.style.opacity = '';
             el.style.transform = '';
@@ -581,12 +598,14 @@ function exportCardHandler(card) {
           document.body.removeChild(link);
         }).catch(() => {
           card.classList.remove('export-for-png');
+          card.classList.remove('force-glow');
           card.style.boxShadow = '';
           card.style.filter = '';
           card.style.opacity = '';
           card.style.transform = '';
           card.style.animation = '';
           card.style.animationDelay = '';
+          card.style.removeProperty('--accent');
           card.querySelectorAll('*').forEach(el => {
             el.style.opacity = '';
             el.style.transform = '';
@@ -597,12 +616,14 @@ function exportCardHandler(card) {
         });
       } else {
         card.classList.remove('export-for-png');
+        card.classList.remove('force-glow');
         card.style.boxShadow = '';
         card.style.filter = '';
         card.style.opacity = '';
         card.style.transform = '';
         card.style.animation = '';
         card.style.animationDelay = '';
+        card.style.removeProperty('--accent');
         card.querySelectorAll('*').forEach(el => {
           el.style.opacity = '';
           el.style.transform = '';
@@ -645,5 +666,37 @@ style.textContent = `
 }
 `;
 document.head.appendChild(style);
+
+// === Animated Sprites Button Logic ===
+document.addEventListener('DOMContentLoaded', function() {
+  const aniBtn = document.getElementById('toggle-ani-sprites');
+  if (!aniBtn) return;
+  let aniMode = false;
+  aniBtn.addEventListener('click', function() {
+    aniMode = !aniMode;
+    aniBtn.textContent = aniMode ? 'Static Sprites' : 'Animated Sprites';
+    document.querySelectorAll('.pokemon-card > img:not(.item-icon)').forEach(img => {
+      const name = img.getAttribute('data-pokemon-name');
+      const isShiny = img.getAttribute('data-shiny') === '1';
+      if (!name) return;
+      const showdownName = (window.toSpriteId ? window.toSpriteId(name) : name.toLowerCase().replace(/[^a-z0-9-]/g, ""));
+      if (aniMode) {
+        // Use animated sprite (Showdown only has non-shiny animated for most)
+        img.src = `https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`;
+        img.style.width = '120px';
+        img.style.height = '120px';
+        img.style.objectFit = 'contain';
+      } else {
+        // Use static Gen 5 sprite, shiny if needed
+        img.src = isShiny
+          ? `https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`
+          : `https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`;
+        img.style.width = '';
+        img.style.height = '';
+        img.style.objectFit = '';
+      }
+    });
+  });
+});
 
 loadPaste();

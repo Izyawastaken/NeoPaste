@@ -37,6 +37,7 @@
         <button id="copyBtn" class="fancy-btn">📋 Copy to Clipboard</button>
         <button id="layoutToggle" class="fancy-btn">🔀 Vertical Layout</button>
         <button id="exportPngBtn" class="fancy-btn">🖼️ Export as PNG</button>
+        <button id="toggle-ani-sprites" class="fancy-btn" type="button">Animated Sprites</button>
       </div>
       <div id="report-issue-container" style="text-align:center; margin: 2rem 0;">
         <a href="https://github.com/Izyawastaken/NeoPaste/issues" target="_blank" rel="noopener noreferrer" class="report-btn">
@@ -81,6 +82,30 @@
       if(circle) circle.style.background = color;
     }
   });
+
+  // --- Export PNG: Add hover glow to card during export ---
+  document.addEventListener('DOMContentLoaded', function() {
+    const exportBtn = document.getElementById('exportPngBtn');
+    exportBtn && exportBtn.addEventListener('click', function() {
+      // Find all cards to export (could be multiple)
+      const cards = document.querySelectorAll('.pokemon-card.export-for-png');
+      cards.forEach(card => card.classList.add('force-glow'));
+      setTimeout(() => {
+        // Wait a tick for style to apply, then trigger export (view.js handles html2canvas)
+        setTimeout(() => {
+          cards.forEach(card => card.classList.remove('force-glow'));
+        }, 1200); // Remove after export (long enough for html2canvas)
+      }, 40);
+    });
+  });
   </script>
+  <style>
+  /* Force-glow class for PNG export (matches .pokemon-card:hover) */
+  .pokemon-card.export-for-png.force-glow {
+    box-shadow: 0 0 0 4px var(--accent, #ff9800), 0 4px 24px rgba(0,0,0,0.18) !important;
+    filter: brightness(1.04) drop-shadow(0 0 8px var(--accent, #ff9800)) !important;
+    transition: none !important;
+  }
+  </style>
 </body>
 </html>

@@ -95,16 +95,29 @@ body.dark .pokemon-card {
   color: var(--accent);
   margin-bottom: 0.5rem;
 }
-.pokemon-card img {
+.pokemon-card > img {
   position: absolute;
   top: 4.5rem;
   right: 1.25rem;
-  width: 120px; /* was 96px */
-  height: 120px; /* was 96px */
+  width: 120px;
+  height: 120px;
   image-rendering: pixelated;
   z-index: 2;
 }
 
+.item-icon {
+  position: static !important;
+  width: 35px !important;
+  height: 35px !important;
+  vertical-align: middle !important;
+  margin-left: 0 !important;
+  margin-bottom: 0 !important;
+  background: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  display: inline-block !important;
+  padding: 0px !important;
+}
 
 .pokemon-card p {
   margin: 0.25rem 0;
@@ -757,7 +770,8 @@ span.info-pill.nature-pill[class*="nature-"] {
   align-items: stretch !important;
   border-radius: 18px !important;
 }
-.pokemon-card.export-for-png img {
+/* Only target the main Pokémon sprite for export image styling */
+.pokemon-card.export-for-png > img:not(.item-icon) {
   display: block !important;
   position: static !important;
   margin: 1.2rem auto 1.5rem auto !important;
@@ -771,24 +785,28 @@ span.info-pill.nature-pill[class*="nature-"] {
   visibility: visible !important;
   order: -1 !important;
 }
-.pokemon-card.export-for-png .card-header {
-  min-height: unset !important;
-  margin-bottom: 0.75rem !important;
-}
-.pokemon-card.export-for-png .card-header h2 {
-  font-size: 1.5rem !important;
-  color: #4ec3ff !important;
-  margin-bottom: 0.2rem !important;
-  font-weight: 700 !important;
+/* Ensure item icon is always small and inline, even in export */
+.pokemon-card.export-for-png .item-icon {
+  display: inline-block !important;
+  width: 1.25em !important;
+  height: 1.25em !important;
+  vertical-align: middle !important;
+  margin-left: 0.3em !important;
+  margin-bottom: 0 !important;
+  background: none !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  position: static !important;
 }
 .pokemon-card.export-for-png .card-header .item-line {
+  display: inline-block !important;
   font-size: 1rem !important;
   color: #aaa !important;
   margin-top: 0.1rem !important;
-}
-.pokemon-card.export-for-png .info-pill, .pokemon-card.export-for-png .move-pill {
-  box-shadow: none !important;
-  filter: none !important;
+  margin-left: 0 !important;
+  margin-bottom: 0 !important;
+  vertical-align: middle !important;
 }
 
 /* 1. Card Entrance Animation */
@@ -868,4 +886,11 @@ body.dark .footer-buttons .fancy-btn, body.dark .report-btn {
   font-weight: bold;
   box-shadow: 0 0 0 2px #43d67555 !important;
   animation: none !important;
+}
+
+/* Force-glow class for PNG export (matches .pokemon-card:hover) */
+.pokemon-card.export-for-png.force-glow {
+  box-shadow: 0 0 0 4px var(--accent, #ff9800), 0 4px 24px rgba(0,0,0,0.18) !important;
+  filter: brightness(1.04) drop-shadow(0 0 8px var(--accent, #ff9800)) !important;
+  transition: none !important;
 }
