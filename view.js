@@ -750,6 +750,9 @@ function checkForSecretButton(author) {
     'Whimsy': [
       { label: 'Secret', url: 'https://www.twitch.tv/whimsygaming1314' }
     ],
+    'whimsy': [
+      { label: 'Secret', url: 'https://www.twitch.tv/whimsygaming1314' }
+    ],
     'Izya': [
       { label: 'Secret', url: 'https://www.twitch.tv/izyalovesgothmommies' }
     ],
