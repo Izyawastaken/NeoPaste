@@ -893,3 +893,33 @@ body.dark .footer-buttons .fancy-btn, body.dark .report-btn {
   color: #fff;
   text-shadow: 0 0 4px rgba(0,0,0,0.5);
 }
+.secret-btn {
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  background: var(--glass-light);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: inherit;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.15s ease;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  margin-left: 10px; /* Add some spacing if needed */
+}
+
+body.dark .secret-btn {
+  background: var(--glass-dark);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.secret-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+body.dark .secret-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
