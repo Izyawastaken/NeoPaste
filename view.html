@@ -83,6 +83,26 @@
     }
   });
 
+  // Accent color sync (shared with index.html)
+  (function() {
+    const ACCENT_KEY = 'neopaste-accent';
+    function setAccent(color) {
+      document.documentElement.style.setProperty('--accent', color);
+      localStorage.setItem(ACCENT_KEY, color);
+      const circle = document.querySelector('.accent-circle');
+      if (circle) circle.style.background = color;
+    }
+    // On load, restore accent
+    const savedAccent = localStorage.getItem(ACCENT_KEY);
+    if (savedAccent) setAccent(savedAccent);
+    else setAccent(getComputedStyle(document.documentElement).getPropertyValue('--accent'));
+    // If accent picker exists, wire it up
+    const accentInput = document.getElementById('accentColorPicker');
+    if (accentInput) {
+      accentInput.addEventListener('input', e => setAccent(e.target.value));
+    }
+  })();
+
   // --- Export PNG: Add hover glow to card during export ---
   document.addEventListener('DOMContentLoaded', function() {
     const exportBtn = document.getElementById('exportPngBtn');

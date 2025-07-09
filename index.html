@@ -33,6 +33,49 @@
       color: #4caf50;
       font-weight: bold;
     }
+
+    .floating-report-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border-radius: 5px;
+      text-align: center;
+      text-decoration: none;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.3s ease;
+    }
+
+    .floating-report-btn:hover {
+      background-color: #0056b3;
+    }
+
+    /* Accent Picker Styles */
+    .accent-picker-container {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    .accent-circle {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      margin-right: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Ensure the report button is not covered by the accent picker */
+    .report-btn {
+      margin-top: 10px;
+    }
   </style>
   <script>
   window.addEventListener("DOMContentLoaded", () => {
@@ -61,14 +104,37 @@
     <footer>
       <p>Inspired by <a href="https://pokepast.es" target="_blank">Pokepaste</a> by felixphew</p>
     </footer>
-      <a href="https://github.com/Izyawastaken/NeoPaste/issues" target="_blank" rel="noopener noreferrer" class="report-btn">
+  </div>
+
+  <!-- Accent Picker (top left, floating) -->
+  <div class="accent-picker-container" title="Pick accent color">
+    <span class="accent-circle"></span>
+    <input type="color" id="accentColorPicker" aria-label="Pick accent color" />
+  </div>
+
+  <a href="https://github.com/Izyawastaken/NeoPaste/issues" target="_blank" rel="noopener noreferrer" class="report-btn floating-report-btn">
     🐛 Report Issues Here
   </a>
-  </div>
 
   <!-- Supabase SDK -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="config.js"></script>
   <script src="script.js"></script>
+  <script>
+    // Accent picker logic (shared with view.html)
+    const ACCENT_KEY = 'neopaste-accent';
+    const accentInput = document.getElementById('accentColorPicker');
+    const accentCircle = document.querySelector('.accent-circle');
+    function setAccent(color) {
+      document.documentElement.style.setProperty('--accent', color);
+      localStorage.setItem(ACCENT_KEY, color);
+      if (accentCircle) accentCircle.style.background = color;
+    }
+    accentInput.addEventListener('input', e => setAccent(e.target.value));
+    // On load, restore accent
+    const savedAccent = localStorage.getItem(ACCENT_KEY);
+    if (savedAccent) setAccent(savedAccent);
+    else setAccent(getComputedStyle(document.documentElement).getPropertyValue('--accent'));
+  </script>
 </body>
 </html>

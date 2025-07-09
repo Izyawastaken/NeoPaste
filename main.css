@@ -201,7 +201,7 @@ body.dark .fancy-btn {
 /* Footer */
 footer {
   text-align: center;
-  margin-top: 2rem;
+  margin-top: 2rem; 
   font-size: 0.95rem;
   opacity: 0.8;
 }
@@ -260,17 +260,133 @@ footer a:hover {
   transition: background 0.3s;
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-  .container {
-    padding: 1.2rem;
+/* === Premium Micro-Interactions & Motion (Enhanced) === */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition: none !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
   }
+}
 
-  header h1 {
-    font-size: 2rem;
+button, .fancy-btn, .copy-link-btn, .report-btn {
+  transition: 
+    background 0.25s cubic-bezier(.4,0,.2,1),
+    color 0.18s cubic-bezier(.4,0,.2,1),
+    box-shadow 0.22s cubic-bezier(.4,0,.2,1),
+    transform 0.18s cubic-bezier(.4,0,.2,1);
+  will-change: transform, box-shadow;
+  position: relative;
+  overflow: hidden;
+}
+button:active, .fancy-btn:active, .copy-link-btn:active, .report-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10) !important;
+}
+button:focus-visible, .fancy-btn:focus-visible, .copy-link-btn:focus-visible, .report-btn:focus-visible {
+  outline: 2px solid var(--accent, #ff9800);
+  outline-offset: 2px;
+}
+button:hover, .fancy-btn:hover, .copy-link-btn:hover, .report-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 6px 24px 0 rgba(255,152,0,0.13);
+}
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0);
+  animation: ripple 0.5s linear;
+  background: rgba(255,255,255,0.35);
+  pointer-events: none;
+  z-index: 2;
+}
+@keyframes ripple {
+  to {
+    transform: scale(2.5);
+    opacity: 0;
   }
+}
+/* Enhanced fly-in/fade-in for main blocks */
+.container, .fade-in {
+  opacity: 0;
+  transform: translateY(40px) scale(0.98) rotateX(8deg);
+  animation: flyIn 0.85s cubic-bezier(.22,1,.36,1) forwards;
+  animation-delay: 0.1s;
+}
+@keyframes flyIn {
+  0% {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98) rotateX(8deg);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.02) rotateX(-2deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+  }
+}
+html {
+  scroll-behavior: smooth;
+}
+input:focus, textarea:focus {
+  box-shadow: 0 0 0 2px var(--accent, #ff9800, 0.18);
+  transition: box-shadow 0.18s cubic-bezier(.4,0,.2,1);
+}
 
-  textarea {
-    height: 220px;
+/* Report Issues Button (from view.css, premium style) */
+.report-btn, .floating-report-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  background: var(--accent, #ff9800) !important;
+  color: #fff !important;
+  font-weight: 600;
+  font-size: 1.05rem;
+  border: none;
+  border-radius: 16px;
+  padding: 0.7em 1.4em;
+  margin: 1.2em auto 0 auto;
+  box-shadow: 0 2px 16px 0 rgba(255,152,0,0.10), 0 1.5px 8px 0 rgba(255,255,255,0.08) inset;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.25s, color 0.18s, box-shadow 0.22s, transform 0.18s;
+  will-change: transform, box-shadow;
+  position: relative;
+  overflow: hidden;
+}
+.report-btn:hover, .report-btn:focus, .floating-report-btn:hover, .floating-report-btn:focus {
+  background: var(--accent-dark, #c66900) !important;
+  color: #fff !important;
+  transform: translateY(-2px) scale(1.04);
+  box-shadow: 0 6px 24px 0 rgba(255,152,0,0.18);
+  text-decoration: none;
+}
+.report-btn:active, .floating-report-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10) !important;
+}
+.report-btn:focus-visible, .floating-report-btn:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.floating-report-btn {
+  position: fixed;
+  right: 32px;
+  bottom: 32px;
+  z-index: 1201;
+  box-shadow: 0 8px 32px 0 rgba(255,152,0,0.18), 0 1.5px 8px 0 rgba(255,255,255,0.08) inset;
+  margin: 0 !important;
+  animation: flyIn 0.9s cubic-bezier(.22,1,.36,1) 0.3s both;
+}
+@media (max-width: 700px) {
+  .floating-report-btn {
+    right: 12px;
+    bottom: 12px;
+    padding: 0.6em 1.1em;
+    font-size: 0.98rem;
   }
 }
