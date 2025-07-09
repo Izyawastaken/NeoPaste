@@ -308,12 +308,15 @@ button:hover, .fancy-btn:hover, .copy-link-btn:hover, .report-btn:hover {
   }
 }
 /* Enhanced fly-in/fade-in for main blocks */
-.container, .fade-in {
-  opacity: 0;
-  transform: translateY(40px) scale(0.98) rotateX(8deg);
-  animation: flyIn 0.85s cubic-bezier(.22,1,.36,1) forwards;
-  animation-delay: 0.1s;
+.container,.fade-in {
+  animation: fadeIn 0.4s ease-in-out forwards;
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 @keyframes flyIn {
   0% {
     opacity: 0;
