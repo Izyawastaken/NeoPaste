@@ -244,8 +244,10 @@ async function loadPaste() {
 ${(() => {
   const nature = mon.nature?.toLowerCase();
   const upStat = natureMods[nature]?.up;
+  const statAbbrMap = { hp: "HP", atk: "ATK", def: "DEF", spa: "SPA", spd: "SPD", spe: "SPE" };
   const colorClass = upStat ? `stat-${upStat}` : '';
-  return `<p><strong>Nature:</strong> <span class="info-pill nature-pill ${colorClass}">${mon.nature || "—"}</span></p>`;
+  const boostAbbr = upStat ? statAbbrMap[upStat] : '';
+  return `<p><strong>Nature:</strong> <span class="info-pill nature-pill ${colorClass}"${boostAbbr ? ` data-boost=\"${boostAbbr}\"` : ''}>${mon.nature || "—"}</span></p>`;
 })()}
       <p><strong>EVs:</strong> ${formatEVs(mon.evs)}</p>
       <p><strong>IVs:</strong> ${formatIVs(mon.ivs)}</p>

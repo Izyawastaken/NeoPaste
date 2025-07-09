@@ -456,15 +456,6 @@ body.dark .fancy-btn:hover {
   animation: pulseGlow 1.5s ease-in-out infinite alternate;
 }
 
-/* EV pill hover info */
-.info-pill.stat-hp::after    { content: " (HP)"; display: none; }
-.info-pill.stat-atk::after   { content: " (Atk)"; display: none; }
-.info-pill.stat-def::after   { content: " (Def)"; display: none; }
-.info-pill.stat-spa::after   { content: " (SpA)"; display: none; }
-.info-pill.stat-spd::after   { content: " (SpD)"; display: none; }
-.info-pill.stat-spe::after   { content: " (Spe)"; display: none; }
-.info-pill:hover::after      { display: inline; opacity: 0.6; }
-
 @keyframes pulseGlow {
   0%   { box-shadow: 0 0 6px rgba(255, 255, 255, 0.15); }
   100% { box-shadow: 0 0 12px rgba(255, 255, 255, 0.3); }
@@ -893,4 +884,14 @@ body.dark .footer-buttons .fancy-btn, body.dark .report-btn {
   box-shadow: 0 0 0 4px var(--accent, #ff9800), 0 4px 24px rgba(0,0,0,0.18) !important;
   filter: brightness(1.04) drop-shadow(0 0 8px var(--accent, #ff9800)) !important;
   transition: none !important;
+}
+
+.nature-pill[data-boost]:hover::after {
+  content: " (" attr(data-boost) ")";
+  opacity: 0.7;
+  font-size: 0.95em;
+  font-weight: 600;
+  margin-left: 0.25em;
+  color: #fff;
+  text-shadow: 0 0 4px rgba(0,0,0,0.5);
 }
