@@ -184,7 +184,7 @@ async function loadPaste() {
   // Remove previous preloads (if any)
   [...head.querySelectorAll('link[data-preload-sprite]')].forEach(link => link.remove());
   for (const mon of team) {
-    const originalSpriteUrl = `https://play.pokemonshowdown.com/sprites/home${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
+    const originalSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
     const spriteUrl = `https://neopasteimgexporter.agastyawastaken.workers.dev/?url=${encodeURIComponent(originalSpriteUrl)}`;
     const preload = document.createElement('link');
     preload.rel = 'preload';
@@ -205,10 +205,17 @@ async function loadPaste() {
   for (const mon of team) {
     const card = document.createElement('div');
     card.className = 'pokemon-card';
+const showdownName = toSpriteId(mon.name);
 
-    // Use Cloudflare Worker proxy for sprite images
-    const originalSpriteUrl = `https://play.pokemonshowdown.com/sprites/home${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
-    const spriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(originalSpriteUrl)}`;
+let originalSpriteUrl;
+if (mon.shiny) {
+  originalSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`;
+} else {
+  originalSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`;
+}
+
+const spriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(originalSpriteUrl)}`;
+
     const statBlock = await renderStatBlock(mon);
     const movePills = await renderMovePills(mon.moves);
 
@@ -224,7 +231,7 @@ async function loadPaste() {
     }
 
     // Always use Gen 5 Showdown sprites for export and viewer, never animated for export
-    let showdownName = toSpriteId(mon.name);
+  
     let finalSpriteUrl;
     if (mon.shiny) {
       finalSpriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`;
@@ -670,33 +677,50 @@ document.head.appendChild(style);
 document.addEventListener('DOMContentLoaded', function() {
   const aniBtn = document.getElementById('toggle-ani-sprites');
   if (!aniBtn) return;
+
   let aniMode = false;
+
   aniBtn.addEventListener('click', function() {
     aniMode = !aniMode;
     aniBtn.textContent = aniMode ? 'Static Sprites' : 'Animated Sprites';
+
     document.querySelectorAll('.pokemon-card > img:not(.item-icon)').forEach(img => {
       const name = img.getAttribute('data-pokemon-name');
       const isShiny = img.getAttribute('data-shiny') === '1';
       if (!name) return;
+
       const showdownName = (window.toSpriteId ? window.toSpriteId(name) : name.toLowerCase().replace(/[^a-z0-9-]/g, ""));
-      // Store static src for fallback
+
       const staticSrc = isShiny
         ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`
         : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`)}`;
+
       if (aniMode) {
-        // Use animated sprite (Showdown only has non-shiny animated for most), via proxy for CORS
-        const aniSrc = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`)}`;
-        img.src = aniSrc;
+        // 👇 Use correct folders for shiny vs non-shiny
+        const gen5AniSrc = isShiny
+          ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5ani-shiny/${showdownName}.gif`)}`
+          : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5ani/${showdownName}.gif`)}`;
+
+        const fallbackAniSrc = isShiny
+          ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani-shiny/${showdownName}.gif`)}`
+          : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`)}`;
+
+        img.src = gen5AniSrc;
         img.style.width = '120px';
         img.style.height = '120px';
         img.style.objectFit = 'contain';
-        // Add error handler to fallback to static if animated fails
+
         img.onerror = function() {
-          img.src = staticSrc;
-          img.style.width = '';
-          img.style.height = '';
-          img.style.objectFit = '';
-          img.onerror = null;
+          // Fallback to ani/ or ani-shiny/
+          img.onerror = function() {
+            // Final fallback to static PNG
+            img.src = staticSrc;
+            img.style.width = '';
+            img.style.height = '';
+            img.style.objectFit = '';
+            img.onerror = null;
+          };
+          img.src = fallbackAniSrc;
         };
       } else {
         img.src = staticSrc;
