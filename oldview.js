@@ -208,7 +208,7 @@ async function loadPaste() {
 
     // Use Cloudflare Worker proxy for sprite images
     const originalSpriteUrl = `https://play.pokemonshowdown.com/sprites/home${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
-    const spriteUrl = `https://neopasteimgexporter.agastyawastaken.workers.dev/?url=${encodeURIComponent(originalSpriteUrl)}`;
+    const spriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(originalSpriteUrl)}`;
     const statBlock = await renderStatBlock(mon);
     const movePills = await renderMovePills(mon.moves);
 
@@ -218,8 +218,8 @@ async function loadPaste() {
     // --- Item icon logic ---
     let itemIconHtml = '';
     if (mon.item) {
-      const itemId = mon.item.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '') + '.png';
-      const itemUrl = `https://play.pokemonshowdown.com/sprites/itemicons/${itemId}`;
+      const itemId = mon.item.toLowerCase().replace(/ /g, '-').replace(/[^a-z0-9-]/g, '');
+      const itemUrl = `items/${itemId}.png`;
       itemIconHtml = ` <img class="item-icon" src="${itemUrl}" alt="${mon.item}" title="${mon.item}" loading="lazy" />`;
     }
 
@@ -244,8 +244,10 @@ async function loadPaste() {
 ${(() => {
   const nature = mon.nature?.toLowerCase();
   const upStat = natureMods[nature]?.up;
+  const statAbbrMap = { hp: "HP", atk: "ATK", def: "DEF", spa: "SPA", spd: "SPD", spe: "SPE" };
   const colorClass = upStat ? `stat-${upStat}` : '';
-  return `<p><strong>Nature:</strong> <span class="info-pill nature-pill ${colorClass}">${mon.nature || "—"}</span></p>`;
+  const boostAbbr = upStat ? statAbbrMap[upStat] : '';
+  return `<p><strong>Nature:</strong> <span class="info-pill nature-pill ${colorClass}"${boostAbbr ? ` data-boost=\"${boostAbbr}\"` : ''}>${mon.nature || "—"}</span></p>`;
 })()}
       <p><strong>EVs:</strong> ${formatEVs(mon.evs)}</p>
       <p><strong>IVs:</strong> ${formatIVs(mon.ivs)}</p>
@@ -583,7 +585,6 @@ function exportCardHandler(card) {
           card.style.transform = '';
           card.style.animation = '';
           card.style.animationDelay = '';
-          card.style.removeProperty('--accent');
           card.querySelectorAll('*').forEach(el => {
             el.style.opacity = '';
             el.style.transform = '';
@@ -605,7 +606,6 @@ function exportCardHandler(card) {
           card.style.transform = '';
           card.style.animation = '';
           card.style.animationDelay = '';
-          card.style.removeProperty('--accent');
           card.querySelectorAll('*').forEach(el => {
             el.style.opacity = '';
             el.style.transform = '';
@@ -623,7 +623,6 @@ function exportCardHandler(card) {
         card.style.transform = '';
         card.style.animation = '';
         card.style.animationDelay = '';
-        card.style.removeProperty('--accent');
         card.querySelectorAll('*').forEach(el => {
           el.style.opacity = '';
           el.style.transform = '';
@@ -680,20 +679,31 @@ document.addEventListener('DOMContentLoaded', function() {
       const isShiny = img.getAttribute('data-shiny') === '1';
       if (!name) return;
       const showdownName = (window.toSpriteId ? window.toSpriteId(name) : name.toLowerCase().replace(/[^a-z0-9-]/g, ""));
+      // Store static src for fallback
+      const staticSrc = isShiny
+        ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`
+        : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`)}`;
       if (aniMode) {
         // Use animated sprite (Showdown only has non-shiny animated for most), via proxy for CORS
-        img.src = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`)}`;
+        const aniSrc = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`)}`;
+        img.src = aniSrc;
         img.style.width = '120px';
         img.style.height = '120px';
         img.style.objectFit = 'contain';
+        // Add error handler to fallback to static if animated fails
+        img.onerror = function() {
+          img.src = staticSrc;
+          img.style.width = '';
+          img.style.height = '';
+          img.style.objectFit = '';
+          img.onerror = null;
+        };
       } else {
-        // Use static Gen 5 sprite, shiny if needed, via proxy
-        img.src = isShiny
-          ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`
-          : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`)}`;
+        img.src = staticSrc;
         img.style.width = '';
         img.style.height = '';
         img.style.objectFit = '';
+        img.onerror = null;
       }
     });
   });
