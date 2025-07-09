@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "NeoPaste Exporter",
+  "version": "1.0",
+  "description": "Export Pokémon Showdown teams directly to your NeoPaste site.",
+  "permissions": [
+    "activeTab",
+    "scripting"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["https://play.pokemonshowdown.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_end"
+    }
+  ]
+}
