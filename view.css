@@ -766,8 +766,6 @@ span.info-pill.nature-pill[class*="nature-"] {
   display: block !important;
   position: static !important;
   margin: 1.2rem auto 1.5rem auto !important;
-  width: 120px !important;
-  height: 120px !important;
   image-rendering: pixelated !important;
   z-index: 1 !important;
   background: none !important;
