@@ -679,20 +679,31 @@ document.addEventListener('DOMContentLoaded', function() {
       const isShiny = img.getAttribute('data-shiny') === '1';
       if (!name) return;
       const showdownName = (window.toSpriteId ? window.toSpriteId(name) : name.toLowerCase().replace(/[^a-z0-9-]/g, ""));
+      // Store static src for fallback
+      const staticSrc = isShiny
+        ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`
+        : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`)}`;
       if (aniMode) {
         // Use animated sprite (Showdown only has non-shiny animated for most), via proxy for CORS
-        img.src = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`)}`;
+        const aniSrc = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`)}`;
+        img.src = aniSrc;
         img.style.width = '120px';
         img.style.height = '120px';
         img.style.objectFit = 'contain';
+        // Add error handler to fallback to static if animated fails
+        img.onerror = function() {
+          img.src = staticSrc;
+          img.style.width = '';
+          img.style.height = '';
+          img.style.objectFit = '';
+          img.onerror = null;
+        };
       } else {
-        // Use static Gen 5 sprite, shiny if needed, via proxy
-        img.src = isShiny
-          ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`
-          : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`)}`;
+        img.src = staticSrc;
         img.style.width = '';
         img.style.height = '';
         img.style.objectFit = '';
+        img.onerror = null;
       }
     });
   });
