@@ -96,7 +96,6 @@ function createNeoPasteButton() {
   neoPasteButton.onclick = async () => {
     const title = document.querySelector('.teamnameedit')?.value || 'Untitled';
     const content = buildExportTextFromDOM();
-
     const authorSpan = document.querySelector('.usernametext');
     const author = authorSpan ? authorSpan.textContent.trim() : 'Anonymous';
 
@@ -120,77 +119,45 @@ function createNeoPasteButton() {
       if (!response.ok) {
         const error = await response.text();
         console.error('Upload failed:', error);
-        alert('❌ Upload failed: ' + error);
         return;
       }
 
       const pasteUrl = `https://izyawastaken.github.io/NeoPaste/view.html?id=${payload[0].id}`;
       await navigator.clipboard.writeText(pasteUrl);
-      alert(`✅ Uploaded & link copied!\n${pasteUrl}`);
+      console.log(`✅ Uploaded & link copied: ${pasteUrl}`);
       window.open(pasteUrl, '_blank');
     } catch (err) {
       console.error('Upload error:', err);
-      alert('❌ Upload error: ' + err.message);
     }
   };
 
   pokePasteButton.parentElement.insertBefore(neoPasteButton, pokePasteButton.nextSibling);
 }
 
-async function maybeImportNeoPaste() {
-  const url = new URL(window.location.href);
-  const id = url.searchParams.get('id');
-
-  if (!id) return;
-
-  try {
-    const response = await fetch(`https://psext.agastyawastaken.workers.dev/?id=${id}`);
-    if (!response.ok) throw new Error('Failed to fetch paste');
-
-    const data = await response.json();
-    const text = data.content || '';
-
-    const textarea = document.querySelector('.teamedit textarea');
-    if (textarea) {
-      textarea.value = text;
-      alert('✅ Imported team from NeoPaste!');
-    }
-  } catch (err) {
-    console.error('Import error:', err);
-  }
-}
-
-const observer = new MutationObserver(() => {
-  createNeoPasteButton();
-  maybeImportNeoPaste();
-});
-
-observer.observe(document.body, { childList: true, subtree: true });
-// === Watch textarea for paste events like PokéPaste does ===
+// === PASTE-TO-IMPORT ===
 document.addEventListener('paste', async (e) => {
   const pasteText = (e.clipboardData || window.clipboardData).getData('text');
-
   const match = pasteText.match(/neopaste.*[?&]id=([a-z0-9]+)/i);
   if (match) {
     e.preventDefault();
     const id = match[1];
-
     try {
       const response = await fetch(`https://psext.agastyawastaken.workers.dev/?id=${id}`);
-      if (!response.ok) throw new Error('Failed to fetch');
-
+      if (!response.ok) throw new Error('Fetch failed');
       const data = await response.json();
       const team = data.content || '';
-
       const textarea = document.querySelector('.teamedit textarea');
       if (textarea) {
         textarea.value = team.trim();
-        alert('✅ NeoPaste imported successfully!');
+        console.log('✅ NeoPaste imported');
       }
     } catch (err) {
       console.error('Import failed:', err);
-      alert('❌ Could not import NeoPaste!');
     }
   }
 });
 
+const observer = new MutationObserver(() => {
+  createNeoPasteButton();
+});
+observer.observe(document.body, { childList: true, subtree: true });
