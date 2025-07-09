@@ -568,12 +568,20 @@ function exportCardHandler(card) {
   setTimeout(() => {
     // Always select the first img (the sprite)
     const img = card.querySelector('img');
-    if (img && !img.complete) {
-      img.onload = () => doExport();
-      img.onerror = () => doExport();
-    } else {
-      doExport();
-    }
+if (img) {
+  // Remove forced inline sizing for export so html2canvas uses natural size
+  img.style.width = '';
+  img.style.height = '';
+  img.style.objectFit = '';
+}
+
+if (img && !img.complete) {
+  img.onload = () => doExport();
+  img.onerror = () => doExport();
+} else {
+  doExport();
+}
+
     function doExport() {
       if (window.html2canvas) {
         html2canvas(card, {
