@@ -223,13 +223,13 @@ async function loadPaste() {
       itemIconHtml = ` <img class="item-icon" src="${itemUrl}" alt="${mon.item}" title="${mon.item}" loading="lazy" />`;
     }
 
-    // Use Gen 5 Showdown sprites as default (static)
+    // Always use Gen 5 Showdown sprites for export and viewer, never animated for export
     let showdownName = toSpriteId(mon.name);
     let finalSpriteUrl;
     if (mon.shiny) {
-      finalSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`;
+      finalSpriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`;
     } else {
-      finalSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`;
+      finalSpriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`)}`;
     }
 
     card.innerHTML = `
@@ -237,7 +237,7 @@ async function loadPaste() {
         <h2>${mon.nickname ? mon.nickname + ' (' + mon.name + ')' : mon.name}</h2>
         <p class="item-line">@ <span>${mon.item || "None"}${itemIconHtml}</span></p>
       </div>
-      <img src="${finalSpriteUrl}" alt="${mon.name}" data-pokemon-name="${mon.name}" data-shiny="${mon.shiny ? '1' : '0'}" />
+      <img src="${finalSpriteUrl}" alt="${mon.name}" data-pokemon-name="${mon.name}" data-shiny="${mon.shiny ? '1' : '0'}" crossorigin="anonymous" />
 
       <p><strong>Ability:</strong> <span class="info-pill ability-pill">${mon.ability || "—"}</span></p>
       <p><strong>Tera Type:</strong> <span class="info-pill ${teraTypeClass}">${mon.teraType || "—"}</span></p>
@@ -681,16 +681,16 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!name) return;
       const showdownName = (window.toSpriteId ? window.toSpriteId(name) : name.toLowerCase().replace(/[^a-z0-9-]/g, ""));
       if (aniMode) {
-        // Use animated sprite (Showdown only has non-shiny animated for most)
-        img.src = `https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`;
+        // Use animated sprite (Showdown only has non-shiny animated for most), via proxy for CORS
+        img.src = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`)}`;
         img.style.width = '120px';
         img.style.height = '120px';
         img.style.objectFit = 'contain';
       } else {
-        // Use static Gen 5 sprite, shiny if needed
+        // Use static Gen 5 sprite, shiny if needed, via proxy
         img.src = isShiny
-          ? `https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`
-          : `https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`;
+          ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`
+          : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`)}`;
         img.style.width = '';
         img.style.height = '';
         img.style.objectFit = '';
