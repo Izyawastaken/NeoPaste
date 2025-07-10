@@ -270,6 +270,7 @@ ${(() => {
   animateStatBars();
   afterCardsRendered();
   checkForSecretButton(author);
+  if (window.updateAllSprites) window.updateAllSprites();
 
 }
 
@@ -683,63 +684,73 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// === Animated Sprites Button Logic ===
+// === Animated Sprites Button Logic (with localStorage, default true) ===
+function updateAllSprites() {
+  const aniMode = (function() {
+    const val = localStorage.getItem('neopaste-ani-sprites');
+    if (val === null) return true;
+    return val === 'true';
+  })();
+  document.querySelectorAll('.pokemon-card > img:not(.item-icon)').forEach(img => {
+    const name = img.getAttribute('data-pokemon-name');
+    const isShiny = img.getAttribute('data-shiny') === '1';
+    if (!name) return;
+    const showdownName = (window.toSpriteId ? window.toSpriteId(name) : name.toLowerCase().replace(/[^a-z0-9-]/g, ""));
+    const staticSrc = isShiny
+      ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`
+      : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`)}`;
+    if (aniMode) {
+      const gen5AniSrc = isShiny
+        ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5ani-shiny/${showdownName}.gif`)}`
+        : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5ani/${showdownName}.gif`)}`;
+      const fallbackAniSrc = isShiny
+        ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani-shiny/${showdownName}.gif`)}`
+        : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`)}`;
+      img.src = gen5AniSrc;
+      img.style.width = '120px';
+      img.style.height = '120px';
+      img.style.objectFit = 'contain';
+      img.onerror = function() {
+        img.onerror = function() {
+          img.src = staticSrc;
+          img.style.width = '';
+          img.style.height = '';
+          img.style.objectFit = '';
+          img.onerror = null;
+        };
+        img.src = fallbackAniSrc;
+      };
+    } else {
+      img.src = staticSrc;
+      img.style.width = '';
+      img.style.height = '';
+      img.style.objectFit = '';
+      img.onerror = null;
+    }
+  });
+}
+window.updateAllSprites = updateAllSprites;
+
 document.addEventListener('DOMContentLoaded', function() {
   const aniBtn = document.getElementById('toggle-ani-sprites');
   if (!aniBtn) return;
-
-  let aniMode = false;
-
+  const STORAGE_KEY = 'neopaste-ani-sprites';
+  function getAniPref() {
+    const val = localStorage.getItem(STORAGE_KEY);
+    if (val === null) return true; // default to true
+    return val === 'true';
+  }
+  function setAniPref(val) {
+    localStorage.setItem(STORAGE_KEY, val ? 'true' : 'false');
+  }
+  let aniMode = getAniPref();
+  aniBtn.textContent = aniMode ? 'Static Sprites' : 'Animated Sprites';
+  updateAllSprites();
   aniBtn.addEventListener('click', function() {
     aniMode = !aniMode;
+    setAniPref(aniMode);
     aniBtn.textContent = aniMode ? 'Static Sprites' : 'Animated Sprites';
-
-    document.querySelectorAll('.pokemon-card > img:not(.item-icon)').forEach(img => {
-      const name = img.getAttribute('data-pokemon-name');
-      const isShiny = img.getAttribute('data-shiny') === '1';
-      if (!name) return;
-
-      const showdownName = (window.toSpriteId ? window.toSpriteId(name) : name.toLowerCase().replace(/[^a-z0-9-]/g, ""));
-
-      const staticSrc = isShiny
-        ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`
-        : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`)}`;
-
-      if (aniMode) {
-        // 👇 Use correct folders for shiny vs non-shiny
-        const gen5AniSrc = isShiny
-          ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5ani-shiny/${showdownName}.gif`)}`
-          : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5ani/${showdownName}.gif`)}`;
-
-        const fallbackAniSrc = isShiny
-          ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani-shiny/${showdownName}.gif`)}`
-          : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`)}`;
-
-        img.src = gen5AniSrc;
-        img.style.width = '120px';
-        img.style.height = '120px';
-        img.style.objectFit = 'contain';
-
-        img.onerror = function() {
-          // Fallback to ani/ or ani-shiny/
-          img.onerror = function() {
-            // Final fallback to static PNG
-            img.src = staticSrc;
-            img.style.width = '';
-            img.style.height = '';
-            img.style.objectFit = '';
-            img.onerror = null;
-          };
-          img.src = fallbackAniSrc;
-        };
-      } else {
-        img.src = staticSrc;
-        img.style.width = '';
-        img.style.height = '';
-        img.style.objectFit = '';
-        img.onerror = null;
-      }
-    });
+    updateAllSprites();
   });
 });
 function checkForSecretButton(author) {
@@ -777,6 +788,42 @@ function checkForSecretButton(author) {
       secretContainer.appendChild(btn);
     });
   }
+}
+
+// === Streamer Mode (Overlay) Button Logic ===
+const streamerBtn = document.getElementById('toggleStreamerMode');
+if (streamerBtn) {
+  streamerBtn.addEventListener('click', async () => {
+    // Build overlay link
+    const pasteId = new URLSearchParams(location.search).get('id');
+    if (!pasteId) return;
+    // Use absolute URL for GitHub Pages, fallback to relative for local
+    let overlayUrl;
+    if (location.hostname.endsWith('github.io')) {
+      overlayUrl = `${location.origin}${location.pathname.replace(/\/view\.html$/, '/overlay.html')}?id=${encodeURIComponent(pasteId)}`;
+    } else {
+      overlayUrl = `overlay.html?id=${encodeURIComponent(pasteId)}`;
+    }
+    // Open overlay in new tab
+    window.open(overlayUrl, '_blank');
+    // Copy to clipboard
+    try {
+      await navigator.clipboard.writeText(overlayUrl);
+      streamerBtn.classList.add('copied');
+      streamerBtn.textContent = '🎥 Copied Overlay Link!';
+      setTimeout(() => {
+        streamerBtn.classList.remove('copied');
+        streamerBtn.textContent = '🎥 Streamer Mode (Overlay)';
+      }, 1400);
+    } catch {
+      streamerBtn.classList.add('copied');
+      streamerBtn.textContent = '❌ Copy Failed';
+      setTimeout(() => {
+        streamerBtn.classList.remove('copied');
+        streamerBtn.textContent = '🎥 Streamer Mode (Overlay)';
+      }, 1400);
+    }
+  });
 }
 
 loadPaste();
