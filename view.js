@@ -879,7 +879,7 @@ if (streamerBtn) {
     if (!setText) return;
 
     // Send to Cloudflare Worker and open calculator with token
-    fetch('https://your-worker-url.workers.dev/upload', {
+    fetch('https://neocalc.agastyawastaken.workers.dev/upload', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
       body: setText
