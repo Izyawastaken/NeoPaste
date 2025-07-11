@@ -878,16 +878,21 @@ if (streamerBtn) {
     const setText = blocks[idx] || '';
     if (!setText) return;
 
-    // Save to chrome.storage.local for the calculator to pick up (if extension is present)
-    if (window.chrome && chrome.storage && chrome.storage.local) {
-      chrome.storage.local.set({ neoShowdownSet: setText }, function() {
-        window.open('https://calc.pokemonshowdown.com/', '_blank');
-      });
-    } else {
-      // Fallback: localStorage for manual copy/paste
-      localStorage.setItem('neoShowdownSet', setText);
-      window.open('https://calc.pokemonshowdown.com/', '_blank');
-    }
+    // Send to Cloudflare Worker and open calculator with token
+    fetch('https://your-worker-url.workers.dev/upload', {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: setText
+    })
+      .then(res => res.text())
+      .then(token => {
+        if (token && token.length < 32) {
+          window.open(`https://calc.pokemonshowdown.com/?neopaste=${encodeURIComponent(token)}`, '_blank');
+        } else {
+          alert('Failed to get token from worker.');
+        }
+      })
+      .catch(() => alert('Failed to contact worker.'));
   }
   function cleanupCalculatorMode() {
     calculatorMode = false;
