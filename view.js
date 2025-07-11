@@ -878,7 +878,6 @@ if (streamerBtn) {
     const setText = blocks[idx] || '';
     if (!setText) return;
 
-    // Send to Cloudflare Worker and open calculator with token
     fetch('https://neocalc.agastyawastaken.workers.dev/upload', {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain' },
