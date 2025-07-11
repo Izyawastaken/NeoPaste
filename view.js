@@ -878,18 +878,16 @@ if (streamerBtn) {
     const setText = blocks[idx] || '';
     if (!setText) return;
 
-    // Save to localStorage for the calculator to pick up
-    localStorage.setItem('neoShowdownSet', setText);
-
-    // Open calculator in new tab
-    window.open('https://calc.pokemonshowdown.com/', '_blank');
-    // Show notification
-    openCalcBtn.classList.add('copied');
-    openCalcBtn.textContent = '🧮 Set Copied!';
-    setTimeout(() => {
-      openCalcBtn.classList.remove('copied');
-      openCalcBtn.textContent = '🧮 Open in Calculator';
-    }, 1400);
+    // Save to chrome.storage.local for the calculator to pick up (if extension is present)
+    if (window.chrome && chrome.storage && chrome.storage.local) {
+      chrome.storage.local.set({ neoShowdownSet: setText }, function() {
+        window.open('https://calc.pokemonshowdown.com/', '_blank');
+      });
+    } else {
+      // Fallback: localStorage for manual copy/paste
+      localStorage.setItem('neoShowdownSet', setText);
+      window.open('https://calc.pokemonshowdown.com/', '_blank');
+    }
   }
   function cleanupCalculatorMode() {
     calculatorMode = false;
