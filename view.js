@@ -157,8 +157,14 @@ toggleExpertModeBtn.addEventListener('click', () => {
     const mods = natureMods[natureText] || {};
 
     const ev = parseInt(el.dataset.ev) || 0;
-    const iv = parseInt(el.dataset.iv) || 31;
-    const level = 100; // default to level 50
+    let iv;
+    if (el.dataset.iv !== undefined) {
+      iv = parseInt(el.dataset.iv);
+    } else {
+      iv = (statKey === 'atk' ? 0 : 31);
+    }
+    const level = 100;
+    
 
     if (expertMode) {
       let stat;
