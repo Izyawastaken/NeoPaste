@@ -137,6 +137,51 @@ const natureMods = {
   brave: { up: "atk", down: "spe" },
   lonely: { up: "atk", down: "def" }
 };
+let expertMode = false;
+const toggleExpertModeBtn = document.getElementById('toggleExpertMode');
+
+toggleExpertModeBtn.addEventListener('click', () => {
+  expertMode = !expertMode;
+  toggleExpertModeBtn.textContent = expertMode ? 'Hide Raw Damage Modifiers' : 'Show Raw Damage Modifiers';
+  document.body.classList.toggle('expert-mode', expertMode);
+
+  const statValues = document.querySelectorAll('.stat-value');
+  statValues.forEach(el => {
+    const base = parseInt(el.dataset.base);
+    if (isNaN(base)) return;
+
+    const statKey = el.dataset.stat;
+    const statLine = el.closest('.stat-line');
+    const monCard = el.closest('.pokemon-card');
+    const natureText = monCard?.querySelector('.nature-pill')?.textContent?.toLowerCase() || '';
+    const mods = natureMods[natureText] || {};
+
+    const ev = parseInt(el.dataset.ev) || 0;
+    const iv = parseInt(el.dataset.iv) || 31;
+    const level = 100; // default to level 50
+
+    if (expertMode) {
+      let stat;
+      if (statKey === 'hp') {
+        stat = Math.floor(((2 * base + iv + Math.floor(ev / 4)) * level) / 100) + level + 10;
+      } else {
+        const baseStat = Math.floor(((2 * base + iv + Math.floor(ev / 4)) * level) / 100) + 5;
+        const natureMult = statKey === mods.up ? 1.1 : statKey === mods.down ? 0.9 : 1;
+        stat = Math.floor(baseStat * natureMult);
+      }
+
+      if (!el.dataset.original) {
+        el.dataset.original = el.textContent;
+      }
+
+      el.textContent = stat;
+    } else {
+      if (el.dataset.original) {
+        el.textContent = el.dataset.original;
+      }
+    }
+  });
+});
 
 function sanitizeType(type) {
   const clean = toShowdownId(type.trim());
@@ -322,7 +367,14 @@ async function renderStatBlock(p) {
               <span class="stat-label ${k}">${short}</span>
               <div class="stat-bar"><div class="stat-bar-fill" data-base="${base}"></div></div>
               ${mod ? `<span class="stat-modifier ${mod === "+" ? "plus" : "minus"}">${mod}</span>` : ""}
-              <span class="stat-value">${base}</span>
+              <span class="stat-value"
+      data-base="${base}"
+      data-stat="${k}"
+      data-ev="${p.evs[k] ?? 0}"
+      data-iv="${p.ivs[k] ?? 31}">
+  ${base}
+</span>
+
             </div>`;
         }).join("")}
       </div>
