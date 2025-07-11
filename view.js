@@ -826,4 +826,83 @@ if (streamerBtn) {
   });
 }
 
+// === Open in Calculator Button Logic ===
+(function() {
+  const openCalcBtn = document.getElementById('openCalcBtn');
+  if (!openCalcBtn) return;
+
+  function showIfExtensionPresent() {
+    if (document.querySelector('meta[name="neoShowdownExtPresent"]')) {
+      openCalcBtn.style.display = '';
+      return true;
+    }
+    return false;
+  }
+
+  if (!showIfExtensionPresent()) {
+    // If not present, observe for it
+    const observer = new MutationObserver(() => {
+      if (showIfExtensionPresent()) observer.disconnect();
+    });
+    observer.observe(document.head, { childList: true });
+  }
+
+  let calculatorMode = false;
+  openCalcBtn.addEventListener('click', () => {
+    calculatorMode = true;
+    document.body.style.cursor = 'crosshair';
+    const cards = document.querySelectorAll('.pokemon-card');
+    cards.forEach(card => {
+      card.classList.add('calculator-selectable');
+      card.title = 'Click to open this set in the Showdown Calculator';
+    });
+    document.addEventListener('click', calculatorDelegatedHandler, { capture: true });
+  });
+  function calculatorDelegatedHandler(e) {
+    const card = e.target.closest('.pokemon-card.calculator-selectable');
+    if (calculatorMode && card) {
+      e.stopPropagation();
+      exportToCalculator(card);
+      cleanupCalculatorMode();
+    } else if (calculatorMode) {
+      // Clicked outside any selectable card, cancel calculator mode
+      cleanupCalculatorMode();
+    }
+  }
+  function exportToCalculator(card) {
+    // Use card index to get the correct block from window.rawPasteText
+    const cards = Array.from(document.querySelectorAll('.pokemon-card'));
+    const idx = cards.indexOf(card);
+    if (idx === -1) return;
+    const blocks = (window.rawPasteText || '').trim().split(/\n\s*\n/);
+    const setText = blocks[idx] || '';
+    if (!setText) return;
+
+    // Save to localStorage for the calculator to pick up
+    localStorage.setItem('neoShowdownSet', setText);
+
+    // Open calculator in new tab
+    window.open('https://calc.pokemonshowdown.com/', '_blank');
+    // Show notification
+    openCalcBtn.classList.add('copied');
+    openCalcBtn.textContent = '🧮 Set Copied!';
+    setTimeout(() => {
+      openCalcBtn.classList.remove('copied');
+      openCalcBtn.textContent = '🧮 Open in Calculator';
+    }, 1400);
+  }
+  function cleanupCalculatorMode() {
+    calculatorMode = false;
+    document.body.style.cursor = '';
+    const cards = document.querySelectorAll('.pokemon-card');
+    cards.forEach(card => {
+      card.classList.remove('calculator-selectable');
+      card.title = '';
+      card.style.boxShadow = '';
+      card.style.transform = '';
+    });
+    document.removeEventListener('click', calculatorDelegatedHandler, { capture: true });
+  }
+})();
+
 loadPaste();
