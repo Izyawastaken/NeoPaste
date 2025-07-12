@@ -813,30 +813,24 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 function checkForSecretButton(author) {
   const secretLinks = {
-    'Whimsy': [
-      { label: 'Visit the creator!', url: 'https://www.twitch.tv/whimsygaming1314' }
-    ],
     'whimsy': [
       { label: 'Visit the creator!', url: 'https://www.twitch.tv/whimsygaming1314' }
     ],
-    'Izya': [
+    'izya': [
       { label: 'Visit the creator!', url: 'https://www.twitch.tv/izyalovesgothmommies' }
     ],
     'katakuna_64': [
       { label: 'Visit the creator!', url: 'https://www.twitch.tv/katakuna_64' }
     ]
-    
   };
 
-  // Use the author parameter directly instead of reading from DOM
+  // Normalize the author name to lowercase
   const authorName = author ? author.toLowerCase() : '';
-
   const secretContainer = document.getElementById('secret-btns');
 
   if (secretContainer && secretLinks[authorName]) {
-    // Clear any existing buttons
     secretContainer.innerHTML = '';
-    
+
     secretLinks[authorName].forEach(link => {
       const btn = document.createElement('button');
       btn.textContent = link.label;
@@ -848,13 +842,6 @@ function checkForSecretButton(author) {
     });
   }
 }
-const btn = document.createElement('button');
-btn.textContent = link.label;
-btn.className = 'secret-btn';
-btn.addEventListener('click', () => {
-  window.open(link.url, '_blank');
-});
-secretContainer.appendChild(btn);
 
 // === Open in Calculator Button Logic ===
 (function() {
