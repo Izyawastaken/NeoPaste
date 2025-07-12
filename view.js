@@ -848,43 +848,6 @@ function checkForSecretButton(author) {
     });
   }
 }
-
-// === Streamer Mode (Overlay) Button Logic ===
-const streamerBtn = document.getElementById('toggleStreamerMode');
-if (streamerBtn) {
-  streamerBtn.addEventListener('click', async () => {
-    // Build overlay link
-    const pasteId = new URLSearchParams(location.search).get('id');
-    if (!pasteId) return;
-    // Use absolute URL for GitHub Pages, fallback to relative for local
-    let overlayUrl;
-    if (location.hostname.endsWith('github.io')) {
-      overlayUrl = `${location.origin}${location.pathname.replace(/\/view\.html$/, '/overlay.html')}?id=${encodeURIComponent(pasteId)}`;
-    } else {
-      overlayUrl = `overlay.html?id=${encodeURIComponent(pasteId)}`;
-    }
-    // Open overlay in new tab
-    window.open(overlayUrl, '_blank');
-    // Copy to clipboard
-    try {
-      await navigator.clipboard.writeText(overlayUrl);
-      streamerBtn.classList.add('copied');
-      streamerBtn.textContent = '🎥 Copied Overlay Link!';
-      setTimeout(() => {
-        streamerBtn.classList.remove('copied');
-        streamerBtn.textContent = '🎥 Streamer Mode (Overlay)';
-      }, 1400);
-    } catch {
-      streamerBtn.classList.add('copied');
-      streamerBtn.textContent = '❌ Copy Failed';
-      setTimeout(() => {
-        streamerBtn.classList.remove('copied');
-        streamerBtn.textContent = '🎥 Streamer Mode (Overlay)';
-      }, 1400);
-    }
-  });
-}
-
 // === Open in Calculator Button Logic ===
 (function() {
   const openCalcBtn = document.getElementById('openCalcBtn');
