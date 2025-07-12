@@ -848,6 +848,14 @@ function checkForSecretButton(author) {
     });
   }
 }
+const btn = document.createElement('button');
+btn.textContent = link.label;
+btn.className = 'secret-btn';
+btn.addEventListener('click', () => {
+  window.open(link.url, '_blank');
+});
+secretContainer.appendChild(btn);
+
 // === Open in Calculator Button Logic ===
 (function() {
   const openCalcBtn = document.getElementById('openCalcBtn');
