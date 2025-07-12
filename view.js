@@ -813,20 +813,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 function checkForSecretButton(author) {
   const secretLinks = {
-    'rowndlet': [
-      { label: 'Secret', url: 'https://www.twitch.tv/rowndlet' }
-    ],
     'Whimsy': [
-      { label: 'Secret', url: 'https://www.twitch.tv/whimsygaming1314' }
+      { label: 'Visit the creator!', url: 'https://www.twitch.tv/whimsygaming1314' }
     ],
     'whimsy': [
-      { label: 'Secret', url: 'https://www.twitch.tv/whimsygaming1314' }
+      { label: 'Visit the creator!', url: 'https://www.twitch.tv/whimsygaming1314' }
     ],
     'Izya': [
-      { label: 'Secret', url: 'https://www.twitch.tv/izyalovesgothmommies' }
+      { label: 'Visit the creator!', url: 'https://www.twitch.tv/izyalovesgothmommies' }
     ],
     'katakuna_64': [
-      { label: 'Secret', url: 'https://www.twitch.tv/katakuna_64' }
+      { label: 'Visit the creator!', url: 'https://www.twitch.tv/katakuna_64' }
     ]
     
   };
