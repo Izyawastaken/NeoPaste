@@ -825,6 +825,10 @@ function checkForSecretButton(author) {
     'Izya': [
       { label: 'Secret', url: 'https://www.twitch.tv/izyalovesgothmommies' }
     ],
+    'katakuna_64': [
+      { label: 'Secret', url: 'https://www.twitch.tv/katakuna_64' }
+    ]
+    
   };
 
   // Use the author parameter directly instead of reading from DOM
