@@ -1,60 +1,66 @@
-#  NeoPaste
+# Sanctum
 
-**NeoPaste** is a modern, aesthetic, and fast PokéPaste successor proudly built by **Izya**
+A modern, blazing-fast Pokémon team sharing platform built with React, TypeScript, and Vite.
 
-Whether you're a competitive battler, a casual team builder, or just someone who loves beautifully organized teams, NeoPaste brings a sleek, optimized UI to Pokémon team sharing.
+## Features
 
----
+- 🚀 **Blazing Fast Performance** - Optimized with service workers, code splitting, and aggressive caching
+- 🎨 **Beautiful UI** - Modern glassmorphic design with dark mode support
+- 🎯 **Clean URLs** - SEO-friendly routing with `/view/abc` format
+- 📱 **Responsive Design** - Works perfectly on desktop and mobile
+- 🔧 **Advanced Features** - Animated sprites, stat calculations, calculator integration
+- 🎨 **Customizable** - Accent color picker and theme persistence
 
-##  What is NeoPaste?
+## Tech Stack
 
-NeoPaste is a passion project inspired by PokéPaste, rebuilt from scratch with a focus on **design, speed, and simplicity**.
+- **Frontend**: React 18, TypeScript, Vite
+- **Styling**: CSS with glassmorphic effects
+- **Database**: Supabase
+- **Performance**: Service Workers, Code Splitting, LRU Cache
+- **Build Tool**: Vite with SWC
 
-NeoPaste has **two main modes**:
+## Development
 
--  **Viewer** – For viewing existing pastes via a simple, clean link.
--  [**Creator**](https://izyawastaken.github.io/NeoPaste/) – For building and sharing your own pastes.
+```bash
+# Install dependencies
+npm install
 
----
+# Start development server
+npm run dev
 
-##  How to Use NeoPaste
+# Build for production
+npm run build
 
-1. **Create a Team** in [Pokémon Showdown](https://play.pokemonshowdown.com/teambuilder).
-2. Use the **Import/Export** tool in the Teambuilder to copy your team.
-3. Paste it into the **NeoPaste Creator**.
-4. Share the link it's that easy!
+# Preview production build
+npm run preview
+```
 
-NeoPaste fully supports the **Pokémon Showdown format**, which is the de-facto standard across the community.
+## Deployment to GitHub Pages
 
----
+### Automatic Deployment (Recommended)
 
-##  Features
+1. Push your code to a GitHub repository
+2. Go to your repository Settings → Pages
+3. Set Source to "GitHub Actions"
+4. The workflow will automatically deploy on every push to main branch
 
--  Aesthetic design and subtle type-based glow
--  Blazing-fast performance
--  Fully responsive for mobile and desktop
--  Compatible with PokéPaste links for seamless importing
--  Built using modern web technologies — GitHub Pages, Supabase, and Cloudflare Workers
+### Manual Deployment
 
----
+1. Build the project: `npm run build`
+2. Upload the contents of the `dist` folder to your GitHub Pages repository
 
-## Contact
+## Environment Variables
 
-Feel free to reach out with feedback or suggestions! NeoPaste is built with love, not for profit and all input is welcome. 
----
-## Support me!
+The app uses Supabase for data storage. Make sure your Supabase credentials are properly configured in the source code.
 
-I stream on [twitch](https://www.twitch.tv/izyalovesgothmommies) from time to time check me out!
+## Performance Optimizations
 
-Support me on [Ko-Fi](https://ko-fi.com/izyalovesgothmommies)!
+- **Service Worker**: Aggressive caching for offline support
+- **Code Splitting**: Lazy-loaded components for faster initial load
+- **Image Preloading**: Sprites are preloaded for smooth transitions
+- **LRU Cache**: Efficient memory management
+- **Debouncing/Throttling**: Optimized event handling
 
----
 ## License
 
-This project is © 2025 Izya. All rights reserved.  
-Do not copy or reuse any part of this codebase without permission.
-NeoPaste is **not an open-source project**.
-
-NeoPaste is a fan-made project. Pokémon and related content are © Nintendo, Game Freak, and The Pokémon Company.
-You are welcome to **read the code to learn** how it works and understand its structure.
-However, **you may not clone, fork, rehost, or reuse** any part of this project without permission.
+Inspired by [Pokepaste](https://pokepast.es) by felixphew.
