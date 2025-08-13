@@ -363,20 +363,22 @@ async function loadPaste() {
     
     const team = await parsePaste(content);
 
-    // Optimized sprite preloading with direct URLs for better performance
+    // Optimized sprite preloading with proxy URLs
     const spritePreloads = new Set();
     for (const mon of team) {
-      const directSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
+      const showdownName = toSpriteId(mon.name);
+      const directSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5${mon.shiny ? "-shiny" : ""}/${showdownName}.png`;
+      const proxySpriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(directSpriteUrl)}`;
       
-      if (!spritePreloads.has(directSpriteUrl)) {
+      if (!spritePreloads.has(proxySpriteUrl)) {
         const preload = document.createElement('link');
         preload.rel = 'preload';
         preload.as = 'image';
-        preload.href = directSpriteUrl;
+        preload.href = proxySpriteUrl;
         preload.crossOrigin = 'anonymous';
         preload.setAttribute('data-preload-sprite', '');
         document.head.appendChild(preload);
-        spritePreloads.add(directSpriteUrl);
+        spritePreloads.add(proxySpriteUrl);
       }
     }
 
@@ -438,8 +440,8 @@ async function renderTeamCards(team) {
         <h2>${mon.nickname ? mon.nickname + ' (' + mon.name + ')' : mon.name}</h2>
         <p class="item-line">@ <span>${mon.item || "None"}${itemIconHtml}</span></p>
       </div>
-      <img src="${directSpriteUrl}" alt="${mon.name}" class="pokemon-sprite" data-name="${mon.name}" data-shiny="${mon.shiny ? '1' : '0'}" crossorigin="anonymous" loading="lazy" 
-           onerror="this.src='${proxySpriteUrl}'; this.onerror=function(){this.style.display='none'; this.onerror=null;}" />
+      <img src="${proxySpriteUrl}" alt="${mon.name}" class="pokemon-sprite" data-name="${mon.name}" data-shiny="${mon.shiny ? '1' : '0'}" crossorigin="anonymous" loading="lazy" 
+           onerror="this.style.display='none'; this.onerror=null;" />
       <p><strong>Ability:</strong> <span class="info-pill ability-pill">${mon.ability || "—"}</span></p>
       <p><strong>Tera Type:</strong> <span class="info-pill ${teraTypeClass}">${mon.teraType || "—"}</span></p>
       ${renderNaturePill(mon.nature)}
