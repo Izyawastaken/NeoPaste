@@ -214,10 +214,13 @@ function animateCardsIn() {
   });
 }
 
-// Add ripple effect to all .fancy-btn and .report-btn
+// Add ripple effect with event delegation for better performance
 function addButtonRipples() {
-  function createRipple(e) {
-    const btn = e.currentTarget;
+  // Use event delegation instead of individual listeners
+  document.addEventListener('pointerdown', function(e) {
+    const btn = e.target.closest('.fancy-btn, .report-btn');
+    if (!btn) return;
+    
     const circle = document.createElement('span');
     circle.className = 'ripple';
     const rect = btn.getBoundingClientRect();
@@ -226,11 +229,8 @@ function addButtonRipples() {
     circle.style.left = `${e.clientX - rect.left - size/2}px`;
     circle.style.top = `${e.clientY - rect.top - size/2}px`;
     btn.appendChild(circle);
-    setTimeout(() => circle.remove(), 500);
-  }
-  document.querySelectorAll('.fancy-btn, .report-btn').forEach(btn => {
-    btn.addEventListener('pointerdown', createRipple);
-  });
+    setTimeout(() => circle?.remove(), 500);
+  }, { passive: true });
 }
 
 function afterCardsRendered() {
@@ -241,6 +241,35 @@ function afterCardsRendered() {
   const savedAniMode = localStorage.getItem('neoPasteAnimatedSprites') === 'true';
   if (savedAniMode) {
     updateAllSprites(true);
+  }
+  
+  // Setup intersection observer for performance
+  setupLazyLoading();
+}
+
+// Intersection Observer for lazy loading optimizations
+function setupLazyLoading() {
+  if ('IntersectionObserver' in window) {
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const img = entry.target;
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+            img.removeAttribute('data-src');
+            observer.unobserve(img);
+          }
+        }
+      });
+    }, {
+      rootMargin: '50px 0px',
+      threshold: 0.1
+    });
+
+    // Observe all images with data-src
+    document.querySelectorAll('img[data-src]').forEach(img => {
+      imageObserver.observe(img);
+    });
   }
 }
 
@@ -339,8 +368,58 @@ if (!pasteId) {
   throw new Error("Missing paste ID");
 }
 
-// Cache for API responses
+// Cache for API responses with expiration
 const apiCache = new Map();
+const CACHE_EXPIRY = 30 * 60 * 1000; // 30 minutes
+
+// Optimized API caching with expiration
+function getCachedData(key) {
+  const cached = apiCache.get(key);
+  if (cached && Date.now() - cached.timestamp < CACHE_EXPIRY) {
+    return cached.data;
+  }
+  if (cached) {
+    apiCache.delete(key); // Remove expired
+  }
+  return null;
+}
+
+function setCachedData(key, data) {
+  apiCache.set(key, { data, timestamp: Date.now() });
+}
+
+// Batch API requests to reduce network calls
+async function batchFetchPokemonData(names) {
+  const uncachedNames = names.filter(name => !getCachedData(`pokemon-${name}`));
+  
+  if (uncachedNames.length === 0) {
+    return; // All cached
+  }
+
+  // Fetch multiple Pokemon in parallel with limit to avoid overwhelming API
+  const BATCH_SIZE = 6;
+  for (let i = 0; i < uncachedNames.length; i += BATCH_SIZE) {
+    const batch = uncachedNames.slice(i, i + BATCH_SIZE);
+    const promises = batch.map(async name => {
+      try {
+        const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);
+        if (res.ok) {
+          const data = await res.json();
+          setCachedData(`pokemon-${name}`, data);
+        }
+      } catch (error) {
+        console.warn(`Failed to fetch ${name}:`, error);
+      }
+    });
+    
+    await Promise.all(promises);
+    
+    // Small delay between batches to be respectful to API
+    if (i + BATCH_SIZE < uncachedNames.length) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+    }
+  }
+}
 
 // Optimized paste loading with better error handling
 async function loadPaste() {
@@ -400,14 +479,28 @@ async function loadPaste() {
   }
 }
 
-// Optimized team card rendering
+// Optimized team card rendering with batched API calls
 async function renderTeamCards(team) {
   const container = document.getElementById('team-container');
   container.innerHTML = "";
   
+  // Pre-fetch all Pokemon data in batches
+  const pokemonNames = team.map(mon => {
+    const mappedKey = toSpriteId(mon.name);
+    return pokeapiNameMap.get(mappedKey) || mappedKey;
+  });
+  
+  // Batch fetch all Pokemon data first
+  await batchFetchPokemonData(pokemonNames);
+  
+  // Pre-fetch all move data in batches
+  const allMoves = [...new Set(team.flatMap(mon => mon.moves))];
+  await batchFetchMoveData(allMoves);
+  
   // Use document fragment for better performance
   const fragment = document.createDocumentFragment();
 
+  // Render cards synchronously now that data is cached
   for (let i = 0; i < team.length; i++) {
     const mon = team[i];
     const card = document.createElement('div');
@@ -418,11 +511,9 @@ async function renderTeamCards(team) {
     const directSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5${mon.shiny ? "-shiny" : ""}/${showdownName}.png`;
     const proxySpriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(directSpriteUrl)}`;
 
-    // Render card content efficiently
-    const [statBlock, movePills] = await Promise.all([
-      renderStatBlock(mon),
-      renderMovePills(mon.moves)
-    ]);
+    // Render card content efficiently - now synchronous since data is cached
+    const statBlock = renderStatBlockSync(mon);
+    const movePills = renderMovePillsSync(mon.moves);
 
     const teraType = sanitizeType(mon.teraType || "");
     const teraTypeClass = teraType ? `type-${teraType}` : "";
@@ -458,10 +549,90 @@ async function renderTeamCards(team) {
   }
   
   container.appendChild(fragment);
-  animateStatBars();
+  
+  // Use RAF for stat bar animation to avoid blocking
+  requestAnimationFrame(() => animateStatBars());
 }
 
-// Optimized helper functions
+// Batch fetch move data
+async function batchFetchMoveData(moves) {
+  const uncachedMoves = moves.filter(move => {
+    const id = move.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    return !getCachedData(`move-${id}`);
+  });
+  
+  if (uncachedMoves.length === 0) return;
+
+  const BATCH_SIZE = 8;
+  for (let i = 0; i < uncachedMoves.length; i += BATCH_SIZE) {
+    const batch = uncachedMoves.slice(i, i + BATCH_SIZE);
+    const promises = batch.map(async move => {
+      const id = move.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+      try {
+        const res = await fetch(`https://pokeapi.co/api/v2/move/${id}`);
+        if (res.ok) {
+          const data = await res.json();
+          setCachedData(`move-${id}`, data.type.name.toLowerCase());
+        }
+      } catch (error) {
+        console.warn(`Failed to fetch move ${move}:`, error);
+        setCachedData(`move-${id}`, 'normal'); // fallback
+      }
+    });
+    
+    await Promise.all(promises);
+    
+    if (i + BATCH_SIZE < uncachedMoves.length) {
+      await new Promise(resolve => setTimeout(resolve, 80));
+    }
+  }
+}
+
+// Synchronous stat block rendering using cached data
+function renderStatBlockSync(p) {
+  const mods = natureMods[(p.nature || "").toLowerCase()] || {};
+  try {
+    const mappedKey = toSpriteId(p.name);
+    const mappedName = pokeapiNameMap.get(mappedKey) || mappedKey;
+    
+    const data = getCachedData(`pokemon-${mappedName}`);
+    if (!data) {
+      return `<p>Stats loading...</p>`;
+    }
+
+    return `
+      <div class="stat-block">
+        ${data.stats.map(s => {
+          const raw = s.stat.name;
+          const short = statNameMap[raw] || raw.toUpperCase();
+          const base = s.base_stat;
+          const k = short.toLowerCase();
+          const mod = k === mods.up ? "+" : k === mods.down ? "−" : "";
+          return `
+            <div class="stat-line">
+              <span class="stat-label ${k}">${short}</span>
+              <div class="stat-bar"><div class="stat-bar-fill" data-base="${base}"></div></div>
+              ${mod ? `<span class="stat-modifier ${mod === "+" ? "plus" : "minus"}">${mod}</span>` : ""}
+              <span class="stat-value" data-base="${base}" data-stat="${k}" data-ev="${p.evs[k] ?? 0}" data-iv="${p.ivs[k] ?? 31}">
+                ${base}
+              </span>
+            </div>`;
+        }).join("")}
+      </div>
+    `;
+  } catch {
+    return `<p>Failed to load stats for ${p.name}</p>`;
+  }
+}
+
+// Synchronous move pills rendering using cached data
+function renderMovePillsSync(moves) {
+  return moves.map(move => {
+    const id = move.toLowerCase().replace(/[^a-z0-9]+/g, "-");
+    const type = getCachedData(`move-${id}`) || 'normal';
+    return `<span class="move-pill type-${type}">${move.replace(/-/g, ' ')}</span>`;
+  }).join("");
+}
 function renderNaturePill(nature) {
   if (!nature) return '<p><strong>Nature:</strong> <span class="info-pill nature-pill">—</span></p>';
   
