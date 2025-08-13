@@ -1,5 +1,5 @@
 // NeoPaste Service Worker for Performance Optimization
-const CACHE_NAME = 'neopaste-v5';
+const CACHE_NAME = 'neopaste-v6';
 
 // Actual files being used by the application
 const STATIC_ASSETS = [
