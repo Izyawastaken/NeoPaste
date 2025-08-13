@@ -1,5 +1,6 @@
 // NeoPaste Service Worker for Performance Optimization
-const CACHE_NAME = 'neopaste-v6';
+const CACHE_NAME = 'neopaste-v7';
+const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 // Actual files being used by the application
 const STATIC_ASSETS = [
@@ -13,6 +14,30 @@ const STATIC_ASSETS = [
   '/config.js',
   '/performance.js'
 ];
+
+// Helper function to check if cached response is expired
+function isCacheExpired(response) {
+  if (!response) return true;
+  
+  const cachedDate = response.headers.get('sw-cached-date');
+  if (!cachedDate) return true;
+  
+  const age = Date.now() - parseInt(cachedDate);
+  return age > CACHE_EXPIRY;
+}
+
+// Helper function to add timestamp to response
+function addTimestampToResponse(response) {
+  const responseClone = response.clone();
+  const newHeaders = new Headers(responseClone.headers);
+  newHeaders.set('sw-cached-date', Date.now().toString());
+  
+  return new Response(responseClone.body, {
+    status: responseClone.status,
+    statusText: responseClone.statusText,
+    headers: newHeaders
+  });
+}
 
 // Install event - cache static assets
 self.addEventListener('install', event => {
@@ -35,22 +60,40 @@ self.addEventListener('install', event => {
   );
 });
 
-// Activate event - clean up old caches
+// Activate event - clean up old caches and expired entries
 self.addEventListener('activate', event => {
   event.waitUntil(
-    caches.keys()
-      .then(cacheNames => {
-        return Promise.all(
-          cacheNames
-            .filter(cacheName => cacheName !== CACHE_NAME)
-            .map(cacheName => caches.delete(cacheName))
-        );
-      })
-      .then(() => self.clients.claim())
+    Promise.all([
+      // Clean up old cache versions
+      caches.keys()
+        .then(cacheNames => {
+          return Promise.all(
+            cacheNames
+              .filter(cacheName => cacheName !== CACHE_NAME)
+              .map(cacheName => caches.delete(cacheName))
+          );
+        }),
+      // Clean up expired entries in current cache
+      caches.open(CACHE_NAME)
+        .then(cache => {
+          return cache.keys().then(requests => {
+            return Promise.all(
+              requests.map(request => {
+                return cache.match(request).then(response => {
+                  if (isCacheExpired(response)) {
+                    console.log('Removing expired cache entry:', request.url);
+                    return cache.delete(request);
+                  }
+                });
+              })
+            );
+          });
+        })
+    ]).then(() => self.clients.claim())
   );
 });
 
-// Fetch event - serve from cache with network fallback
+// Fetch event - serve from cache with expiration check and network fallback
 self.addEventListener('fetch', event => {
   // Skip cross-origin requests
   if (!event.request.url.startsWith(self.location.origin)) {
@@ -65,35 +108,46 @@ self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
       .then(response => {
-        // Return cached response if found
-        if (response) {
+        // Check if cached response exists and is not expired
+        if (response && !isCacheExpired(response)) {
+          console.log('Serving from cache:', event.request.url);
           return response;
         }
 
+        // If expired or not cached, fetch from network
+        console.log('Cache expired or missing, fetching from network:', event.request.url);
+        
         // Clone the request for caching
         const fetchRequest = event.request.clone();
 
         return fetch(fetchRequest)
-          .then(response => {
+          .then(networkResponse => {
             // Check if valid response
-            if (!response || response.status !== 200 || response.type !== 'basic') {
-              return response;
+            if (!networkResponse || networkResponse.status !== 200 || networkResponse.type !== 'basic') {
+              return networkResponse;
             }
 
-            // Clone the response for caching
-            const responseToCache = response.clone();
-
-            // Cache the response for static assets
+            // Add timestamp and cache the response for static assets
             if (STATIC_ASSETS.some(asset => event.request.url.includes(asset))) {
+              const responseWithTimestamp = addTimestampToResponse(networkResponse);
+              
               caches.open(CACHE_NAME)
                 .then(cache => {
-                  cache.put(event.request, responseToCache);
+                  cache.put(event.request, responseWithTimestamp.clone());
                 });
+              
+              return responseWithTimestamp;
             }
 
-            return response;
+            return networkResponse;
           })
           .catch(() => {
+            // If network fails, try to serve stale cache as fallback
+            if (response) {
+              console.log('Network failed, serving stale cache:', event.request.url);
+              return response;
+            }
+            
             // Return offline page for navigation requests
             if (event.request.mode === 'navigate') {
               return caches.match('/index.html');
