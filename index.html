@@ -153,12 +153,23 @@
   
   <!-- Service Worker Registration -->
   <script>
-  if ('serviceWorker' in navigator && location.protocol === 'https:') {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js', { scope: './' })
-        .then(registration => console.log('SW registered'))
-        .catch(error => console.warn('SW registration failed:', error));
-    });
+  if ('serviceWorker' in navigator) {
+    const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    const isHTTPS = location.protocol === 'https:';
+    const isFile = location.protocol === 'file:';
+    const canUseSW = isHTTPS || isLocalhost;
+    
+    if (canUseSW) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(registration => console.log('✅ SW registered'))
+          .catch(error => console.warn('❌ SW registration failed:', error.message));
+      });
+    } else if (isFile) {
+      console.info('ℹ️ Service Worker not available: File protocol not supported. Try using a local server.');
+    } else {
+      console.info('ℹ️ Service Worker not available: Requires HTTPS or localhost');
+    }
   }
   
   // Add loaded class for fade-in effect

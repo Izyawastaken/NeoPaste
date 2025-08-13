@@ -275,18 +275,35 @@
     });
   });
 
-  // Service Worker registration for caching (improved)
-  if ('serviceWorker' in navigator && location.protocol === 'https:') {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('./sw.js', { scope: './' })
-        .then(registration => {
-          console.log('SW registered successfully:', registration.scope);
-        })
-        .catch(error => {
-          console.warn('SW registration failed:', error);
-          // Continue without caching - not critical for functionality
-        });
-    });
+  // Service Worker registration for caching (improved compatibility)
+  if ('serviceWorker' in navigator) {
+    const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+    const isHTTPS = location.protocol === 'https:';
+    const isFile = location.protocol === 'file:';
+    const canUseSW = isHTTPS || isLocalhost;
+    
+    if (canUseSW) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js', { scope: './' })
+          .then(registration => {
+            console.log('✅ SW registered successfully:', registration.scope);
+            
+            registration.addEventListener('updatefound', () => {
+              console.log('🔄 SW update found');
+            });
+          })
+          .catch(error => {
+            console.warn('❌ SW registration failed:', error.message);
+            // Continue without caching - not critical for functionality
+          });
+      });
+    } else if (isFile) {
+      console.info('ℹ️ Service Worker not available: File protocol not supported. Try using a local server.');
+    } else {
+      console.info('ℹ️ Service Worker not available: Requires HTTPS or localhost');
+    }
+  } else {
+    console.info('ℹ️ Service Worker not supported in this browser');
   }
 
   // Expose performance utilities (improved preloading)

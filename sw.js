@@ -1,23 +1,37 @@
 // NeoPaste Service Worker for Performance Optimization
-const CACHE_NAME = 'neopaste-v1';
+const CACHE_NAME = 'neopaste-v5';
+
+// Actual files being used by the application
 const STATIC_ASSETS = [
   '/',
   '/index.html',
-  '/view.html',
+  '/view.html', 
   '/main.css',
   '/view.css',
-  '/script-optimized.js',
-  '/view-optimized.js',
+  '/script-optimized.js',    // Used by index.html
+  '/view-optimized.js',      // Used by view.html
   '/config.js',
   '/performance.js'
 ];
 
 // Install event - cache static assets
 self.addEventListener('install', event => {
+  console.log('Service Worker installing...');
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(STATIC_ASSETS))
-      .then(() => self.skipWaiting())
+      .then(cache => {
+        console.log('Caching static assets...');
+        return cache.addAll(STATIC_ASSETS);
+      })
+      .then(() => {
+        console.log('Static assets cached successfully');
+        return self.skipWaiting();
+      })
+      .catch(error => {
+        console.error('Failed to cache static assets:', error);
+        // Continue anyway - don't block installation
+        return self.skipWaiting();
+      })
   );
 });
 
