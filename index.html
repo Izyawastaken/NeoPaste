@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <titl  // Service Worker Registration with Update Handling
+  <title>NeoPaste Viewer</title>
+  <!-- Service Worker Registration with Update Handling -->
+   <script>
   if ('serviceWorker' in navigator) {
     const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
     const isHTTPS = location.protocol === 'https:';
@@ -38,6 +40,7 @@
       console.info('ℹ️ Service Worker not available: Requires HTTPS or localhost');
     }
   }
+  </script>
   <!-- Preload critical resources with proper CORS -->
   <link rel="preload" href="main.css" as="style" />
   <link rel="preload" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&display=swap" as="style" crossorigin="anonymous" />
