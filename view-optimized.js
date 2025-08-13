@@ -272,20 +272,20 @@ async function loadPaste() {
     
     const team = await parsePaste(content);
 
-    // Optimized sprite preloading with better performance
+    // Optimized sprite preloading with direct URLs for better performance
     const spritePreloads = new Set();
     for (const mon of team) {
-      const originalSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
-      const spriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(originalSpriteUrl)}`;
+      const directSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5${mon.shiny ? "-shiny" : ""}/${toSpriteId(mon.name)}.png`;
       
-      if (!spritePreloads.has(spriteUrl)) {
+      if (!spritePreloads.has(directSpriteUrl)) {
         const preload = document.createElement('link');
         preload.rel = 'preload';
         preload.as = 'image';
-        preload.href = spriteUrl;
+        preload.href = directSpriteUrl;
+        preload.crossOrigin = 'anonymous';
         preload.setAttribute('data-preload-sprite', '');
         document.head.appendChild(preload);
-        spritePreloads.add(spriteUrl);
+        spritePreloads.add(directSpriteUrl);
       }
     }
 
@@ -322,9 +322,8 @@ async function renderTeamCards(team) {
     card.style.setProperty('--card-delay', `${i * 60}ms`);
 
     const showdownName = toSpriteId(mon.name);
-    const spriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(
-      `https://play.pokemonshowdown.com/sprites/gen5${mon.shiny ? "-shiny" : ""}/${showdownName}.png`
-    )}`;
+    const directSpriteUrl = `https://play.pokemonshowdown.com/sprites/gen5${mon.shiny ? "-shiny" : ""}/${showdownName}.png`;
+    const proxySpriteUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(directSpriteUrl)}`;
 
     // Render card content efficiently
     const [statBlock, movePills] = await Promise.all([
@@ -348,7 +347,8 @@ async function renderTeamCards(team) {
         <h2>${mon.nickname ? mon.nickname + ' (' + mon.name + ')' : mon.name}</h2>
         <p class="item-line">@ <span>${mon.item || "None"}${itemIconHtml}</span></p>
       </div>
-      <img src="${spriteUrl}" alt="${mon.name}" class="pokemon-sprite" data-name="${mon.name}" data-shiny="${mon.shiny ? '1' : '0'}" crossorigin="anonymous" loading="lazy" />
+      <img src="${directSpriteUrl}" alt="${mon.name}" class="pokemon-sprite" data-name="${mon.name}" data-shiny="${mon.shiny ? '1' : '0'}" crossorigin="anonymous" loading="lazy" 
+           onerror="this.src='${proxySpriteUrl}'; this.onerror=function(){this.style.display='none'; this.onerror=null;}" />
       <p><strong>Ability:</strong> <span class="info-pill ability-pill">${mon.ability || "—"}</span></p>
       <p><strong>Tera Type:</strong> <span class="info-pill ${teraTypeClass}">${mon.teraType || "—"}</span></p>
       ${renderNaturePill(mon.nature)}
@@ -493,10 +493,17 @@ loadPaste();
 
 // Button functionality
 document.addEventListener('DOMContentLoaded', function() {
-  // Copy to clipboard functionality
+  // Fixed copy to clipboard functionality - prevents getting stuck on "Copied"
   const copyBtn = document.getElementById('copyBtn');
   if (copyBtn) {
+    let copyTimeout; // Track timeout to prevent duplicate calls
+    
     copyBtn.addEventListener('click', async function() {
+      // Prevent multiple clicks while processing
+      if (copyBtn.classList.contains('copied')) {
+        return;
+      }
+      
       try {
         await navigator.clipboard.writeText((window.rawPasteText || "").trim());
         
@@ -505,20 +512,34 @@ document.addEventListener('DOMContentLoaded', function() {
         copyBtn.textContent = 'Copied!';
         copyBtn.classList.add('copied');
         
-        setTimeout(() => {
+        // Clear any existing timeout
+        if (copyTimeout) {
+          clearTimeout(copyTimeout);
+        }
+        
+        copyTimeout = setTimeout(() => {
           copyBtn.textContent = originalText;
           copyBtn.classList.remove('copied');
+          copyTimeout = null;
         }, 1200);
+        
       } catch (err) {
         console.error('Failed to copy: ', err);
         // Visual feedback for error
         copyBtn.classList.add('copied');
         copyBtn.style.background = '#ef5350';
         copyBtn.textContent = 'Copy Failed';
-        setTimeout(() => {
+        
+        // Clear any existing timeout
+        if (copyTimeout) {
+          clearTimeout(copyTimeout);
+        }
+        
+        copyTimeout = setTimeout(() => {
           copyBtn.classList.remove('copied');
           copyBtn.style.background = '';
           copyBtn.textContent = 'Copy to Clipboard';
+          copyTimeout = null;
         }, 1500);
       }
     });
@@ -565,7 +586,28 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 });
 
-// Function to update all sprites (static vs animated)
+// Optimized sprite loading using proxies (as requested)
+function loadSpriteWithFallback(img, proxyUrl, fallbackProxyUrl) {
+  // Use proxy first as requested
+  img.src = proxyUrl;
+  img.onerror = function() {
+    // If primary proxy fails, try fallback proxy
+    if (fallbackProxyUrl) {
+      img.src = fallbackProxyUrl;
+      img.onerror = function() {
+        // All proxies failed, hide image
+        img.style.display = 'none';
+        img.onerror = null;
+      };
+    } else {
+      // No fallback, hide image
+      img.style.display = 'none';
+      img.onerror = null;
+    }
+  };
+}
+
+// Function to update all sprites (static vs animated) - using proxies
 function updateAllSprites(aniMode) {
   const allSprites = document.querySelectorAll('.pokemon-sprite');
   
@@ -575,39 +617,37 @@ function updateAllSprites(aniMode) {
     if (!name) return;
     
     const showdownName = toSpriteId(name);
-    const staticSrc = isShiny
-      ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5-shiny/${showdownName}.png`)}`
-      : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5/${showdownName}.png`)}`;
     
     if (aniMode) {
-      const gen5AniSrc = isShiny
-        ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5ani-shiny/${showdownName}.gif`)}`
-        : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/gen5ani/${showdownName}.gif`)}`;
-      const fallbackAniSrc = isShiny
-        ? `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani-shiny/${showdownName}.gif`)}`
-        : `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(`https://play.pokemonshowdown.com/sprites/ani/${showdownName}.gif`)}`;
+      // Use proxies for animated sprites
+      const gen5AniUrl = `https://play.pokemonshowdown.com/sprites/gen5ani${isShiny ? '-shiny' : ''}/${showdownName}.gif`;
+      const gen4AniUrl = `https://play.pokemonshowdown.com/sprites/ani${isShiny ? '-shiny' : ''}/${showdownName}.gif`;
       
-      img.src = gen5AniSrc;
+      const proxyGen5Url = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(gen5AniUrl)}`;
+      const proxyGen4Url = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(gen4AniUrl)}`;
+      
       img.style.width = '120px';
       img.style.height = '120px';
       img.style.objectFit = 'contain';
+      img.style.display = '';
       
-      img.onerror = function() {
-        img.onerror = function() {
-          img.src = staticSrc;
-          img.style.width = '';
-          img.style.height = '';
-          img.style.objectFit = '';
-          img.onerror = null;
-        };
-        img.src = fallbackAniSrc;
-      };
+      loadSpriteWithFallback(img, proxyGen5Url, proxyGen4Url);
     } else {
-      img.src = staticSrc;
+      // Use proxy for static sprites
+      const staticUrl = `https://play.pokemonshowdown.com/sprites/gen5${isShiny ? '-shiny' : ''}/${showdownName}.png`;
+      const proxyUrl = `https://neopasteexportpngproxy.agastyawastaken.workers.dev/?url=${encodeURIComponent(staticUrl)}`;
+      
       img.style.width = '';
       img.style.height = '';
       img.style.objectFit = '';
-      img.onerror = null;
+      img.style.display = '';
+      
+      // For static sprites, use proxy directly
+      img.src = proxyUrl;
+      img.onerror = function() {
+        img.style.display = 'none';
+        img.onerror = null;
+      };
     }
   });
 }

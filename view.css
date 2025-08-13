@@ -742,62 +742,6 @@ span.info-pill.nature-pill[class*="nature-"] {
   transform: translateY(-2px);
 }
 
-/* --- Export PNG fixes --- */
-.pokemon-card.export-for-png {
-  background: #1b1a1a !important;
-  color: #eee !important;
-  border: 1px solid #222 !important;
-  filter: none !important;
-  outline: none !important;
-  position: relative !important;
-  z-index: 10 !important;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.18) !important;
-  padding: 1.5rem 1.5rem 1.5rem 1.5rem !important;
-  min-width: 340px !important;
-  min-height: 480px !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
-  align-items: stretch !important;
-  border-radius: 18px !important;
-}
-/* Only target the main Pokémon sprite for export image styling */
-.pokemon-card.export-for-png > img:not(.item-icon) {
-  display: block !important;
-  position: static !important;
-  margin: 1.2rem auto 1.5rem auto !important;
-  image-rendering: pixelated !important;
-  z-index: 1 !important;
-  background: none !important;
-  box-shadow: none !important;
-  opacity: 1 !important;
-  visibility: visible !important;
-  order: -1 !important;
-}
-/* Ensure item icon is always small and inline, even in export */
-.pokemon-card.export-for-png .item-icon {
-  display: inline-block !important;
-  width: 1.25em !important;
-  height: 1.25em !important;
-  vertical-align: middle !important;
-  margin-left: 0.3em !important;
-  margin-bottom: 0 !important;
-  background: none !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  padding: 0 !important;
-  position: static !important;
-}
-.pokemon-card.export-for-png .card-header .item-line {
-  display: inline-block !important;
-  font-size: 1rem !important;
-  color: #aaa !important;
-  margin-top: 0rem !important;
-  margin-left: 0 !important;
-  margin-bottom: 0 !important;
-  vertical-align: middle !important;
-}
-
 /* 1. Card Entrance Animation */
 .pokemon-card {
   opacity: 0;
@@ -875,13 +819,6 @@ body.dark .footer-buttons .fancy-btn, body.dark .report-btn {
   font-weight: bold;
   box-shadow: 0 0 0 2px #43d67555 !important;
   animation: none !important;
-}
-
-/* Force-glow class for PNG export (matches .pokemon-card:hover) */
-.pokemon-card.export-for-png.force-glow {
-  box-shadow: 0 0 0 4px var(--accent, #ff9800), 0 4px 24px rgba(0,0,0,0.18) !important;
-  filter: brightness(1.04) drop-shadow(0 0 8px var(--accent, #ff9800)) !important;
-  transition: none !important;
 }
 
 .nature-pill[data-boost]:hover::after {
