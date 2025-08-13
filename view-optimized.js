@@ -19,18 +19,109 @@ const pokeapiNameMap = new Map([
   ["meowstic-m", "meowstic-male"],
   ["basculegion-f", "basculegion-female"],
   ["basculegion-m", "basculegion-male"],
-  // ... more mappings
+  ["oinkologne-f", "oinkologne-female"],
+  ["oinkologne-m", "oinkologne-male"],
+  ["frillish-f", "frillish-female"],
+  ["frillish-m", "frillish-male"],
+  ["jellicent-f", "jellicent-female"],
+  ["jellicent-m", "jellicent-male"],
+  ["pyroar-f", "pyroar-female"],
+  ["pyroar-m", "pyroar-male"],
+  ["unfezant-f", "unfezant-female"],
+  ["unfezant-m", "unfezant-male"],
+
+  // Normal form aliases (for default male mapping)
   ["indeedee", "indeedee-male"],
   ["meowstic", "meowstic-male"],
   ["basculegion", "basculegion-male"],
+  ["oinkologne", "oinkologne-male"],
+  ["frillish", "frillish-male"],
+  ["jellicent", "jellicent-male"],
+  ["pyroar", "pyroar-male"],
+  ["unfezant", "unfezant-male"],
+
   // Formes & variants
   ["rotom-wash", "rotom-wash"],
   ["rotom-heat", "rotom-heat"],
   ["rotom-frost", "rotom-frost"],
   ["rotom-fan", "rotom-fan"],
   ["rotom-mow", "rotom-mow"],
-  ["rotom", "rotom"],
-  // ... continue with other mappings as needed
+  ["rotom", "rotom"], // base form
+
+  ["urshifu-rapid-strike", "urshifu-rapid-strike"],
+  ["urshifu-single-strike", "urshifu-single-strike"],
+  ["urshifu", "urshifu-single-strike"],
+
+  ["zacian-crowned", "zacian-crowned"],
+  ["zamazenta-crowned", "zamazenta-crowned"],
+
+  ["calyrex-ice", "calyrex-ice"],
+  ["calyrex-shadow", "calyrex-shadow"],
+
+  ["toxtricity-low-key", "toxtricity-low-key"],
+  ["toxtricity-amped", "toxtricity-amped"],
+  ["toxtricity", "toxtricity-amped"],
+
+  ["basculin-blue-striped", "basculin-blue-striped"],
+  ["basculin-white-striped", "basculin-white-striped"],
+  ["basculin-red-striped", "basculin-red-striped"], // default
+  ["basculin", "basculin-red-striped"],
+
+  ["lycanroc-midnight", "lycanroc-midnight"],
+  ["lycanroc-dusk", "lycanroc-dusk"],
+  ["lycanroc", "lycanroc"], // midday default
+
+  ["darmanitan-galar", "darmanitan-galar"],
+  ["darmanitan-galar-zen", "darmanitan-galar-zen"],
+  ["darmanitan", "darmanitan"], // normal form
+
+  ["giratina-origin", "giratina-origin"],
+  ["giratina", "giratina-altered"],
+
+  ["shaymin-sky", "shaymin-sky"],
+  ["shaymin", "shaymin-land"],
+
+  ["tornadus-therian", "tornadus-therian"],
+  ["thundurus-therian", "thundurus-therian"],
+  ["landorus-therian", "landorus-therian"],
+  ["tornadus", "tornadus-incarnate"],
+  ["thundurus", "thundurus-incarnate"],
+  ["landorus", "landorus-incarnate"],
+
+  ["enamorus-therian", "enamorus-therian"],
+  ["enamorus", "enamorus-incarnate"],
+
+  ["zygarde-10", "zygarde-10"],
+  ["zygarde-complete", "zygarde-complete"],
+  ["zygarde", "zygarde"], // 50%
+
+  ["polteageist-antique", "polteageist"],
+  ["polteageist", "polteageist"],
+
+  ["sinistea-antique", "sinistea"],
+  ["sinistea", "sinistea"],
+
+  ["minior-red", "minior-red-meteor"], // core form = red-meteor
+  ["minior", "minior-red-meteor"],
+
+  ["mimikyu-busted", "mimikyu-busted"],
+  ["mimikyu", "mimikyu-disguised"],
+
+  // Paradox Pokémon
+  ["greattusk", "great-tusk"],
+  ["screamtail", "scream-tail"],
+  ["brutebonnet", "brute-bonnet"],
+  ["fluttermane", "flutter-mane"],
+  ["slitherwing", "slither-wing"],
+  ["sandyshocks", "sandy-shocks"],
+  ["irontreads", "iron-treads"],
+  ["ironbundle", "iron-bundle"],
+  ["ironhands", "iron-hands"],
+  ["ironjugulis", "iron-jugulis"],
+  ["ironmoth", "iron-moth"],
+  ["ironthorns", "iron-thorns"],
+  ["roaringmoon", "roaring-moon"],
+  ["ironvaliant", "iron-valiant"]
 ]);
 
 const natureMods = {
